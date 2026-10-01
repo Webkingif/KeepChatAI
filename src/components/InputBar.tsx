@@ -14,6 +14,8 @@ import {
   Mic,
   Trash2,
   Square,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { AIModelType } from '../types/keepchat';
 
@@ -32,6 +34,7 @@ interface InputBarProps {
     audioDuration?: number;
   }) => void;
   onErrorToast?: (msg: string) => void;
+  onToast?: (msg: string, type?: 'success' | 'error' | 'info') => void;
 }
 
 const MODELS: { type: AIModelType; label: string; icon: React.ElementType }[] = [
@@ -46,6 +49,7 @@ export const InputBar: React.FC<InputBarProps> = ({
   defaultModel,
   onSaveOutput,
   onErrorToast,
+  onToast,
 }) => {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
@@ -71,6 +75,35 @@ export const InputBar: React.FC<InputBarProps> = ({
   const audioStreamRef = useRef<MediaStream | null>(null);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [copiedPromptTip, setCopiedPromptTip] = useState(false);
+  const PROMPT_FORMAT_TIP = 'Format as a copyable block of markdown';
+
+  const handleCopyPromptTip = async () => {
+    try {
+      await navigator.clipboard.writeText(PROMPT_FORMAT_TIP);
+      setCopiedPromptTip(true);
+      if (onToast) {
+        onToast('Prompt copied! Paste it into ChatGPT or DeepSeek', 'success');
+      } else {
+        onErrorToast?.('Prompt copied! Paste it into ChatGPT or DeepSeek');
+      }
+      setTimeout(() => setCopiedPromptTip(false), 2000);
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = PROMPT_FORMAT_TIP;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      setCopiedPromptTip(true);
+      if (onToast) {
+        onToast('Prompt copied! Paste it into ChatGPT or DeepSeek', 'success');
+      } else {
+        onErrorToast?.('Prompt copied! Paste it into ChatGPT or DeepSeek');
+      }
+      setTimeout(() => setCopiedPromptTip(false), 2000);
+    }
+  };
 
   useEffect(() => {
     setAiModel(defaultModel);
@@ -536,6 +569,42 @@ export const InputBar: React.FC<InputBarProps> = ({
             )}
           </div>
         )}
+
+        {/* Formatting Reminder Note with 1-Click Copy */}
+        <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-teal-50/80 dark:bg-[#162329] border border-teal-200/70 dark:border-teal-900/40 text-[11.5px] text-slate-600 dark:text-slate-300">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Sparkles className="w-3.5 h-3.5 text-[#00a884] dark:text-teal-400 shrink-0" />
+            <div className="leading-snug">
+              <span className="font-semibold text-slate-800 dark:text-slate-200 mr-1">
+                Tip:
+              </span>
+              <span>
+                Want your output formatted nicely? Tell ChatGPT / DeepSeek:{' '}
+                <code className="px-1.5 py-0.5 rounded font-mono text-[11px] font-semibold text-teal-800 dark:text-teal-300 bg-white/90 dark:bg-[#10191f] border border-teal-200 dark:border-teal-800/50 shadow-2xs">
+                  "Format as a copyable block of markdown"
+                </code>
+              </span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleCopyPromptTip}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium text-teal-700 dark:text-teal-300 bg-teal-100/70 hover:bg-teal-200/70 dark:bg-teal-950/60 dark:hover:bg-teal-900/60 border border-teal-300/60 dark:border-teal-800/60 transition-all active:scale-95 cursor-pointer shrink-0 ml-auto"
+            title="Copy prompt directive to clipboard"
+          >
+            {copiedPromptTip ? (
+              <>
+                <Check className="w-3 h-3 text-[#00a884] dark:text-teal-400" />
+                <span className="text-[#00a884] dark:text-teal-400 font-semibold">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3 h-3" />
+                <span>Copy Prompt</span>
+              </>
+            )}
+          </button>
+        </div>
 
         {/* Footer shortcuts & media hint */}
         <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 px-1">

@@ -38,4 +38,20 @@
   - Keyboard shortcuts: `Escape` to cancel and `Ctrl+Enter` / `Cmd+Enter` to save
   - Subtle WhatsApp-style `Edited ·` indicator beside the timestamp with full date-time tooltip
   - Synchronized state updates saved directly to IndexedDB
+- [x] Implemented publication-grade LaTeX mathematical formula rendering with KaTeX and remark-math:
+  - Both display block math (`$$...$$` and `\[...\]`) and inline math (`$...$` and `\(...\)`) are rendered with authentic mathematical typography
+  - Supports fractions (`\frac`), radical square roots (`\sqrt`), superscripts, complex numbers, quadratic formulas, matrices, quad spacing (`\qquad`), and boxed formulas (`\boxed{...}`)
+  - Pre-processing LaTeX normalizer safely converts bracket delimiters while preserving code fences
+  - KaTeX stylesheet integrated with high-contrast light and dark mode rules, custom `.fbox` borders for boxed answers, and responsive horizontal scrolling for mobile cards
+- [x] Added permanent AI Formatting Tip reminder and one-click copy button:
+  - Positioned directly below the paste textarea in `InputBar`
+  - Advises users to tell their AI: `"Format as a copyable block of markdown"` when outputs are messy
+  - Interactive "Copy Prompt" button with animated checkmark and toast confirmation
+  - Also featured in the `EmptyThreadView` for new chat threads
+- [x] Integrated official KeepChat logo (golden feather key emblem and full brandmark):
+  - Created `src/components/KeepChatLogo.tsx` with vector fidelity, authentic metallic gradients, laurel wreath foliage, and glowing speech-bubble leaf arrow
+  - Replaced generic robot icon in Sidebar header (`Sidebar.tsx`) with the 36px KeepChat logo
+  - Replaced placeholder graphic in desktop welcome view (`NoChatSelectedDesktop` in `EmptyStates.tsx`) with the 128px full KeepChat brandmark
+  - Added KeepChat emblem to empty chat thread state (`EmptyThreadView` in `EmptyStates.tsx`)
+  - Configured high-resolution browser favicon and Apple touch icon in `public/favicon.svg` and `index.html`
 - [x] Verified with `lint_applet` and `compile_applet` (0 errors)

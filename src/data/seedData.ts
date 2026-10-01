@@ -266,5 +266,95 @@ To sustain long-running autonomous workflows across days of interaction without 
    - As working memory crosses 16k tokens, compress turns 1–8 into a succinct factual rollup.
 
 > *"Context engineering is not about expanding windows; it is about ruthless relevance filtering."*`
+  },
+  {
+    id: 'msg-6',
+    chatId: 'chat-4',
+    title: 'Quadratic Equation Derivation with Complex Roots',
+    userPrompt: 'To find the roots of the quadratic equation x^2 + 5x + 8 = 0, calculate the discriminant and apply the quadratic formula.',
+    aiModel: 'DeepSeek',
+    tags: ['Math', 'LaTeX', 'Algebra'],
+    isStarred: true,
+    createdAt: Date.now() - 1000 * 60 * 15,
+    tokenCountEstimate: 420,
+    content: `To find the roots of the quadratic equation 
+
+$$x^2 + 5x + 8 = 0$$
+
+we can use the quadratic formula:
+
+$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+
+For this equation, the coefficients are:
+
+* $a = 1$
+* $b = 5$
+* $c = 8$
+
+**Step 1: Calculate the discriminant ($b^2 - 4ac$)**
+
+$$b^2 - 4ac = (5)^2 - 4(1)(8)$$
+
+$$b^2 - 4ac = 25 - 32$$
+
+$$b^2 - 4ac = -7$$
+
+**Step 2: Apply the quadratic formula**
+
+Because the discriminant is negative ($-7$), the equation has no real solutions. Instead, it has two complex solutions involving the imaginary unit $i$ (where $i = \\sqrt{-1}$).
+
+$$x = \\frac{-5 \\pm \\sqrt{-7}}{2(1)}$$
+
+$$x = \\frac{-5 \\pm i\\sqrt{7}}{2}$$
+
+**Final Answer:**
+
+The two complex roots for the equation are:
+
+$$x_1 = -\\frac{5}{2} + \\frac{\\sqrt{7}}{2}i$$
+
+$$x_2 = -\\frac{5}{2} - \\frac{\\sqrt{7}}{2}i$$`
+  },
+  {
+    id: 'msg-7',
+    chatId: 'chat-4',
+    title: 'LaTeX Bracket Delimiters \\[...\\] and Boxed Complex Roots',
+    userPrompt: 'Solve x^2 + 5x + 8 = 0 using quadratic formula with boxed final answers.',
+    aiModel: 'Claude',
+    tags: ['Math', 'LaTeX', 'Boxed'],
+    isStarred: true,
+    createdAt: Date.now() - 1000 * 60 * 5,
+    tokenCountEstimate: 380,
+    content: `Solve using the quadratic formula:
+
+\\[
+x^2+5x+8=0
+\\]
+
+Here \\(a=1,\\ b=5,\\ c=8\\).
+
+\\[
+x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}
+\\]
+
+\\[
+x=\\frac{-5\\pm\\sqrt{25-32}}{2}
+\\]
+
+\\[
+x=\\frac{-5\\pm\\sqrt{-7}}{2}
+\\]
+
+Since \\(\\sqrt{-7}=i\\sqrt7\\),
+
+\\[
+\\boxed{x=\\frac{-5\\pm i\\sqrt7}{2}}
+\\]
+
+So there are no real solutions; the two complex solutions are
+
+\\[
+\\boxed{x_1=\\frac{-5+i\\sqrt7}{2},\\qquad x_2=\\frac{-5-i\\sqrt7}{2}}
+\\]`
   }
 ];

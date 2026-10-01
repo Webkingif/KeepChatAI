@@ -26,6 +26,7 @@ import {
 import { ChatThread, SavedOutput, MAX_PINNED_CHATS } from '../types/keepchat';
 import { formatWhatsAppTime } from '../utils/date';
 import { MobileChatActionSheet } from './MobileChatActionSheet';
+import { KeepChatLogo } from './KeepChatLogo';
 
 interface SidebarProps {
   chats: ChatThread[];
@@ -202,11 +203,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <aside className="w-full md:w-[360px] lg:w-[400px] shrink-0 h-full flex flex-col bg-[#f0f2f5] dark:bg-[#111b21] border-r border-slate-200 dark:border-[#222d34] select-none transition-colors">
       {/* Top Header Zone */}
       <div className="flex items-center justify-between px-4 py-3 bg-[#f0f2f5] dark:bg-[#202c33] border-b border-slate-200/60 dark:border-[#222d34] min-h-[58px]">
-        {/* Brand Lockup */}
+        {/* Brand Lockup with KeepChat Logo */}
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-[#00a884] flex items-center justify-center text-white shadow-xs">
-            <Bot className="w-4 h-4" />
-          </div>
+          <KeepChatLogo size={36} variant="icon" className="drop-shadow-xs" />
           <div className="flex flex-col">
             <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white leading-none">
               KeepChat

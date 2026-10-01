@@ -163,20 +163,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           </p>
         </div>
 
-        {/* Storage Engine Status */}
-        <div className="p-3 bg-slate-100/80 dark:bg-[#182229] rounded-xl border border-slate-200/60 dark:border-[#2a3942] text-xs text-slate-600 dark:text-slate-400 space-y-1">
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-slate-700 dark:text-slate-300">Local Storage Engine</span>
-            <span className="inline-flex items-center gap-1 font-semibold text-[#00a884] dark:text-teal-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00a884] animate-pulse" />
-              IndexedDB
-            </span>
-          </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-500">
-            All your chat threads, messages, and model outputs are stored directly in your browser's IndexedDB database.
-          </p>
-        </div>
-
         {/* Privacy & Storage Footer Note */}
         <div className="flex items-center gap-2 px-1 pt-4 border-t border-slate-200/60 dark:border-[#222d34] text-[11px] text-slate-400 dark:text-slate-500">
           <Shield className="w-3.5 h-3.5 text-[#00a884] shrink-0" />

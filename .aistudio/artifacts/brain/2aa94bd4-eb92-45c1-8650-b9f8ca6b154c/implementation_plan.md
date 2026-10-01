@@ -1,132 +1,54 @@
-# Indefinite Chat Output Editing
+# KeepChat Official Logo Integration Plan
 
-Allow users to edit any chat output in any thread indefinitely directly inside the message card, with customizable content, prompt title, and AI model tag, accompanied by a subtle WhatsApp-style "Edited" badge.
-
-## User Review & Critical Decisions
-
-> [!IMPORTANT]
-> **Confirmed Choices from Clarifications**:
-> 1. **Inline Editor**: Editing occurs directly within the message card without popup modal disruption, keeping conversational context in view.
-> 2. **WhatsApp "Edited" Indicator**: A subtle, italicized `Edited` badge is displayed next to the timestamp and double checkmarks.
-> 3. **Editable Fields**: Users can update the **Markdown content**, the **prompt title**, and the **AI model attribution** (ChatGPT, Gemini, Claude, DeepSeek).
-> 4. **Indefinite Window**: No countdown or expiration lock; outputs can be edited at any time.
+Integrate the user's KeepChat brand logo (the golden feather key with green speech-bubble emblem and stylized "KeepChat" lettering) across the application.
 
 ---
 
-## 1. Overview & Core Concept
+## 1. Visual Specification & Asset Design
 
-- **What It Does**: Adds an inline editor to every output card in the message stream. When activated via the pencil icon, the message card switches into an inline editor where users can revise the response text, tweak the prompt title, or change the AI model tag.
-- **Target Audience**: AI power users, developers, and researchers curating prompts and model responses who need to refine saved outputs, fix formatting quirks, or adapt code snippets over time.
-- **Key Value**: Preserves accurate knowledge by allowing ongoing curation of AI answers while maintaining full IndexedDB offline persistence and authentic WhatsApp aesthetics.
+The user provided `keepchat-192x192.png` and `keepchat-512x512.png`. We will implement a high-precision, scalable SVG and canvas-backed asset representation:
 
----
+1. **The Emblem (`variant="icon"`)**:
+   - **Outer Medallion**: Circular radial forest-green gradient (`#142b1f` to `#234934`) with an engraved laurel leaf wreath motif.
+   - **Feather Quill Key Shaft**: Sculpted antique gold/bronze quill shaft (`#c6924b` with highlights `#f3d08a` and shadows `#7c5324`).
+   - **Speech Bubble Bow**: Circular golden key head enclosing a vibrant emerald speech bubble with an upward curved leaf arrow.
+   - **Ambient Illumination**: Subtle luminous aura matching the provided visual asset.
 
-## 2. User Experience & Visual Design
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│  [Gemini ▼]   Refined System Architecture                     [Cancel] │
-├────────────────────────────────────────────────────────────────────────┤
-│  Prompt Title: [Design a resilient distributed cache                 ] │
-│                                                                        │
-│  Content (Markdown):                                                   │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │ ```typescript                                                    │  │
-│  │ export interface CacheConfig { ttl: number; maxSize: number; }   │  │
-│  │ ```                                                              │  │
-│  │ Updated architecture with distributed invalidation logic.        │  │
-│  └──────────────────────────────────────────────────────────────────┘  │
-│                                                                        │
-│  [Cancel (Esc)]                       [Save Changes (Ctrl+Enter) ✓]   │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
-- **Pencil Edit Trigger**: An edit icon appears alongside the Copy and Star actions in the top toolbar of every output card.
-- **Inline Editing Workspace**:
-  - **Model Tag Switcher**: Dropdown/selector allowing re-assignment between Gemini, ChatGPT, Claude, and DeepSeek.
-  - **Prompt Title Field**: Clean input allowing updates to the prompt or topic headline.
-  - **Full Markdown Editor**: Resizable, high-contrast monospace textarea with keyboard shortcuts (`Esc` to cancel, `Ctrl+Enter` / `Cmd+Enter` to save).
-- **Subtle "Edited" Badge**: Once saved, the footer timestamp updates to show: `10:45 AM · Edited` with a tooltip indicating the last edit date/time.
+2. **The Full Brand Mark (`variant="full"`)**:
+   - The central emblem accompanied by the official **KeepChat** wordmark below.
+   - "Keep" in bold deep forest green (`#1e4d32` / `#2dd4bf` in dark mode).
+   - "Chat" in warm caramel-gold (`#c48b48` / `#e2a865`) with the distinctive upward arrow flourish.
 
 ---
 
-## 3. Key Product Decisions & Trade-Offs
+## 2. Integration Touchpoints Across the App
 
-- **Decision 1: Inline Card State vs. Separate Modal**:
-  - *Chosen Approach*: Inline editing directly within the card body.
-  - *Why*: Prevents modal stacking fatigue, retains the surrounding conversation for visual context, and feels instantaneous.
-- **Decision 2: Indefinite Window**:
-  - *Chosen Approach*: No time limit.
-  - *Why*: KeepChat is a personal knowledge vault rather than a public social network. Users need long-term control over their stored knowledge.
-- **Decision 3: Field Extent**:
-  - *Chosen Approach*: Content + Prompt Title + AI Model Tag.
-  - *Why*: Users frequently organize outputs where the model was initially misattributed or the prompt needs clarification.
+1. **Sidebar Brand Header (`Sidebar.tsx`)**:
+   - Replace the generic Lucide `Bot` icon in the top left header with the official 36px KeepChat logo emblem.
+   - Keep the clean WhatsApp Web layout with the logo, "KeepChat" title, and action icons (Settings, New Chat, Menu).
 
----
+2. **Desktop Welcome & Placeholder Splash (`NoChatSelectedDesktop` in `EmptyStates.tsx`)**:
+   - Replace the generic robot icon with the full KeepChat logo badge (96px emblem with glowing radial backdrop and typography).
+   - Complement with the secure local storage badge and "New Chat Thread" CTA.
 
-## 4. Technical Architecture & Data Strategy
+3. **Empty Chat Thread View (`EmptyThreadView` in `EmptyStates.tsx`)**:
+   - Display the KeepChat circular logo mark above the "No outputs saved yet" greeting.
 
-```
-┌────────────────────────────────────────────────────────┐
-│                  App.tsx (Main State)                  │
-│    - messages: SavedOutput[]                           │
-│    - handleEditOutput(id, { content, title, model })  │
-└───────────────────────────┬────────────────────────────┘
-                            │ passes onEditOutput
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│                   OutputCard.tsx                       │
-│    - isEditing: boolean                                │
-│    - draftContent, draftTitle, draftModel              │
-│    - Keyboard shortcuts: Esc -> Cancel, Ctrl+Enter -> Save
-└───────────────────────────┬────────────────────────────┘
-                            │ writes
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│                 IndexedDB (keepchat_db)                │
-│    - isEdited: true, editedAt: timestamp               │
-│    - persisted automatically across sessions           │
-└────────────────────────────────────────────────────────┘
-```
-
-### Type Definition Updates (`src/types/keepchat.ts`)
-```typescript
-export interface SavedOutput {
-  // ... existing fields ...
-  isEdited?: boolean;
-  editedAt?: number;
-}
-```
-
-### Handler in `App.tsx`
-```typescript
-const handleEditOutput = (
-  id: string,
-  updates: { content: string; title?: string; aiModel?: AIModelType }
-) => {
-  setMessages((prev) =>
-    prev.map((m) =>
-      m.id === id
-        ? {
-            ...m,
-            ...updates,
-            isEdited: true,
-            editedAt: Date.now(),
-          }
-        : m
-    )
-  );
-  addToast('Output updated successfully', 'success');
-};
-```
+4. **Browser Tab Favicon & Meta Tags (`index.html`)**:
+   - Update `<link rel="icon">` in `index.html` with an SVG data URI of the KeepChat emblem so the browser tab immediately displays the official logo.
+   - Ensure `<title>` and OpenGraph tags align with the brand.
 
 ---
 
-## 5. Verification & Testing
+## 3. Implementation Steps
 
-1. **Trigger Edit**: Click the pencil icon on any output card (text, code, or image caption).
-2. **Modify Content & Fields**: Edit the title prompt, switch the AI model tag, and update the markdown body.
-3. **Save via Button or Shortcut**: Press `Ctrl+Enter` (or click "Save Changes"). Verify immediate visual update with the new markdown rendering and model badge.
-4. **Inspect WhatsApp "Edited" Badge**: Confirm that `Edited` appears next to the timestamp.
-5. **Persistence Check**: Refresh the page or inspect IndexedDB to confirm `isEdited` and modified text are permanently preserved.
-6. **Code Quality**: Verify build with `lint_applet` and `compile_applet` with 0 errors.
+1. **Create `src/components/KeepChatLogo.tsx`**:
+   - Vector-accurate React component supporting `size`, `variant="icon" | "full"`, and responsive dark/light mode accents.
+2. **Update `index.html`**:
+   - Set the browser favicon to the KeepChat emblem.
+3. **Update `src/components/Sidebar.tsx`**:
+   - Mount `<KeepChatLogo size={34} variant="icon" />` in the sidebar header.
+4. **Update `src/components/EmptyStates.tsx`**:
+   - Mount `<KeepChatLogo size={88} variant="full" />` in `NoChatSelectedDesktop`.
+   - Mount `<KeepChatLogo size={56} variant="icon" />` in `EmptyThreadView`.
+5. **Verify with `lint_applet` and `compile_applet`**.

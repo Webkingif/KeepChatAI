@@ -613,6 +613,7 @@ export default function App() {
                 defaultModel={activeChat.defaultAiModel || 'ChatGPT'}
                 onSaveOutput={handleSaveOutput}
                 onErrorToast={(msg) => addToast(msg, 'error')}
+                onToast={addToast}
               />
             </div>
           ) : (

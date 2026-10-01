@@ -58,6 +58,44 @@
   background: rgba(140, 150, 160, 0.5);
 }
 
+/* KaTeX Math Formula Typography & Responsive Layout */
+.katex {
+  font-size: 1.05em;
+  text-rendering: auto;
+  line-height: 1.2;
+}
+
+.katex-display {
+  margin: 0.9em 0 !important;
+  padding: 0.4em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dark .katex {
+  color: #f1f5f9;
+}
+
+.dark .katex-display {
+  color: #f1f5f9;
+}
+
+/* Boxed math formulas \boxed{...} */
+.katex .fbox {
+  border-color: #0f172a !important;
+  border-width: 1.5px !important;
+  border-radius: 6px;
+  padding: 0.25em 0.55em !important;
+  background-color: rgba(0, 168, 132, 0.05);
+}
+
+.dark .katex .fbox {
+  border-color: #2dd4bf !important;
+  background-color: rgba(45, 212, 191, 0.08);
+}
+
 /* Syntax Highlighting Tokens (Prism) */
 .token.comment,
 .token.prolog,

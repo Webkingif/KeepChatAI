@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import { Check, Copy, Terminal } from 'lucide-react';
 import { highlightCode } from '../utils/highlighter';
+import { normalizeLatexDelimiters } from '../utils/mathNormalizer';
 
 interface MarkdownRendererProps {
   content: string;
@@ -78,10 +81,13 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, codeString }) =>
 };
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
+  const normalizedContent = React.useMemo(() => normalizeLatexDelimiters(content), [content]);
+
   return (
     <div className="prose prose-slate dark:prose-invert max-w-none text-[14.5px] leading-relaxed break-words">
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
         components={{
           code({ className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
@@ -181,7 +187,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
           },
         }}
       >
-        {content}
+        {normalizedContent}
       </ReactMarkdown>
     </div>
   );

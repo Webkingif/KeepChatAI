@@ -1,5 +1,6 @@
 import React from 'react';
-import { Bot, Plus, Sparkles, Lock, ArrowDown } from 'lucide-react';
+import { Plus, Lock, ArrowDown } from 'lucide-react';
+import { KeepChatLogo } from './KeepChatLogo';
 
 interface NoChatSelectedProps {
   onNewChat: () => void;
@@ -9,23 +10,13 @@ export const NoChatSelectedDesktop: React.FC<NoChatSelectedProps> = ({ onNewChat
   return (
     <div className="hidden md:flex flex-1 h-full flex-col items-center justify-center p-8 bg-[#f0f2f5] dark:bg-[#111b21] border-b-6 border-[#00a884] text-center select-none">
       <div className="max-w-md flex flex-col items-center">
-        {/* Modern Illustration / Badge */}
-        <div className="relative mb-6">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-500/20 via-teal-500/10 to-blue-500/20 dark:from-emerald-500/10 dark:to-teal-500/10 flex items-center justify-center border border-emerald-500/20 shadow-inner">
-            <Bot className="w-12 h-12 text-[#00a884] dark:text-teal-400 stroke-[1.5]" />
-          </div>
-          <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-white dark:bg-[#202c33] shadow-md border border-slate-200 dark:border-[#2a3942] flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-amber-500" />
-          </div>
+        {/* Official KeepChat Logo with full brandmark */}
+        <div className="mb-6 transform hover:scale-105 transition-transform duration-300">
+          <KeepChatLogo size={128} variant="full" />
         </div>
 
-        {/* Title */}
-        <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight mb-2">
-          KeepChat Web
-        </h2>
-
         {/* User requested copy */}
-        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
+        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6 max-w-xs">
           Select a chat to view your saved AI outputs, or create a new one.
         </p>
 
@@ -56,8 +47,9 @@ export const EmptyThreadView: React.FC<EmptyThreadProps> = ({ onInsertSample }) 
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 text-center select-none min-h-[300px]">
       <div className="max-w-sm flex flex-col items-center">
-        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-[#202c33] flex items-center justify-center text-slate-400 dark:text-slate-500 mb-4 border border-slate-200 dark:border-[#2a3942]">
-          <Bot className="w-8 h-8 opacity-70" />
+        {/* KeepChat Logo Emblem */}
+        <div className="mb-4">
+          <KeepChatLogo size={56} variant="icon" />
         </div>
 
         {/* User requested copy */}
@@ -72,13 +64,17 @@ export const EmptyThreadView: React.FC<EmptyThreadProps> = ({ onInsertSample }) 
           <button
             onClick={onInsertSample}
             type="button"
-            className="text-xs font-medium text-[#00a884] dark:text-teal-400 hover:underline inline-flex items-center gap-1 cursor-pointer"
+            className="text-xs font-medium text-[#00a884] dark:text-teal-400 hover:underline inline-flex items-center gap-1 cursor-pointer mb-2"
           >
             <span>Or click here to paste an example output</span>
           </button>
         )}
 
-        <div className="mt-6 flex items-center gap-1 text-slate-400 dark:text-slate-500 text-xs animate-bounce">
+        <div className="mt-4 px-3 py-2 rounded-lg bg-white/60 dark:bg-[#182329]/60 border border-slate-200/80 dark:border-[#26353d] text-[11px] text-slate-500 dark:text-slate-400 max-w-xs">
+          💡 <span className="font-semibold text-slate-700 dark:text-slate-300">Tip:</span> Ask your AI to <span className="font-mono text-[10.5px] text-teal-700 dark:text-teal-400">"Format as a copyable block of markdown"</span> for clean code, formulas & tables.
+        </div>
+
+        <div className="mt-5 flex items-center gap-1 text-slate-400 dark:text-slate-500 text-xs animate-bounce">
           <ArrowDown className="w-3.5 h-3.5" />
           <span>Paste in the bottom bar</span>
         </div>
