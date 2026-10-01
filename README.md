@@ -1,7 +1,7 @@
 # KeepChat — AI Output Vault & Organizer
 
 <p align="center">
-  <img src="public/favicon.svg" alt="KeepChat Logo" width="88" height="88" />
+  <img src="public/pwa-512x512.png" alt="KeepChat Logo" width="88" height="88" />
 </p>
 
 <p align="center">
