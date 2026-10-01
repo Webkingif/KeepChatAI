@@ -1,0 +1,41 @@
+# Progress Tracker: KeepChat
+
+## Current Phase: Completed & Production Verified
+- [x] Initial context and specification analysis
+- [x] Dependencies installed (`react-markdown`, `remark-gfm`, `prismjs`, `@types/prismjs`)
+- [x] Project context documentation established in `context/`
+- [x] Core type definitions & sample seed data (realistic ChatGPT, Gemini, and Claude outputs with code & tables)
+- [x] Markdown parser component with Prism syntax highlighting, GFM tables, blockquotes, and copy-code buttons
+- [x] Desktop two-pane (>768px) and Android mobile single-pane (<768px) layout with back button navigation
+- [x] Search (cross-chat & in-thread) and Tag/Category filtering
+- [x] Chat thread creation, pinning, editing, deletion, and Markdown export
+- [x] Output creation (paste bar with model tags and auto-grow textarea), starring, copying, and deletion
+- [x] WhatsApp-inspired Light & Dark modes (#F0F2F5, #111B21, #202C33, teal accents, wallpaper pattern)
+- [x] Removed quick header theme toggle; added dedicated WhatsApp-style Settings view with Light, Dark, and System Default options
+- [x] Fixed Tailwind CSS v4 class-based dark variant scoping with `@custom-variant dark`, defaulted visitors to Light mode, and verified authentic WhatsApp Web light theme fidelity
+- [x] Implemented chat pinning & unpinning with strict 5-chat maximum limit (`MAX_PINNED_CHATS = 5`), hover quick-action pin buttons in the sidebar, direct pin toggle in the chat header, "Pinned" category filter tab, and toast notifications
+- [x] Built mobile chat pinning experience: long-press gesture detection (450ms with scroll immunity & haptic vibration), mobile touch-friendly pin icon on chat rows, and WhatsApp-style `MobileChatActionSheet` with Pin/Unpin, Open, Edit, Export, and Delete actions
+- [x] Migrated local storage engine to **IndexedDB** (`keepchat_db` v1) with dedicated `chats`, `messages`, and `meta` object stores; automatic migration of existing `localStorage` data on first load; transparent `localStorage` fallback; and instant in-memory React state synchronization
+- [x] Implemented centered WhatsApp date divider badges in the chat stream, grouping saved outputs by upload date with relative labels (**TODAY**, **YESTERDAY**, and formatted uppercase calendar dates)
+- [x] Built image upload and audio recording stored directly in IndexedDB:
+  - Image attachments with preview chips, full-screen lightbox modal (`ImageViewerModal`), download actions, and caption markdown
+  - WhatsApp Voice Note recording via `MediaRecorder` with blinking recording indicator, live duration counter, waveform animation, cancel/discard, and send actions
+  - WhatsApp Voice Note Audio Player (`AudioPlayer`) with play/pause, scrub slider, dynamic waveform bars, `1x/1.5x/2x` playback speed toggles, and audio download
+  - Sidebar previews displaying `📷 Photo` and `🎙️ Voice message` indicators
+- [x] Implemented custom chat logo / avatar image uploads:
+  - Upload custom photos in the New and Edit Chat modal with live preview and "Reset to Default" button
+  - Click-to-upload directly on the chat header avatar with camera hover badge
+  - Menu options to "Change Chat Photo" and "Reset to Default Icon" in thread dropdown
+  - Instant synchronization across sidebar, chat header, search, and mobile sheets stored directly in IndexedDB
+- [x] Built full-screen Chat Logo Lightbox (`ChatLogoModal`):
+  - Tapping the avatar in the chat header or sidebar chat list opens the full-resolution photo viewer
+  - Zoom in/out, high-res download, and in-viewer "Change Photo" / "Reset to Default" controls
+  - Authentic enlarged profile preview card with direct upload CTA for threads using default icons
+  - Fixed green button image upload across all environments: converted trigger to native HTML `<label>` activations, broadened file detection to both MIME and extensions, eliminated premature input resets, and directly hooked synchronous FileReader results into IndexedDB and React state
+- [x] Built indefinite inline chat output editing experience:
+  - Any output card can be edited at any time with zero expiration lockouts
+  - Inline editing workspace with AI Model tag switcher (`ChatGPT`, `Gemini`, `Claude`, `DeepSeek`), prompt title field, and full monospace markdown textarea
+  - Keyboard shortcuts: `Escape` to cancel and `Ctrl+Enter` / `Cmd+Enter` to save
+  - Subtle WhatsApp-style `Edited ·` indicator beside the timestamp with full date-time tooltip
+  - Synchronized state updates saved directly to IndexedDB
+- [x] Verified with `lint_applet` and `compile_applet` (0 errors)

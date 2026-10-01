@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --wa-teal: #00A884;
+    --wa-teal-dark: #008069;
+    --wa-green-light: #25D366;
+    --wa-bg-light: #F0F2F5;
+    --wa-chat-bg-light: #EFEAE2;
+    --wa-card-light: #FFFFFF;
+    --wa-border-light: #E9EDEF;
+    
+    --wa-bg-dark: #111B21;
+    --wa-chat-bg-dark: #0B141A;
+    --wa-card-dark: #202C33;
+    --wa-border-dark: #222D34;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  code, pre, kbd {
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+/* WhatsApp Subtle Chat Wallpaper Pattern */
+.wa-wallpaper-light {
+  background-color: #efeae2;
+  background-image: radial-gradient(#d5cdc4 0.75px, transparent 0.75px), radial-gradient(#d5cdc4 0.75px, #efeae2 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+.wa-wallpaper-dark {
+  background-color: #0b141a;
+  background-image: radial-gradient(#182229 0.75px, transparent 0.75px), radial-gradient(#182229 0.75px, #0b141a 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 150, 160, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 150, 160, 0.5);
+}
+
+/* Syntax Highlighting Tokens (Prism) */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #8590a6;
+  font-style: italic;
+}
+.token.punctuation {
+  color: #718096;
+}
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #d97706;
+}
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: #059669;
+}
+.token.operator,
+.token.entity,
+.token.url {
+  color: #0284c7;
+}
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #7c3aed;
+  font-weight: 500;
+}
+.token.function,
+.token.class-name {
+  color: #2563eb;
+  font-weight: 500;
+}
+.token.regex,
+.token.important,
+.token.variable {
+  color: #e11d48;
+}
+
+/* Dark mode token overrides */
+.dark .token.comment,
+.dark .token.prolog,
+.dark .token.doctype,
+.dark .token.cdata {
+  color: #768390;
+}
+.dark .token.punctuation {
+  color: #94a3b8;
+}
+.dark .token.property,
+.dark .token.tag,
+.dark .token.boolean,
+.dark .token.number,
+.dark .token.constant,
+.dark .token.symbol {
+  color: #fbbf24;
+}
+.dark .token.selector,
+.dark .token.attr-name,
+.dark .token.string,
+.dark .token.char,
+.dark .token.builtin {
+  color: #34d399;
+}
+.dark .token.operator,
+.dark .token.entity,
+.dark .token.url {
+  color: #38bdf8;
+}
+.dark .token.atrule,
+.dark .token.attr-value,
+.dark .token.keyword {
+  color: #a78bfa;
+}
+.dark .token.function,
+.dark .token.class-name {
+  color: #60a5fa;
+}
+.dark .token.regex,
+.dark .token.important,
+.dark .token.variable {
+  color: #fb7185;
+}
