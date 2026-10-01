@@ -97,4 +97,15 @@
   - Enhanced tag parsing in `InputBar.tsx` (auto-normalizes hashtags, lowercase, comma/space separation, deduplication)
   - Enabled 1-click tag filtering: clicking any `#tag` chip immediately filters the thread view to matching outputs
   - Enhanced in-thread search query matching to support both hashtag `#tag` and raw `tag` queries seamlessly
+- [x] Redesigned and Polished WhatsApp-Style Send Button:
+  - Upgraded desktop button to a 48px (`w-12 h-12`) ergonomic circular action button with WhatsApp emerald gradient (`#008069` via `#00a884` to `#25d366`)
+  - Increased mobile touch target from 32px to 40px (`w-10 h-10`) for WCAG compliance and effortless mobile tapping
+  - Added specular top reflection highlight and rich ambient glow shadow (`shadow-[#00a884]/30`)
+  - Added micro-interactions: paper airplane glides on hover and performs a flight animation on send
+  - Added tactile click feedback (`active:scale-90` with inner compression) and accessible focus rings
+  - Styled voice note recording send button with coordinated gradient and micro-interactions
+- [x] Updated App Startup Loading Screen:
+  - Replaced the generic robot icon with `pwa-192x192.png` in `src/App.tsx` during IndexedDB vault initialization
+  - Added matching `pwa-192x192.png` app icon shell inside `index.html` to eliminate any white flash before React hydration
+  - Removed unused `Bot` import from `src/App.tsx`
 - [x] Verified with `lint_applet` and `compile_applet` (0 errors)

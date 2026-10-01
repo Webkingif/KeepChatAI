@@ -22,7 +22,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body class="bg-[#F0F2F5] dark:bg-[#0c1317] text-slate-800 dark:text-slate-100 antialiased overflow-hidden select-text">
-    <div id="root"></div>
+    <div id="root">
+      <div style="height:100vh;width:100vw;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f0f2f5;font-family:Inter,system-ui,sans-serif;">
+        <div style="width:72px;height:72px;border-radius:18px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,0.1);margin-bottom:18px;background:#00a884;">
+          <img src="/pwa-192x192.png" alt="KeepChat" style="width:100%;height:100%;object-fit:cover;" />
+        </div>
+        <div style="font-size:16px;font-weight:600;color:#1e293b;letter-spacing:-0.01em;margin-bottom:10px;">KeepChat</div>
+        <div style="width:144px;height:4px;background:#e2e8f0;border-radius:9999px;overflow:hidden;">
+          <div style="width:100%;height:100%;background:#00a884;border-radius:9999px;"></div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

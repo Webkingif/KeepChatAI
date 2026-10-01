@@ -81,6 +81,7 @@ export const InputBar: React.FC<InputBarProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mobileTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [copiedPromptTip, setCopiedPromptTip] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const PROMPT_FORMAT_TIP = 'Format as a copyable block of markdown';
 
   const currentModelItem = MODELS.find((m) => m.type === aiModel) || MODELS[0];
@@ -259,6 +260,8 @@ export const InputBar: React.FC<InputBarProps> = ({
   const handleSend = () => {
     if (!content.trim() && !attachedImage) return;
 
+    setIsSending(true);
+
     const parsedTags = Array.from(
       new Set(
         tagsInput
@@ -303,6 +306,13 @@ export const InputBar: React.FC<InputBarProps> = ({
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
+    if (mobileTextareaRef.current) {
+      mobileTextareaRef.current.style.height = 'auto';
+    }
+
+    setTimeout(() => {
+      setIsSending(false);
+    }, 280);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -525,19 +535,31 @@ export const InputBar: React.FC<InputBarProps> = ({
               <button
                 type="button"
                 onClick={startRecording}
-                className="w-8 h-8 rounded-full bg-[#00a884] hover:bg-[#008069] active:scale-95 text-white flex items-center justify-center shrink-0 shadow-2xs transition-all cursor-pointer"
+                className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#008069] via-[#00a884] to-[#128c7e] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#00a884]/25 active:scale-92 transition-all cursor-pointer border border-white/20"
                 title="Record Voice Note"
+                aria-label="Record Voice Note"
               >
-                <Mic className="w-4 h-4" />
+                <Mic className="w-5 h-5 stroke-[2.2]" />
               </button>
             ) : (
               <button
                 onClick={handleSend}
                 type="button"
-                className="w-8 h-8 rounded-full bg-[#00a884] hover:bg-[#008069] active:scale-95 text-white flex items-center justify-center shrink-0 shadow-2xs transition-all cursor-pointer"
+                disabled={isSending}
+                className={`relative w-10 h-10 rounded-full bg-gradient-to-tr from-[#008069] via-[#00a884] to-[#25d366] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#00a884]/30 active:scale-90 transition-all duration-200 cursor-pointer border border-white/25 group overflow-hidden ${
+                  isSending ? 'scale-92 ring-2 ring-[#00a884]/40' : ''
+                }`}
                 title="Save Output"
+                aria-label="Save Output"
               >
-                <Send className="w-3.5 h-3.5 -rotate-12 translate-x-0.5" />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-transparent opacity-60 rounded-full pointer-events-none" />
+                <Send
+                  className={`w-4 h-4 stroke-[2.2] transition-all duration-200 ${
+                    isSending
+                      ? 'translate-x-3 -translate-y-3 opacity-0 scale-75'
+                      : '-rotate-12 translate-x-0.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5'
+                  }`}
+                />
               </button>
             )}
           </>
@@ -712,10 +734,10 @@ export const InputBar: React.FC<InputBarProps> = ({
               <button
                 type="button"
                 onClick={stopAndSaveRecording}
-                className="px-3 py-1.5 rounded-full bg-[#00a884] hover:bg-[#008069] active:scale-95 text-white flex items-center gap-1 text-xs font-semibold shadow-xs transition-all cursor-pointer"
+                className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#008069] via-[#00a884] to-[#25d366] hover:brightness-105 active:scale-95 text-white flex items-center gap-1.5 text-xs font-semibold shadow-md shadow-[#00a884]/25 transition-all cursor-pointer border border-white/20 group"
                 title="Send voice note"
               >
-                <Send className="w-4 h-4 -rotate-12 translate-x-0.5" />
+                <Send className="w-3.5 h-3.5 -rotate-12 translate-x-0.5 group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
                 <span className="hidden sm:inline">Send Voice</span>
               </button>
             </div>
@@ -755,19 +777,33 @@ export const InputBar: React.FC<InputBarProps> = ({
               <button
                 type="button"
                 onClick={startRecording}
-                className="w-11 h-11 rounded-full bg-[#00a884] hover:bg-[#008069] active:scale-95 text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-900/10 transition-all cursor-pointer"
+                className="relative w-12 h-12 rounded-full bg-gradient-to-tr from-[#008069] via-[#00a884] to-[#128c7e] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#00a884]/25 hover:shadow-lg hover:shadow-[#00a884]/35 hover:brightness-105 active:scale-92 transition-all duration-150 cursor-pointer border border-white/20 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:ring-offset-2"
                 title="Record WhatsApp voice note"
+                aria-label="Record voice note"
               >
-                <Mic className="w-5 h-5" />
+                <Mic className="w-5 h-5 stroke-[2.2] group-hover:scale-110 transition-transform duration-150" />
               </button>
             ) : (
               <button
                 onClick={handleSend}
                 type="button"
-                className="w-11 h-11 rounded-full bg-[#00a884] hover:bg-[#008069] active:scale-95 text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-900/10 transition-all cursor-pointer"
+                disabled={isSending}
+                className={`relative w-12 h-12 rounded-full bg-gradient-to-tr from-[#008069] via-[#00a884] to-[#25d366] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#00a884]/30 hover:shadow-xl hover:shadow-[#00a884]/45 hover:brightness-105 active:scale-90 active:shadow-inner transition-all duration-200 cursor-pointer border border-white/25 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:ring-offset-2 overflow-hidden ${
+                  isSending ? 'scale-90 ring-4 ring-[#00a884]/40' : ''
+                }`}
                 title="Save output to this chat (Cmd/Ctrl + Enter)"
+                aria-label="Save output"
               >
-                <Send className="w-5 h-5 -rotate-12 translate-x-0.5" />
+                {/* Glossy top specular reflection */}
+                <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-transparent opacity-70 rounded-full pointer-events-none" />
+
+                <Send
+                  className={`w-5 h-5 stroke-[2.3] transition-all duration-200 ${
+                    isSending
+                      ? 'translate-x-4 -translate-y-4 opacity-0 scale-75'
+                      : '-rotate-12 translate-x-0.5 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:rotate-0 group-hover:scale-105'
+                  }`}
+                />
               </button>
             )}
           </div>

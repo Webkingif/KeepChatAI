@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot } from 'lucide-react';
 import { ChatThread, SavedOutput, AIModelType, ThemeMode, MAX_PINNED_CHATS } from './types/keepchat';
 import {
   loadStoredChats,
@@ -496,8 +495,12 @@ export default function App() {
           effectiveTheme === 'dark' ? 'bg-[#111b21] text-white' : 'bg-[#f0f2f5] text-slate-800'
         }`}
       >
-        <div className="w-16 h-16 rounded-full bg-[#00a884] flex items-center justify-center text-white shadow-xl shadow-teal-900/10 mb-5 animate-pulse">
-          <Bot className="w-9 h-9" />
+        <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shadow-xl shadow-teal-900/10 mb-5 animate-pulse border border-slate-200/60 dark:border-white/10 bg-[#00a884]">
+          <img
+            src="/pwa-192x192.png"
+            alt="KeepChat Logo"
+            className="w-full h-full object-cover"
+          />
         </div>
         <h1 className="text-base font-semibold tracking-tight mb-2">KeepChat</h1>
         <div className="w-36 h-1 bg-slate-200 dark:bg-[#202c33] rounded-full overflow-hidden mb-3">
