@@ -27,6 +27,7 @@ import { ChatThread, SavedOutput, MAX_PINNED_CHATS } from '../types/keepchat';
 import { formatWhatsAppTime } from '../utils/date';
 import { MobileChatActionSheet } from './MobileChatActionSheet';
 import { KeepChatLogo } from './KeepChatLogo';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface SidebarProps {
   chats: ChatThread[];
@@ -218,6 +219,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Action Controls */}
         <div className="flex items-center gap-1">
+          {/* In-App PWA Install Trigger */}
+          <PWAInstallButton variant="header" />
+
           {/* New Chat Button (Desktop) */}
           <button
             onClick={onNewChat}

@@ -34,6 +34,7 @@ import { ToastContainer, ToastMessage } from './components/Toast';
 import { DateDivider } from './components/DateDivider';
 import { getWhatsAppDateDivider } from './utils/date';
 import { ChatLogoModal } from './components/ChatLogoModal';
+import { OfflineIndicator } from './components/OfflineIndicator';
 
 export default function App() {
   const [isDBReady, setIsDBReady] = useState(false);
@@ -645,6 +646,9 @@ export default function App() {
         chats={chats}
         messages={messages}
       />
+
+      {/* Offline Status Connectivity Banner */}
+      <OfflineIndicator />
 
       {/* Non-blocking Toast Alerts */}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />

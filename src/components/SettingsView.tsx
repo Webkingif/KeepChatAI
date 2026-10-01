@@ -1,6 +1,8 @@
 import React from 'react';
-import { ArrowLeft, Sun, Moon, Monitor, Check, Bot, Shield, Palette } from 'lucide-react';
+import { ArrowLeft, Sun, Moon, Monitor, Check, Shield, Palette } from 'lucide-react';
 import { ThemeMode } from '../types/keepchat';
+import { KeepChatLogo } from './KeepChatLogo';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface SettingsViewProps {
   onBack: () => void;
@@ -61,9 +63,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <div className="flex-1 overflow-y-auto p-4 space-y-5">
         {/* App Profile / Vault Card */}
         <div className="flex items-center gap-3.5 p-3.5 bg-white dark:bg-[#202c33] rounded-xl border border-slate-200/80 dark:border-[#2a3942] shadow-2xs">
-          <div className="w-12 h-12 rounded-full bg-[#00a884] flex items-center justify-center text-white shrink-0 shadow-xs">
-            <Bot className="w-6 h-6" />
-          </div>
+          <KeepChatLogo size={46} variant="icon" className="shrink-0 drop-shadow-xs" />
           <div className="flex-1 min-w-0">
             <h2 className="text-sm font-semibold text-slate-900 dark:text-white truncate">
               KeepChat Vault
@@ -73,6 +73,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </p>
           </div>
         </div>
+
+        {/* PWA Install Card */}
+        <PWAInstallButton variant="card" />
 
         {/* Section Header */}
         <div>

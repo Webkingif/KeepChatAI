@@ -53,5 +53,21 @@
   - Replaced generic robot icon in Sidebar header (`Sidebar.tsx`) with the 36px KeepChat logo
   - Replaced placeholder graphic in desktop welcome view (`NoChatSelectedDesktop` in `EmptyStates.tsx`) with the 128px full KeepChat brandmark
   - Added KeepChat emblem to empty chat thread state (`EmptyThreadView` in `EmptyStates.tsx`)
+  - Replaced placeholder Bot icon in the Settings profile header card (`SettingsView.tsx`) with the 46px KeepChat emblem
   - Configured high-resolution browser favicon and Apple touch icon in `public/favicon.svg` and `index.html`
+- [x] Updated date divider tag (`DateDivider.tsx`) to scroll naturally with the output stream:
+  - Removed `sticky top-2 z-10` pinning so the date tag flows inline above its message group
+  - Date tags like "TODAY" or "YESTERDAY" are now only visible on screen when that section of outputs is visible
+- [x] Optimized mobile input bar height to strictly ≤ 8% of screen height (`InputBar.tsx`):
+  - Consolidated input, AI model selector, and formatting tip into a single sleek row capped at `max-h-[8vh]` (~48px total height)
+  - Added compact AI model dropdown pill (`[🤖 GPT ▾]`) that opens an upward popover for switching between ChatGPT, Gemini, Claude, DeepSeek, and Other
+  - Added tip lightbulb button (`Lightbulb`) opening a floating popover with the `"Format as a copyable block of markdown"` directive and 1-click clipboard button
+- [x] Transformed KeepChat into a fully compliant Progressive Web App (PWA):
+  - Installed and configured `vite-plugin-pwa` with automatic service worker registration and Workbox precaching
+  - Configured Web App Manifest (`manifest.webmanifest`) with standalone display, `#008069` theme color, and `#111b21` background
+  - Generated standard PNG icons (`pwa-192x192.png`, `pwa-512x512.png`, `pwa-maskable-512x512.png`, `apple-touch-icon.png`)
+  - Created `usePWAInstall` and `useOnlineStatus` hooks
+  - Added in-app install triggers (`PWAInstallButton.tsx`) in both the Sidebar header action bar and the Settings view card
+  - Added guided step-by-step installation instructions for iOS Safari users
+  - Added connectivity status banner (`OfflineIndicator.tsx`) when the device is disconnected
 - [x] Verified with `lint_applet` and `compile_applet` (0 errors)

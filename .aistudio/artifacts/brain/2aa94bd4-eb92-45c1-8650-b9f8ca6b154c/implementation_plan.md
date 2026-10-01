@@ -1,54 +1,83 @@
-# KeepChat Official Logo Integration Plan
+# Progressive Web App (PWA) Implementation Plan
 
-Integrate the user's KeepChat brand logo (the golden feather key with green speech-bubble emblem and stylized "KeepChat" lettering) across the application.
-
----
-
-## 1. Visual Specification & Asset Design
-
-The user provided `keepchat-192x192.png` and `keepchat-512x512.png`. We will implement a high-precision, scalable SVG and canvas-backed asset representation:
-
-1. **The Emblem (`variant="icon"`)**:
-   - **Outer Medallion**: Circular radial forest-green gradient (`#142b1f` to `#234934`) with an engraved laurel leaf wreath motif.
-   - **Feather Quill Key Shaft**: Sculpted antique gold/bronze quill shaft (`#c6924b` with highlights `#f3d08a` and shadows `#7c5324`).
-   - **Speech Bubble Bow**: Circular golden key head enclosing a vibrant emerald speech bubble with an upward curved leaf arrow.
-   - **Ambient Illumination**: Subtle luminous aura matching the provided visual asset.
-
-2. **The Full Brand Mark (`variant="full"`)**:
-   - The central emblem accompanied by the official **KeepChat** wordmark below.
-   - "Keep" in bold deep forest green (`#1e4d32` / `#2dd4bf` in dark mode).
-   - "Chat" in warm caramel-gold (`#c48b48` / `#e2a865`) with the distinctive upward arrow flourish.
+Transform KeepChat into an installable, offline-capable Progressive Web App (PWA) using `vite-plugin-pwa`, complete with Web App Manifest, service worker caching, app home screen icons, in-app install buttons (Sidebar header and Settings view), and a connectivity status banner.
 
 ---
 
-## 2. Integration Touchpoints Across the App
+## 1. User Feedback & Confirmed Decisions
 
-1. **Sidebar Brand Header (`Sidebar.tsx`)**:
-   - Replace the generic Lucide `Bot` icon in the top left header with the official 36px KeepChat logo emblem.
-   - Keep the clean WhatsApp Web layout with the logo, "KeepChat" title, and action icons (Settings, New Chat, Menu).
+- **In-App Install Button**: Placed in both the **Sidebar header** (prominent quick-access button) and the **Settings view** (dedicated app installation card).
+- **Offline Indicator**: A subtle, non-intrusive banner indicating offline mode when network connection is lost.
+- **PWA Branding**: Identity configured as "KeepChat" (`short_name: "KeepChat"`), styled with WhatsApp deep teal status bar (`#008069`) and dark theme surface color (`#111b21`).
 
-2. **Desktop Welcome & Placeholder Splash (`NoChatSelectedDesktop` in `EmptyStates.tsx`)**:
-   - Replace the generic robot icon with the full KeepChat logo badge (96px emblem with glowing radial backdrop and typography).
-   - Complement with the secure local storage badge and "New Chat Thread" CTA.
+---
 
-3. **Empty Chat Thread View (`EmptyThreadView` in `EmptyStates.tsx`)**:
-   - Display the KeepChat circular logo mark above the "No outputs saved yet" greeting.
+## 2. Architecture & Technical Strategy
 
-4. **Browser Tab Favicon & Meta Tags (`index.html`)**:
-   - Update `<link rel="icon">` in `index.html` with an SVG data URI of the KeepChat emblem so the browser tab immediately displays the official logo.
-   - Ensure `<title>` and OpenGraph tags align with the brand.
+### System Architecture Diagram
+```
+┌────────────────────────────────────────────────────────────┐
+│                    Web App Manifest                        │
+│   (id: '/', name: 'KeepChat', theme: '#008069', icons)     │
+└─────────────────────────────┬──────────────────────────────┘
+                              │
+┌─────────────────────────────▼──────────────────────────────┐
+│        Service Worker (VitePWA / Workbox Precache)         │
+│     - Precaches App Shell (HTML, CSS, JS, Fonts, Icons)    │
+│     - CacheFirst for Google Fonts & static media assets    │
+│     - DevOptions enabled for local & preview environments  │
+└─────────────────────────────┬──────────────────────────────┘
+                              │
+┌─────────────────────────────▼──────────────────────────────┐
+│                   In-App Install & Offline                 │
+│  ┌───────────────────────┐      ┌────────────────────────┐ │
+│  │   usePWAInstall Hook  │      │   useOnlineStatus Hook │ │
+│  │ - beforeinstallprompt │      │ - online / offline ev  │ │
+│  │ - iOS Safari guide    │      │ - subtle alert banner  │ │
+│  └───────────┬───────────┘      └────────────────────────┘ │
+│              │                                             │
+│    ┌─────────┴─────────┐                                   │
+│    ▼                   ▼                                   │
+│ [Sidebar Header]  [Settings View]                          │
+└────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## 3. Implementation Steps
 
-1. **Create `src/components/KeepChatLogo.tsx`**:
-   - Vector-accurate React component supporting `size`, `variant="icon" | "full"`, and responsive dark/light mode accents.
-2. **Update `index.html`**:
-   - Set the browser favicon to the KeepChat emblem.
-3. **Update `src/components/Sidebar.tsx`**:
-   - Mount `<KeepChatLogo size={34} variant="icon" />` in the sidebar header.
-4. **Update `src/components/EmptyStates.tsx`**:
-   - Mount `<KeepChatLogo size={88} variant="full" />` in `NoChatSelectedDesktop`.
-   - Mount `<KeepChatLogo size={56} variant="icon" />` in `EmptyThreadView`.
-5. **Verify with `lint_applet` and `compile_applet`**.
+1. **Install PWA Tooling**:
+   - Install `vite-plugin-pwa` as a dev dependency via `install_applet_package`.
+
+2. **Configure `vite.config.ts`**:
+   - Register `VitePWA` plugin with `registerType: 'autoUpdate'`.
+   - Configure Web App Manifest:
+     - `name`: "KeepChat - AI Output Vault & Organizer"
+     - `short_name`: "KeepChat" (≤ 12 characters)
+     - `id`: "/"
+     - `start_url`: "/"
+     - `display`: "standalone"
+     - `theme_color`: "#008069"
+     - `background_color`: "#111b21"
+     - `icons`: standard PNG resolutions (192x192, 512x512) and maskable icons.
+   - Configure Workbox caching with `globPatterns` and `runtimeCaching` for Google Fonts.
+   - Enable `devOptions.enabled: true` for AI Studio preview testing.
+
+3. **Generate & Configure Icons**:
+   - Create high-resolution PNG icon assets in `public/` (`pwa-192x192.png`, `pwa-512x512.png`, `apple-touch-icon.png`).
+   - Update `index.html` with mobile PWA meta tags (`apple-mobile-web-app-capable`, `theme-color`, `apple-touch-icon`).
+
+4. **Add React Hooks & Components**:
+   - `src/hooks/usePWAInstall.ts`: Listens for `beforeinstallprompt`, tracks standalone installation state, and detects iOS Safari.
+   - `src/hooks/useOnlineStatus.ts`: Tracks real-time online/offline network connectivity.
+   - `src/components/PWAInstallButton.tsx`: Reusable install trigger with Android/Desktop native flow and iOS Safari step-by-step modal guide.
+   - `src/components/OfflineIndicator.tsx`: Non-blocking offline notification banner.
+
+5. **Mount in Application UI**:
+   - **Sidebar Header (`Sidebar.tsx`)**: Mount install button in the top action bar next to New Chat and Settings.
+   - **Settings View (`SettingsView.tsx`)**: Add a dedicated "Install KeepChat" card with platform badge and install trigger.
+   - **App Root (`App.tsx`)**: Mount `OfflineIndicator`.
+
+6. **Verification**:
+   - Verify TypeScript compilation and linting via `lint_applet` and `compile_applet`.
+   - Confirm PWA manifest and service worker load properly without regressions.
