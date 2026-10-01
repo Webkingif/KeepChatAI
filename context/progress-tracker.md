@@ -70,4 +70,17 @@
   - Added in-app install triggers (`PWAInstallButton.tsx`) in both the Sidebar header action bar and the Settings view card
   - Added guided step-by-step installation instructions for iOS Safari users
   - Added connectivity status banner (`OfflineIndicator.tsx`) when the device is disconnected
+- [x] Implemented 100% Offline Capability:
+  - Added immediate service worker registration (`registerSW({ immediate: true })`) in `src/main.tsx`
+  - Added `navigateFallback: '/index.html'` in Workbox configuration so the app launches instantly offline without network error pages
+  - Enabled `skipWaiting: true`, `clientsClaim: true`, and `cleanupOutdatedCaches: true` in `vite.config.ts`
+  - Precaches all application bundles, KaTeX webfonts, CSS stylesheets, and user-provided custom icons
+  - Added offline status badges in `ChatHeader.tsx` ("Offline (Saved)") and persistent banner in `OfflineIndicator.tsx`
+  - Confirmed local-first IndexedDB persistence works completely offline for reading, writing, search, audio, and attachments
+- [x] Refined WhatsApp-Style Scroll-To-Bottom Floating Button:
+  - Created `ScrollToBottomButton.tsx` circular floating button positioned at `bottom-16 sm:bottom-20 right-4 sm:right-6 md:right-8` above the input bar
+  - Smooth entrance/exit transitions when the user scrolls up past 150px from the bottom
+  - Streamlined design: removed numeric badge for a clean, distraction-free circular chevron button
+  - Smoothly scrolls to the latest output on 1 click
+  - Automatically resets when switching between chats or when scrolling back down
 - [x] Verified with `lint_applet` and `compile_applet` (0 errors)

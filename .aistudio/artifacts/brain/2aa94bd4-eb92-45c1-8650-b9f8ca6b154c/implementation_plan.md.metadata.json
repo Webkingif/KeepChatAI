@@ -1,6 +1,6 @@
 {
-  "summary":  "Comprehensive plan to transform KeepChat into a fully compliant Progressive Web App (PWA) with service worker caching, Web App Manifest, app icons, in-app install prompts in Sidebar header and Settings, and offline status indicator.",
-  "updatedAt":  "2026-10-01T17:45:31.803171629Z",
+  "summary":  "Plan to remove the numeric counter badge from the floating scroll-to-bottom down arrow button, keeping a clean minimalist circular button with smooth scrolling.",
+  "updatedAt":  "2026-10-01T18:15:49.863174037Z",
   "requestFeedback":  true,
   "userFacing":  true
 }

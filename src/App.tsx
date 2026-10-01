@@ -35,6 +35,7 @@ import { DateDivider } from './components/DateDivider';
 import { getWhatsAppDateDivider } from './utils/date';
 import { ChatLogoModal } from './components/ChatLogoModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
+import { ScrollToBottomButton } from './components/ScrollToBottomButton';
 
 export default function App() {
   const [isDBReady, setIsDBReady] = useState(false);
@@ -184,16 +185,47 @@ export default function App() {
     return [...list].sort((a, b) => a.createdAt - b.createdAt);
   }, [messages, activeChatId, inThreadSearchQuery, starredOnlyFilter]);
 
-  // Scroll to bottom when new messages arrive
+  // Scroll to bottom tracking
+  const [showScrollBottomBtn, setShowScrollBottomBtn] = useState(false);
+  const lastKnownCountRef = useRef(activeChatMessages.length);
+
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     messagesEndRef.current?.scrollIntoView({ behavior });
   };
 
+  const handleScroll = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const distanceToBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+    const isScrolledUp = distanceToBottom > 150;
+
+    setShowScrollBottomBtn(isScrolledUp);
+  };
+
+  const handleScrollToBottomClick = () => {
+    scrollToBottom('smooth');
+    setShowScrollBottomBtn(false);
+  };
+
+  // Auto-scroll when new outputs arrive if user is already at bottom
   useEffect(() => {
-    // When switching active chat, scroll to bottom without animation
+    const prevCount = lastKnownCountRef.current;
+    const currentCount = activeChatMessages.length;
+    lastKnownCountRef.current = currentCount;
+
+    if (currentCount > prevCount && prevCount > 0 && !showScrollBottomBtn) {
+      scrollToBottom('smooth');
+    }
+  }, [activeChatMessages.length, showScrollBottomBtn]);
+
+  useEffect(() => {
+    // When switching active chat, reset scroll state and scroll to bottom
     if (activeChatId) {
       setInThreadSearchQuery('');
       setStarredOnlyFilter(false);
+      setShowScrollBottomBtn(false);
+      lastKnownCountRef.current = activeChatMessages.length;
       setTimeout(() => scrollToBottom('auto'), 50);
     }
   }, [activeChatId]);
@@ -525,7 +557,7 @@ export default function App() {
           }`}
         >
           {activeChat ? (
-            <div className="flex-1 h-full flex flex-col min-w-0 bg-[#efeae2] dark:bg-[#0b141a]">
+            <div className="flex-1 h-full flex flex-col min-w-0 bg-[#efeae2] dark:bg-[#0b141a] relative">
               {/* Header */}
               <ChatHeader
                 chat={activeChat}
@@ -546,6 +578,7 @@ export default function App() {
               {/* Message Body Area with WhatsApp Wallpaper Pattern */}
               <div
                 ref={scrollContainerRef}
+                onScroll={handleScroll}
                 className={`flex-1 overflow-y-auto px-3 py-4 md:px-8 lg:px-12 ${
                   effectiveTheme === 'dark' ? 'wa-wallpaper-dark' : 'wa-wallpaper-light'
                 }`}
@@ -608,6 +641,12 @@ export default function App() {
                   <div ref={messagesEndRef} className="h-2" />
                 </div>
               </div>
+
+              {/* WhatsApp-Style Floating Scroll-to-Bottom Button */}
+              <ScrollToBottomButton
+                visible={showScrollBottomBtn}
+                onClick={handleScrollToBottomClick}
+              />
 
               {/* Bottom Input Bar */}
               <InputBar

@@ -20,8 +20,10 @@ import {
   RotateCcw,
   Image as ImageIcon,
   Maximize2,
+  WifiOff,
 } from 'lucide-react';
 import { ChatThread } from '../types/keepchat';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
 
 interface ChatHeaderProps {
   chat: ChatThread;
@@ -67,6 +69,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   const [showMenu, setShowMenu] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const isOnline = useOnlineStatus();
 
   const IconCmp = (chat.iconName && ICON_MAP[chat.iconName]) || Sparkles;
 
@@ -167,6 +170,15 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               <span className="tabular-nums">
                 {outputCount} {outputCount === 1 ? 'output' : 'outputs'}
               </span>
+              {!isOnline && (
+                <>
+                  <span className="mx-1.5 opacity-60">·</span>
+                  <span className="inline-flex items-center gap-1 font-semibold text-amber-600 dark:text-amber-400">
+                    <WifiOff className="w-3 h-3" />
+                    <span>Offline (Saved)</span>
+                  </span>
+                </>
+              )}
               {chat.description && (
                 <>
                   <span className="mx-1.5 opacity-60 hidden sm:inline">·</span>
