@@ -259,10 +259,14 @@ export const InputBar: React.FC<InputBarProps> = ({
   const handleSend = () => {
     if (!content.trim() && !attachedImage) return;
 
-    const parsedTags = tagsInput
-      .split(',')
-      .map((t) => t.trim())
-      .filter(Boolean);
+    const parsedTags = Array.from(
+      new Set(
+        tagsInput
+          .split(/[, ]+/)
+          .map((t) => t.replace(/^#+/, '').trim().toLowerCase())
+          .filter(Boolean)
+      )
+    );
 
     if (attachedImage) {
       onSaveOutput({
@@ -601,7 +605,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                 type="text"
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
-                placeholder="Tags separated by commas (e.g. auth, api, react)"
+                placeholder="Tags (e.g. #auth, api, #python)"
                 className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
               />
             </div>
@@ -658,7 +662,7 @@ export const InputBar: React.FC<InputBarProps> = ({
             ) : (
               <>
                 <Plus className="w-3.5 h-3.5" />
-                <span>{title || userPrompt ? 'Edit Details' : 'Add Title/Prompt'}</span>
+                <span>{title || userPrompt || tagsInput ? 'Edit Tags & Details' : 'Add Tags / Details'}</span>
               </>
             )}
           </button>

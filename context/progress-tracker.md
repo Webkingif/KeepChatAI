@@ -83,4 +83,18 @@
   - Streamlined design: removed numeric badge for a clean, distraction-free circular chevron button
   - Smoothly scrolls to the latest output on 1 click
   - Automatically resets when switching between chats or when scrolling back down
+- [x] Created Comprehensive `README.md`:
+  - Added technology shields/badges (React 19, Vite, TypeScript, Tailwind CSS v4, IndexedDB, PWA, KaTeX)
+  - Detailed overview and complete key features showcase (WhatsApp UX, multi-model tagging, voice recorder, Markdown/LaTeX/Prism, search)
+  - Added system architecture and data flow ASCII diagram
+  - Added PWA installation and 100% offline usage guide across iOS, Android, and Desktop
+  - Added AI prompting cheatsheet with syntax examples (Code blocks, LaTeX formulas, GFM tables)
+  - Added getting started, local development commands, and tech stack table
+- [x] Implemented Full Output Tag Management & Filtering:
+  - Added inline `+ Tag` button directly in `OutputCard.tsx` footer for instant tag creation without opening full edit mode
+  - Added removable `x` icon on tag hover to quickly delete tags from an output
+  - Added full interactive tag chip editor inside the card's inline edit mode (`isEditing`)
+  - Enhanced tag parsing in `InputBar.tsx` (auto-normalizes hashtags, lowercase, comma/space separation, deduplication)
+  - Enabled 1-click tag filtering: clicking any `#tag` chip immediately filters the thread view to matching outputs
+  - Enhanced in-thread search query matching to support both hashtag `#tag` and raw `tag` queries seamlessly
 - [x] Verified with `lint_applet` and `compile_applet` (0 errors)

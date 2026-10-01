@@ -166,13 +166,17 @@ export default function App() {
 
     // Apply in-thread search filter
     if (inThreadSearchQuery.trim()) {
-      const q = inThreadSearchQuery.toLowerCase();
+      const rawQ = inThreadSearchQuery.toLowerCase().trim();
+      const cleanQ = rawQ.replace(/^#+/, '');
       list = list.filter(
         (m) =>
-          m.content.toLowerCase().includes(q) ||
-          (m.title && m.title.toLowerCase().includes(q)) ||
-          (m.userPrompt && m.userPrompt.toLowerCase().includes(q)) ||
-          m.tags.some((t) => t.toLowerCase().includes(q))
+          m.content.toLowerCase().includes(rawQ) ||
+          (m.title && m.title.toLowerCase().includes(rawQ)) ||
+          (m.userPrompt && m.userPrompt.toLowerCase().includes(rawQ)) ||
+          m.tags.some((t) => {
+            const cleanT = t.toLowerCase().replace(/^#+/, '');
+            return cleanT === cleanQ || cleanT.includes(cleanQ) || t.toLowerCase().includes(rawQ);
+          })
       );
     }
 
@@ -383,7 +387,7 @@ export default function App() {
 
   const handleEditOutput = (
     outputId: string,
-    updates: { content: string; title?: string; aiModel?: AIModelType }
+    updates: { content: string; title?: string; aiModel?: AIModelType; tags?: string[] }
   ) => {
     setMessages((prev) =>
       prev.map((m) =>
@@ -393,6 +397,7 @@ export default function App() {
               content: updates.content,
               title: updates.title !== undefined ? updates.title : m.title,
               aiModel: updates.aiModel || m.aiModel,
+              tags: updates.tags !== undefined ? updates.tags : m.tags,
               isEdited: true,
               editedAt: Date.now(),
             }
@@ -400,6 +405,19 @@ export default function App() {
       )
     );
     addToast('Output updated successfully', 'success');
+  };
+
+  const handleUpdateOutputTags = (outputId: string, tags: string[]) => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === outputId
+          ? {
+              ...m,
+              tags,
+            }
+          : m
+      )
+    );
   };
 
   const handleToggleStar = (outputId: string) => {
@@ -631,6 +649,8 @@ export default function App() {
                               onDelete={handleDeleteOutput}
                               onToggleStar={handleToggleStar}
                               onEditOutput={handleEditOutput}
+                              onUpdateTags={handleUpdateOutputTags}
+                              onTagClick={(tag) => setInThreadSearchQuery(tag)}
                             />
                           </React.Fragment>
                         );

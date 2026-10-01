@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Copy,
   Check,
@@ -18,6 +18,7 @@ import {
   Pencil,
   X,
   Save,
+  Plus,
 } from 'lucide-react';
 import { SavedOutput, AIModelType } from '../types/keepchat';
 import { MarkdownRenderer } from './MarkdownRenderer';
@@ -31,8 +32,10 @@ interface OutputCardProps {
   onToggleStar: (id: string) => void;
   onEditOutput?: (
     id: string,
-    updates: { content: string; title?: string; aiModel?: AIModelType }
+    updates: { content: string; title?: string; aiModel?: AIModelType; tags?: string[] }
   ) => void;
+  onUpdateTags?: (id: string, tags: string[]) => void;
+  onTagClick?: (tag: string) => void;
 }
 
 const AVAILABLE_MODELS: AIModelType[] = ['ChatGPT', 'Gemini', 'Claude', 'DeepSeek', 'Other'];
@@ -42,6 +45,8 @@ export const OutputCard: React.FC<OutputCardProps> = ({
   onDelete,
   onToggleStar,
   onEditOutput,
+  onUpdateTags,
+  onTagClick,
 }) => {
   const [copied, setCopied] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -52,18 +57,28 @@ export const OutputCard: React.FC<OutputCardProps> = ({
   const [draftContent, setDraftContent] = useState(output.content);
   const [draftTitle, setDraftTitle] = useState(output.title || '');
   const [draftModel, setDraftModel] = useState<AIModelType>(output.aiModel);
+  const [draftTags, setDraftTags] = useState<string[]>(output.tags || []);
+  const [draftTagInput, setDraftTagInput] = useState('');
+
+  // Inline quick tag adding on card footer
+  const [isAddingTag, setIsAddingTag] = useState(false);
+  const [newTagInput, setNewTagInput] = useState('');
+  const newTagInputRef = useRef<HTMLInputElement>(null);
 
   // Sync draft states whenever output changes
   useEffect(() => {
     setDraftContent(output.content);
     setDraftTitle(output.title || '');
     setDraftModel(output.aiModel);
-  }, [output.content, output.title, output.aiModel]);
+    setDraftTags(output.tags || []);
+  }, [output.content, output.title, output.aiModel, output.tags]);
 
   const handleStartEdit = () => {
     setDraftContent(output.content);
     setDraftTitle(output.title || '');
     setDraftModel(output.aiModel);
+    setDraftTags(output.tags || []);
+    setDraftTagInput('');
     setIsEditing(true);
   };
 
@@ -72,17 +87,67 @@ export const OutputCard: React.FC<OutputCardProps> = ({
     setDraftContent(output.content);
     setDraftTitle(output.title || '');
     setDraftModel(output.aiModel);
+    setDraftTags(output.tags || []);
+    setDraftTagInput('');
   };
 
   const handleSaveEdit = () => {
     if (!draftContent.trim() && !output.mediaUrl) return;
 
+    let finalTags = [...draftTags];
+    if (draftTagInput.trim()) {
+      const clean = draftTagInput.replace(/^#+/, '').trim().toLowerCase();
+      if (clean && !finalTags.includes(clean)) {
+        finalTags.push(clean);
+      }
+    }
+
     onEditOutput?.(output.id, {
       content: draftContent,
       title: draftTitle.trim() || undefined,
       aiModel: draftModel,
+      tags: finalTags,
     });
+    setDraftTagInput('');
     setIsEditing(false);
+  };
+
+  const handleAddNewTag = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const clean = newTagInput.replace(/^#+/, '').trim().toLowerCase();
+    if (clean) {
+      const current = output.tags || [];
+      if (!current.includes(clean)) {
+        const nextTags = [...current, clean];
+        if (onUpdateTags) {
+          onUpdateTags(output.id, nextTags);
+        } else if (onEditOutput) {
+          onEditOutput(output.id, {
+            content: output.content,
+            title: output.title,
+            aiModel: output.aiModel,
+            tags: nextTags,
+          });
+        }
+      }
+    }
+    setNewTagInput('');
+    setIsAddingTag(false);
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    const current = output.tags || [];
+    const nextTags = current.filter((t) => t !== tagToRemove);
+    if (onUpdateTags) {
+      onUpdateTags(output.id, nextTags);
+    } else if (onEditOutput) {
+      onEditOutput(output.id, {
+        content: output.content,
+        title: output.title,
+        aiModel: output.aiModel,
+        tags: nextTags,
+      });
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -417,7 +482,50 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                 />
               </div>
 
-              {/* Row 3: Helper & Quick Action Buttons */}
+              {/* Row 3: Tags Editor */}
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Tags (Press Enter or comma to add)
+                </label>
+                <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-white dark:bg-[#111b21] min-h-[38px] focus-within:border-[#00a884] focus-within:ring-1 focus-within:ring-[#00a884]">
+                  {draftTags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-[#202c33] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#2a3942]"
+                    >
+                      <Tag className="w-2.5 h-2.5 text-[#00a884]" />
+                      <span>#{tag}</span>
+                      <button
+                        type="button"
+                        onClick={() => setDraftTags(draftTags.filter((_, i) => i !== idx))}
+                        className="hover:text-rose-500 cursor-pointer ml-0.5 p-0.5 rounded-full"
+                        title={`Remove #${tag}`}
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    type="text"
+                    placeholder={draftTags.length === 0 ? 'Type tag and press Enter or comma...' : 'Add another tag...'}
+                    value={draftTagInput}
+                    onChange={(e) => setDraftTagInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ',') {
+                        e.preventDefault();
+                        const val = draftTagInput.replace(/^#+/, '').trim().toLowerCase();
+                        if (val && !draftTags.includes(val)) {
+                          setDraftTags([...draftTags, val]);
+                        }
+                        setDraftTagInput('');
+                      }
+                    }}
+                    className="flex-1 min-w-[120px] text-xs bg-transparent text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none py-0.5"
+                  />
+                </div>
+              </div>
+
+              {/* Row 4: Helper & Quick Action Buttons */}
               <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-[#26353d]/50">
                 <span className="text-[11px] text-slate-400 dark:text-slate-500">
                   Tip: Press <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-[#2a3942] rounded text-[10px]">Ctrl+Enter</kbd> to save, <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-[#2a3942] rounded text-[10px]">Esc</kbd> to cancel
@@ -446,20 +554,91 @@ export const OutputCard: React.FC<OutputCardProps> = ({
 
         {/* Card Footer */}
         <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 bg-slate-50/50 dark:bg-[#182329]/40 border-t border-slate-100 dark:border-[#26353d]/60 rounded-b-xl text-xs text-slate-500 dark:text-slate-400">
-          {/* Tags */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            {output.tags && output.tags.length > 0 ? (
+          {/* Interactive Tags */}
+          <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+            {output.tags && output.tags.length > 0 &&
               output.tags.map((tag, idx) => (
-                <span
+                <div
                   key={idx}
-                  className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                  className="group/tag inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#202c33] text-slate-700 dark:text-slate-300 border border-slate-200/70 dark:border-[#2a3942] hover:border-[#00a884]/60 dark:hover:border-[#00a884]/60 transition-colors"
                 >
-                  <Tag className="w-2.5 h-2.5 opacity-60" />
-                  {tag.startsWith('#') ? tag : `#${tag}`}
-                </span>
-              ))
+                  <button
+                    type="button"
+                    onClick={() => onTagClick?.(tag)}
+                    className="inline-flex items-center gap-1 hover:text-[#00a884] dark:hover:text-[#00a884] cursor-pointer"
+                    title={`Filter chat by #${tag}`}
+                  >
+                    <Tag className="w-2.5 h-2.5 text-[#00a884]" />
+                    <span>#{tag}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveTag(tag);
+                    }}
+                    className="opacity-0 group-hover/tag:opacity-100 hover:text-rose-500 transition-opacity p-0.5 -mr-1 rounded-full cursor-pointer"
+                    title={`Remove #${tag}`}
+                    aria-label={`Remove #${tag}`}
+                  >
+                    <X className="w-2.5 h-2.5" />
+                  </button>
+                </div>
+              ))}
+
+            {/* Quick Inline Tag Adder */}
+            {isAddingTag ? (
+              <form
+                onSubmit={handleAddNewTag}
+                className="inline-flex items-center gap-1 bg-white dark:bg-[#111b21] rounded-full border border-[#00a884] px-2 py-0.5 shadow-2xs animate-in zoom-in-95 duration-100"
+              >
+                <span className="text-[11px] text-[#00a884] font-semibold">#</span>
+                <input
+                  ref={newTagInputRef}
+                  type="text"
+                  value={newTagInput}
+                  onChange={(e) => setNewTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      setIsAddingTag(false);
+                      setNewTagInput('');
+                    }
+                  }}
+                  placeholder="tag"
+                  className="w-16 sm:w-20 text-[11px] bg-transparent text-slate-800 dark:text-slate-200 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="text-[#00a884] hover:text-[#008069] p-0.5 rounded cursor-pointer"
+                  title="Add tag"
+                >
+                  <Check className="w-3 h-3" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsAddingTag(false);
+                    setNewTagInput('');
+                  }}
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-0.5 rounded cursor-pointer"
+                  title="Cancel"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </form>
             ) : (
-              <span className="text-[11px] text-slate-400 dark:text-slate-500">No tags</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAddingTag(true);
+                  setTimeout(() => newTagInputRef.current?.focus(), 50);
+                }}
+                className="inline-flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500 hover:text-[#00a884] dark:hover:text-[#00a884] px-1.5 py-0.5 rounded-full hover:bg-slate-200/50 dark:hover:bg-[#202c33] transition-colors cursor-pointer"
+                title="Add tag to output"
+              >
+                <Plus className="w-3 h-3" />
+                <span>Tag</span>
+              </button>
             )}
           </div>
 

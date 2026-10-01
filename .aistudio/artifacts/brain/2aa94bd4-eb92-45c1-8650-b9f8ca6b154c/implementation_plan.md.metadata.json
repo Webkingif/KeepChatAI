@@ -1,6 +1,6 @@
 {
-  "summary":  "Plan to remove the numeric counter badge from the floating scroll-to-bottom down arrow button, keeping a clean minimalist circular button with smooth scrolling.",
-  "updatedAt":  "2026-10-01T18:15:49.863174037Z",
+  "summary":  "Implementation plan for adding end-to-end tag management on AI outputs: inline \"+ Tag\" button on cards, tag management in the card editor and input bar, and 1-click tag filtering.",
+  "updatedAt":  "2026-10-01T18:55:22.931158611Z",
   "requestFeedback":  true,
   "userFacing":  true
 }

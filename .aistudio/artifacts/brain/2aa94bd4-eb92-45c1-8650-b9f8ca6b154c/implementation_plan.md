@@ -1,37 +1,30 @@
-# Clean Down-Arrow Floating Button (Remove Number Badge)
+# Output Tagging System Implementation Plan
 
-Remove the numeric counter badge from the floating scroll-to-bottom down arrow button, maintaining a sleek, minimalist WhatsApp-inspired circular arrow button.
-
----
-
-## 1. User Request & Scope
-
-- **Objective**: Remove the green numeric badge that appears on the scroll-to-bottom floating button when scrolled up.
-- **Retained Behavior**:
-  - The circular down-arrow button continues to appear whenever the user scrolls up past 150px in earlier outputs.
-  - Clicking the button smoothly scrolls to the latest output.
-  - The button disappears automatically when reaching the bottom or switching chat threads.
+Allow users to easily add, manage, and filter custom tags on AI outputs directly from output cards and during output creation/editing.
 
 ---
 
-## 2. Component Design & Architecture
+## 1. User Feedback & Approved Scope
+
+- **Where to Add/Manage Tags**: Both directly on output cards (via an inline quick `+ Tag` control) and during output creation/editing.
+- **Tag Click Behavior**: Clicking any tag immediately filters the current chat thread to outputs bearing that tag.
+
+---
+
+## 2. Interaction & Architecture
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ Output Scroll Area                                         │
+│ OutputCard Footer                                          │
 │                                                            │
-│   [ Output Card 1 ]                                        │
-│   [ Output Card 2 ]                                        │
-│                                                            │
-│                               ┌──────────────────────┐     │
-│                               │  Floating Button     │     │
-│                               │  ┌────────────────┐  │     │
-│                               │  │  ▼ (Chevron)   │  │     │
-│                               │  └────────────────┘  │     │
-│                               │  (Badge Removed)     │     │
-│                               └──────────────────────┘     │
+│   🏷️ #python (✕)   🏷️ #algorithms (✕)   [+ Add Tag]        │
+│                                           │                │
+│                                           ▼                │
+│                           [ #enter-tag... ] [✓] [✕]        │
 ├────────────────────────────────────────────────────────────┤
-│ Input Bar (≤ 8% viewport height)                           │
+│ Clicking `#python`:                                        │
+│   ==> Filters thread view to `Filtering: "#python"`        │
+│   ==> Instant clear button to return to full conversation  │
 └────────────────────────────────────────────────────────────┘
 ```
 
@@ -39,14 +32,21 @@ Remove the numeric counter badge from the floating scroll-to-bottom down arrow b
 
 ## 3. Implementation Steps
 
-1. **Update `src/components/ScrollToBottomButton.tsx`**:
-   - Remove `newOutputCount` prop and badge rendering JSX (`<span className="...">{newOutputCount}</span>`).
-   - Retain circular floating button, smooth hover styles, and smooth entrance/exit animations.
+1. **Card Tag Management (`src/components/OutputCard.tsx`)**:
+   - Add inline `+ Tag` popover/input in the card footer to quickly add tags without entering full edit mode.
+   - Add removable `x` button on existing tag chips when hovering over them.
+   - Support adding/editing tags within the card's full edit mode (`isEditing`).
+   - Add `onTagClick` prop to trigger thread-level filtering when a user clicks any tag.
 
-2. **Clean up `src/App.tsx`**:
-   - Remove `newOutputsSinceScrolledUp` state and its references.
-   - Retain `showScrollBottomBtn` and scroll-to-bottom click handlers.
+2. **Creation Tag Support (`src/components/InputBar.tsx`)**:
+   - Enhance tag creation with interactive chips (press Enter, comma, or comma-separated text).
+   - Display active tag chips with one-click remove (`x`).
 
-3. **Verification**:
+3. **Thread Filtering & Persistence (`src/App.tsx`)**:
+   - Update `handleEditOutput` in `App.tsx` to persist `tags` array updates to IndexedDB.
+   - Connect `onTagClick` from `OutputCard` to set `inThreadSearchQuery(tag)`.
+   - Ensure in-thread search seamlessly matches `#tag` or raw tag strings.
+
+4. **Verification**:
    - Run `lint_applet` and `compile_applet`.
-   - Verify down arrow button appears smoothly on scroll-up without any badge.
+   - Test adding tags on output cards, removing tags, filtering on click, and saving new outputs with tags.
