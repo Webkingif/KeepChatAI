@@ -1,6 +1,6 @@
 {
-  "summary":  "Implementation plan for adding end-to-end tag management on AI outputs: inline \"+ Tag\" button on cards, tag management in the card editor and input bar, and 1-click tag filtering.",
-  "updatedAt":  "2026-10-01T18:55:22.931158611Z",
+  "summary":  "Implementation plan for updating seed mock data with a dedicated Welcome Message and interactive Getting Started guide chat explaining all core features (saving, exporting, searching, and managing outputs).",
+  "updatedAt":  "2026-10-07T18:07:01.374177251Z",
   "requestFeedback":  true,
   "userFacing":  true
 }

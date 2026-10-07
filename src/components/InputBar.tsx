@@ -118,12 +118,17 @@ export const InputBar: React.FC<InputBarProps> = ({
     setAiModel(defaultModel);
   }, [defaultModel]);
 
-  // Auto-resize textarea for desktop
+  // Auto-resize textarea for desktop & mobile
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = `${Math.min(scrollHeight, 180)}px`;
+    }
+    if (mobileTextareaRef.current) {
+      mobileTextareaRef.current.style.height = 'auto';
+      const scrollHeight = mobileTextareaRef.current.scrollHeight;
+      mobileTextareaRef.current.style.height = `${Math.min(Math.max(scrollHeight, 36), 110)}px`;
     }
   }, [content]);
 
@@ -329,7 +334,7 @@ export const InputBar: React.FC<InputBarProps> = ({
   };
 
   return (
-    <div className="relative border-t border-slate-200 dark:border-[#202c33] bg-[#f0f2f5] dark:bg-[#202c33] px-2 py-1.5 sm:px-5 sm:py-3 transition-colors shadow-lg max-h-[8vh] sm:max-h-none flex flex-col justify-center">
+    <div className="relative border-t border-slate-200 dark:border-[#202c33] bg-[#f0f2f5] dark:bg-[#202c33] px-2.5 py-2 sm:px-5 sm:py-3 transition-colors shadow-lg flex flex-col justify-center">
       {/* Mobile Backdrop for Popovers */}
       {(showMobileModelMenu || showMobileTipPopover) && (
         <div
@@ -358,27 +363,51 @@ export const InputBar: React.FC<InputBarProps> = ({
       />
 
       {/* ========================================================================= */}
-      {/* MOBILE LAYOUT (STRICTLY <= 8% SCREEN HEIGHT, CONSOLIDATED SINGLE ROW)     */}
+      {/* MOBILE LAYOUT (TWO-LAYER RESPONSIVE DESIGN FOR SMALL SCREENS)              */}
       {/* ========================================================================= */}
-      <div className="flex sm:hidden items-center gap-1.5 w-full relative h-full">
+      <div className="flex sm:hidden flex-col gap-1.5 w-full relative">
+        {/* Attached Image Preview on Mobile */}
+        {attachedImage && (
+          <div className="flex items-center justify-between p-1.5 px-2 rounded-lg bg-white dark:bg-[#111b21] border border-slate-200 dark:border-[#2a3942] animate-in fade-in duration-150 shadow-2xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <img
+                src={attachedImage.dataUrl}
+                alt="Upload preview"
+                className="w-7 h-7 rounded object-cover border border-slate-200 dark:border-[#2a3942] shrink-0"
+              />
+              <span className="text-[11px] font-medium text-slate-700 dark:text-slate-300 truncate">
+                {attachedImage.name}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAttachedImage(null)}
+              className="p-1 rounded-full text-slate-400 hover:text-rose-500"
+              title="Remove image"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
         {isRecording ? (
           /* Mobile Active Voice Recording Row */
-          <div className="flex items-center justify-between gap-2 w-full h-9 px-2.5 bg-white dark:bg-[#2a3942] rounded-full border border-rose-300 dark:border-rose-900/60 shadow-xs">
-            <div className="flex items-center gap-1.5">
+          <div className="flex items-center justify-between gap-2 w-full h-10 px-3 bg-white dark:bg-[#2a3942] rounded-full border border-rose-300 dark:border-rose-900/60 shadow-xs">
+            <div className="flex items-center gap-2">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-600" />
               </span>
-              <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 tabular-nums">
+              <span className="text-xs font-semibold text-rose-600 dark:text-rose-400 tabular-nums">
                 {formatRecordingTime(recordingSeconds)}
               </span>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={cancelRecording}
-                className="p-1 rounded-full text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                className="p-1.5 rounded-full text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
                 title="Discard recording"
               >
                 <Trash2 className="w-4 h-4" />
@@ -386,7 +415,7 @@ export const InputBar: React.FC<InputBarProps> = ({
               <button
                 type="button"
                 onClick={stopAndSaveRecording}
-                className="px-2.5 py-1 rounded-full bg-[#00a884] text-white flex items-center gap-1 text-[11px] font-semibold transition-all active:scale-95 cursor-pointer shadow-2xs"
+                className="px-3 py-1 rounded-full bg-[#00a884] text-white flex items-center gap-1 text-xs font-semibold transition-all active:scale-95 cursor-pointer shadow-2xs"
               >
                 <Send className="w-3 h-3 -rotate-12 translate-x-0.5" />
                 <span>Send</span>
@@ -395,173 +424,229 @@ export const InputBar: React.FC<InputBarProps> = ({
           </div>
         ) : (
           <>
-            {/* Attachment Button */}
-            <button
-              type="button"
-              onClick={() => mobileFileInputRef.current?.click()}
-              className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
-              title="Upload an Image"
-            >
-              <ImageIcon className="w-4 h-4" />
-            </button>
-
-            {/* Compact AI Model Dropdown Pill */}
-            <div className="relative shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowMobileModelMenu(!showMobileModelMenu);
-                  setShowMobileTipPopover(false);
-                }}
-                className="flex items-center gap-1 h-8 px-2 rounded-full bg-white dark:bg-[#111b21] text-[#00a884] dark:text-teal-400 border border-slate-200/80 dark:border-[#2a3942] text-[11px] font-semibold shadow-2xs hover:bg-slate-50 transition-colors cursor-pointer"
-                title="Select AI Model"
-              >
-                <CurrentModelIcon className="w-3.5 h-3.5 shrink-0" />
-                <span className="max-w-[48px] truncate">{currentModelItem.shortLabel}</span>
-                <ChevronDown className="w-3 h-3 text-slate-400 dark:text-slate-500 shrink-0" />
-              </button>
-
-              {/* Mobile Model Dropdown Popover */}
-              {showMobileModelMenu && (
-                <div className="absolute bottom-full mb-2 left-0 z-50 bg-white dark:bg-[#1f2c34] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] p-1.5 flex flex-col gap-1 min-w-[150px] animate-in fade-in slide-in-from-bottom-2 duration-150">
-                  <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-[#2a3942]">
-                    Select Model
-                  </div>
-                  {MODELS.map((item) => {
-                    const Icon = item.icon;
-                    const isSelected = aiModel === item.type;
-                    return (
-                      <button
-                        key={item.type}
-                        type="button"
-                        onClick={() => {
-                          setAiModel(item.type);
-                          setShowMobileModelMenu(false);
-                        }}
-                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-left cursor-pointer ${
-                          isSelected
-                            ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[#00a884] dark:text-teal-400 font-semibold'
-                            : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2a3942]'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Icon className="w-3.5 h-3.5" />
-                          <span>{item.label}</span>
-                        </div>
-                        {isSelected && <Check className="w-3.5 h-3.5" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Tip Lightbulb Button */}
-            <div className="relative shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowMobileTipPopover(!showMobileTipPopover);
-                  setShowMobileModelMenu(false);
-                }}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer border ${
-                  showMobileTipPopover
-                    ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-300 border-amber-300 dark:border-amber-700'
-                    : 'bg-white dark:bg-[#111b21] text-amber-500 hover:bg-amber-50 dark:hover:bg-[#182329] border-slate-200/80 dark:border-[#2a3942] shadow-2xs'
-                }`}
-                title="Formatting Tip"
-              >
-                <Lightbulb className="w-4 h-4 fill-amber-400/20" />
-              </button>
-
-              {/* Mobile Tip Popover */}
-              {showMobileTipPopover && (
-                <div className="fixed bottom-[9vh] left-3 right-3 z-50 bg-white dark:bg-[#182329] rounded-xl shadow-2xl border border-teal-200 dark:border-teal-800/60 p-3 animate-in fade-in slide-in-from-bottom-2 duration-150">
-                  <div className="flex items-start justify-between gap-2 mb-1.5">
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                      <Sparkles className="w-3.5 h-3.5 text-[#00a884] dark:text-teal-400" />
-                      <span>AI Formatting Directive</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowMobileTipPopover(false)}
-                      className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mb-2 leading-relaxed">
-                    Tell your AI model:
-                    <code className="block mt-1 px-2 py-1 rounded font-mono text-[11px] font-semibold text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-[#10191f] border border-teal-200 dark:border-teal-800/50">
-                      "{PROMPT_FORMAT_TIP}"
-                    </code>
-                  </p>
+            {/* LAYER 1 (TOP LAYER): Select Model, Image Button, Bulb Button */}
+            <div className="flex items-center justify-between gap-2 w-full px-0.5">
+              <div className="flex items-center gap-1.5">
+                {/* Select Model Dropdown Button */}
+                <div className="relative">
                   <button
                     type="button"
-                    onClick={handleCopyPromptTip}
-                    className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-[#00a884] hover:bg-[#008069] active:scale-98 transition-all cursor-pointer shadow-xs"
+                    onClick={() => {
+                      setShowMobileModelMenu(!showMobileModelMenu);
+                      setShowMobileTipPopover(false);
+                    }}
+                    className="flex items-center gap-1.5 h-7 px-2.5 rounded-full bg-white dark:bg-[#111b21] text-[#00a884] dark:text-teal-400 border border-slate-200/90 dark:border-[#2a3942] text-[11px] font-semibold shadow-2xs hover:bg-slate-50 dark:hover:bg-[#182329] transition-all cursor-pointer active:scale-95"
+                    title="Select AI Model"
                   >
-                    {copiedPromptTip ? (
-                      <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>Prompt Directive Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copy Prompt to Clipboard</span>
-                      </>
-                    )}
+                    <CurrentModelIcon className="w-3.5 h-3.5 shrink-0" />
+                    <span>{currentModelItem.label}</span>
+                    <ChevronDown className="w-3 h-3 text-slate-400 dark:text-slate-500 shrink-0" />
                   </button>
+
+                  {/* Mobile Model Dropdown Popover */}
+                  {showMobileModelMenu && (
+                    <div className="absolute bottom-full mb-1.5 left-0 z-50 bg-white dark:bg-[#1f2c34] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] p-1.5 flex flex-col gap-1 min-w-[155px] animate-in fade-in slide-in-from-bottom-2 duration-150">
+                      <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-[#2a3942]">
+                        Select AI Model
+                      </div>
+                      {MODELS.map((item) => {
+                        const Icon = item.icon;
+                        const isSelected = aiModel === item.type;
+                        return (
+                          <button
+                            key={item.type}
+                            type="button"
+                            onClick={() => {
+                              setAiModel(item.type);
+                              setShowMobileModelMenu(false);
+                            }}
+                            className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-left cursor-pointer ${
+                              isSelected
+                                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[#00a884] dark:text-teal-400 font-semibold'
+                                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2a3942]'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <Icon className="w-3.5 h-3.5" />
+                              <span>{item.label}</span>
+                            </div>
+                            {isSelected && <Check className="w-3.5 h-3.5" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
+
+                {/* Image Attachment Button */}
+                <button
+                  type="button"
+                  onClick={() => mobileFileInputRef.current?.click()}
+                  className={`flex items-center gap-1 h-7 px-2.5 rounded-full border text-[11px] font-medium transition-all cursor-pointer active:scale-95 ${
+                    attachedImage
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[#00a884] dark:text-teal-400 border-emerald-300 dark:border-emerald-800'
+                      : 'bg-white dark:bg-[#111b21] text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 border-slate-200/90 dark:border-[#2a3942] shadow-2xs'
+                  }`}
+                  title="Attach an Image"
+                  aria-label="Attach an Image"
+                >
+                  <ImageIcon className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                  <span>Image</span>
+                </button>
+
+                {/* Bulb Formatting Tip Button */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMobileTipPopover(!showMobileTipPopover);
+                      setShowMobileModelMenu(false);
+                    }}
+                    className={`flex items-center gap-1 h-7 px-2.5 rounded-full border text-[11px] font-medium transition-all cursor-pointer active:scale-95 ${
+                      showMobileTipPopover
+                        ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                        : 'bg-white dark:bg-[#111b21] text-amber-600 dark:text-amber-400 border-slate-200/90 dark:border-[#2a3942] shadow-2xs hover:bg-amber-50 dark:hover:bg-[#182329]'
+                    }`}
+                    title="Formatting Tip"
+                    aria-label="Formatting Tip"
+                  >
+                    <Lightbulb className="w-3.5 h-3.5 fill-amber-400/25" />
+                    <span>Tip</span>
+                  </button>
+
+                  {/* Mobile Tip Popover */}
+                  {showMobileTipPopover && (
+                    <div className="fixed bottom-[11vh] left-3 right-3 z-50 bg-white dark:bg-[#182329] rounded-xl shadow-2xl border border-teal-200 dark:border-teal-800/60 p-3 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                      <div className="flex items-start justify-between gap-2 mb-1.5">
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200">
+                          <Sparkles className="w-3.5 h-3.5 text-[#00a884] dark:text-teal-400" />
+                          <span>AI Formatting Directive</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowMobileTipPopover(false)}
+                          className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 mb-2 leading-relaxed">
+                        Tell your AI model:
+                        <code className="block mt-1 px-2 py-1 rounded font-mono text-[11px] font-semibold text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-[#10191f] border border-teal-200 dark:border-teal-800/50">
+                          "{PROMPT_FORMAT_TIP}"
+                        </code>
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleCopyPromptTip}
+                        className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-[#00a884] hover:bg-[#008069] active:scale-98 transition-all cursor-pointer shadow-xs"
+                      >
+                        {copiedPromptTip ? (
+                          <>
+                            <Check className="w-3.5 h-3.5" />
+                            <span>Prompt Directive Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy Prompt to Clipboard</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Optional details toggle on mobile */}
+              <button
+                type="button"
+                onClick={() => setShowMetadata(!showMetadata)}
+                className={`text-[10px] font-semibold px-2 py-1 rounded-full transition-colors cursor-pointer ${
+                  showMetadata || title || userPrompt || tagsInput
+                    ? 'text-[#00a884] dark:text-teal-400 bg-emerald-50 dark:bg-emerald-950/40'
+                    : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
+                }`}
+              >
+                {showMetadata ? 'Hide Details' : '+ Details'}
+              </button>
+            </div>
+
+            {/* Optional Metadata Drawer on Mobile if open */}
+            {showMetadata && (
+              <div className="p-2.5 bg-white dark:bg-[#111b21] rounded-xl border border-slate-200 dark:border-[#2a3942] space-y-1.5 animate-in slide-in-from-bottom-2 duration-150 shadow-2xs">
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Output Title (optional)"
+                  className="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
+                />
+                <input
+                  type="text"
+                  value={userPrompt}
+                  onChange={(e) => setUserPrompt(e.target.value)}
+                  placeholder="Prompt used (optional)"
+                  className="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
+                />
+                <input
+                  type="text"
+                  value={tagsInput}
+                  onChange={(e) => setTagsInput(e.target.value)}
+                  placeholder="Tags (e.g. #react, #api)"
+                  className="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
+                />
+              </div>
+            )}
+
+            {/* LAYER 2 (BOTTOM LAYER): Full-Width Input Box + Send / Mic Button */}
+            <div className="flex items-center gap-2 w-full">
+              {/* Wide Mobile Input Box */}
+              <div className="flex-1 min-w-0 bg-white dark:bg-[#2a3942] rounded-2xl border border-slate-200/90 dark:border-[#374248] shadow-2xs focus-within:ring-1.5 focus-within:ring-[#00a884] flex items-center px-3.5 py-1.5 transition-all">
+                <textarea
+                  ref={mobileTextareaRef}
+                  rows={1}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={attachedImage ? 'Add caption to image...' : 'Paste or type AI output here...'}
+                  className="w-full resize-none bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 text-xs sm:text-sm focus:outline-hidden max-h-28 leading-snug py-0.5"
+                />
+              </div>
+
+              {/* Mobile Send / Mic Button */}
+              {!content.trim() && !attachedImage ? (
+                <button
+                  type="button"
+                  onClick={startRecording}
+                  className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#008069] via-[#00a884] to-[#128c7e] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#00a884]/25 active:scale-90 transition-all cursor-pointer border border-white/20"
+                  title="Record Voice Note"
+                  aria-label="Record Voice Note"
+                >
+                  <Mic className="w-5 h-5 stroke-[2.2]" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleSend}
+                  type="button"
+                  disabled={isSending}
+                  className={`relative w-10 h-10 rounded-full bg-gradient-to-tr from-[#008069] via-[#00a884] to-[#25d366] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#00a884]/30 active:scale-90 transition-all duration-200 cursor-pointer border border-white/25 group overflow-hidden ${
+                    isSending ? 'scale-92 ring-2 ring-[#00a884]/40' : ''
+                  }`}
+                  title="Save Output"
+                  aria-label="Save Output"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-transparent opacity-60 rounded-full pointer-events-none" />
+                  <Send
+                    className={`w-4 h-4 stroke-[2.2] transition-all duration-200 ${
+                      isSending
+                        ? 'translate-x-3 -translate-y-3 opacity-0 scale-75'
+                        : '-rotate-12 translate-x-0.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5'
+                    }`}
+                  />
+                </button>
               )}
             </div>
-
-            {/* Mobile Textarea */}
-            <div className="flex-1 min-w-0 bg-white dark:bg-[#2a3942] rounded-full border border-slate-200/90 dark:border-[#374248] shadow-2xs focus-within:ring-1 focus-within:ring-[#00a884] flex items-center px-3 py-0.5">
-              <textarea
-                ref={mobileTextareaRef}
-                rows={1}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={attachedImage ? 'Add caption...' : 'Paste AI output...'}
-                className="w-full resize-none bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 text-xs focus:outline-hidden max-h-12 leading-snug py-1"
-              />
-            </div>
-
-            {/* Mobile Send / Mic Button */}
-            {!content.trim() && !attachedImage ? (
-              <button
-                type="button"
-                onClick={startRecording}
-                className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#008069] via-[#00a884] to-[#128c7e] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#00a884]/25 active:scale-92 transition-all cursor-pointer border border-white/20"
-                title="Record Voice Note"
-                aria-label="Record Voice Note"
-              >
-                <Mic className="w-5 h-5 stroke-[2.2]" />
-              </button>
-            ) : (
-              <button
-                onClick={handleSend}
-                type="button"
-                disabled={isSending}
-                className={`relative w-10 h-10 rounded-full bg-gradient-to-tr from-[#008069] via-[#00a884] to-[#25d366] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#00a884]/30 active:scale-90 transition-all duration-200 cursor-pointer border border-white/25 group overflow-hidden ${
-                  isSending ? 'scale-92 ring-2 ring-[#00a884]/40' : ''
-                }`}
-                title="Save Output"
-                aria-label="Save Output"
-              >
-                <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-transparent opacity-60 rounded-full pointer-events-none" />
-                <Send
-                  className={`w-4 h-4 stroke-[2.2] transition-all duration-200 ${
-                    isSending
-                      ? 'translate-x-3 -translate-y-3 opacity-0 scale-75'
-                      : '-rotate-12 translate-x-0.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5'
-                  }`}
-                />
-              </button>
-            )}
           </>
         )}
       </div>

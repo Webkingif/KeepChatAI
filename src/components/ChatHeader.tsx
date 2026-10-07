@@ -21,6 +21,7 @@ import {
   Image as ImageIcon,
   Maximize2,
   WifiOff,
+  CheckSquare,
 } from 'lucide-react';
 import { ChatThread } from '../types/keepchat';
 import { useOnlineStatus } from '../hooks/useOnlineStatus';
@@ -39,6 +40,8 @@ interface ChatHeaderProps {
   setStarredOnlyFilter: (val: boolean) => void;
   onUpdateChatAvatar?: (chatId: string, avatarUrl?: string) => void;
   onViewLogo?: (chat: ChatThread) => void;
+  isSelectMode?: boolean;
+  onToggleSelectMode?: () => void;
 }
 
 const ICON_MAP: Record<string, React.ElementType> = {
@@ -64,6 +67,8 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   setStarredOnlyFilter,
   onUpdateChatAvatar,
   onViewLogo,
+  isSelectMode = false,
+  onToggleSelectMode,
 }) => {
   const [showSearch, setShowSearch] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -208,31 +213,49 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
             )}
           </button>
 
-          {/* In-Thread Search Toggle */}
+          {/* In-Thread Search Toggle (Desktop / Larger screens) */}
           <button
             onClick={() => setShowSearch(!showSearch)}
-            className={`p-2 rounded-full transition-colors cursor-pointer ${
+            className={`hidden sm:flex p-2 rounded-full transition-colors cursor-pointer ${
               showSearch || inThreadSearchQuery
                 ? 'text-[#00a884] dark:text-teal-400 bg-emerald-50 dark:bg-teal-950/40'
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
             }`}
             title="Search in thread"
+            aria-label="Search within thread"
           >
             <Search className="w-4 h-4" />
           </button>
 
-          {/* Starred Filter Toggle */}
+          {/* Starred Filter Toggle (Desktop / Larger screens) */}
           <button
             onClick={() => setStarredOnlyFilter(!starredOnlyFilter)}
-            className={`p-2 rounded-full transition-colors cursor-pointer ${
+            className={`hidden sm:flex p-2 rounded-full transition-colors cursor-pointer ${
               starredOnlyFilter
                 ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/40'
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
             }`}
             title={starredOnlyFilter ? 'Show all outputs' : 'Show starred outputs only'}
+            aria-label="Filter starred outputs"
           >
             <Star className={`w-4 h-4 ${starredOnlyFilter ? 'fill-amber-500' : ''}`} />
           </button>
+
+          {/* Multi-Select Toggle (Desktop / Larger screens) */}
+          {onToggleSelectMode && (
+            <button
+              onClick={onToggleSelectMode}
+              className={`hidden sm:flex p-2 rounded-full transition-colors cursor-pointer ${
+                isSelectMode
+                  ? 'text-white bg-[#00a884] shadow-xs'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
+              }`}
+              title={isSelectMode ? 'Exit select mode' : 'Select outputs to export'}
+              aria-label="Toggle multi-select mode"
+            >
+              <CheckSquare className="w-4 h-4" />
+            </button>
+          )}
 
           {/* Export Markdown Action */}
           <button
@@ -247,10 +270,15 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+              className="relative p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
               title="More thread options"
+              aria-label="More thread options"
             >
               <MoreVertical className="w-4 h-4" />
+              {/* Active filter / selection indicator dot on small screens */}
+              {(starredOnlyFilter || inThreadSearchQuery || isSelectMode) && (
+                <span className="sm:hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#00a884] ring-2 ring-[#f0f2f5] dark:ring-[#202c33]" />
+              )}
             </button>
 
             {/* Dropdown Menu */}
@@ -260,7 +288,75 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                   className="fixed inset-0 z-30"
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 top-full mt-1 w-52 bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-1.5 z-40 animate-in fade-in zoom-in-95 duration-100">
+                <div className="absolute right-0 top-full mt-1 w-56 bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-1.5 z-40 animate-in fade-in zoom-in-95 duration-100">
+                  {/* Small Screen: Search in Thread */}
+                  <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      setShowSearch(true);
+                    }}
+                    className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer sm:hidden"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Search className="w-4 h-4 text-slate-400" />
+                      <span>Search in Thread</span>
+                    </div>
+                    {inThreadSearchQuery && (
+                      <span className="text-[10px] font-semibold text-teal-600 dark:text-teal-400 bg-emerald-50 dark:bg-teal-950/40 px-1.5 py-0.5 rounded">
+                        Active
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Small Screen: Starred Filter Toggle */}
+                  <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      setStarredOnlyFilter(!starredOnlyFilter);
+                    }}
+                    className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer sm:hidden"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Star
+                        className={`w-4 h-4 ${
+                          starredOnlyFilter ? 'fill-amber-500 text-amber-500' : 'text-slate-400'
+                        }`}
+                      />
+                      <span>{starredOnlyFilter ? 'Show All Outputs' : 'Starred Outputs Only'}</span>
+                    </div>
+                    {starredOnlyFilter && (
+                      <span className="text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1.5 py-0.5 rounded">
+                        Active
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Small Screen: Multi-Select Outputs Mode */}
+                  {onToggleSelectMode && (
+                    <button
+                      onClick={() => {
+                        setShowMenu(false);
+                        onToggleSelectMode();
+                      }}
+                      className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer sm:hidden"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <CheckSquare
+                          className={`w-4 h-4 ${isSelectMode ? 'text-[#00a884]' : 'text-slate-400'}`}
+                        />
+                        <span>{isSelectMode ? 'Exit Selection Mode' : 'Select Outputs'}</span>
+                      </div>
+                      {isSelectMode && (
+                        <span className="text-[10px] font-semibold text-teal-600 dark:text-teal-400 bg-emerald-50 dark:bg-teal-950/40 px-1.5 py-0.5 rounded">
+                          Active
+                        </span>
+                      )}
+                    </button>
+                  )}
+
+                  {/* Divider separating mobile filters from thread management options */}
+                  <div className="my-1 border-t border-slate-100 dark:border-[#2a3942] sm:hidden" />
+
                   {/* Pin / Unpin Action */}
                   <button
                     onClick={() => {
@@ -281,6 +377,20 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                       </>
                     )}
                   </button>
+
+                  {/* Select Outputs (Desktop menu option) */}
+                  {onToggleSelectMode && (
+                    <button
+                      onClick={() => {
+                        setShowMenu(false);
+                        onToggleSelectMode();
+                      }}
+                      className="w-full hidden sm:flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
+                    >
+                      <CheckSquare className="w-4 h-4 text-slate-400" />
+                      <span>{isSelectMode ? 'Exit Selection Mode' : 'Select Outputs to Export'}</span>
+                    </button>
+                  )}
 
                   {/* View Full Logo */}
                   <button
@@ -399,11 +509,23 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           {inThreadSearchQuery && (
             <button
               onClick={() => setInThreadSearchQuery('')}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-full hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+              title="Clear search query"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
           )}
+          <button
+            onClick={() => {
+              setShowSearch(false);
+              setInThreadSearchQuery('');
+            }}
+            className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 p-1 rounded-full hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+            title="Close search"
+            aria-label="Close search"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
     </div>

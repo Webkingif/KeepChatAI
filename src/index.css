@@ -82,18 +82,47 @@
   color: #f1f5f9;
 }
 
-/* Boxed math formulas \boxed{...} */
-.katex .fbox {
-  border-color: #0f172a !important;
-  border-width: 1.5px !important;
-  border-radius: 6px;
-  padding: 0.25em 0.55em !important;
-  background-color: rgba(0, 168, 132, 0.05);
+/* Boxed math formulas \boxed{...} - clean borderless display */
+.katex .fbox,
+.katex .fcolorbox,
+.dark .katex .fbox,
+.dark .katex .fcolorbox {
+  border: none !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
-.dark .katex .fbox {
-  border-color: #2dd4bf !important;
-  background-color: rgba(45, 212, 191, 0.08);
+.katex .boxpad {
+  padding: 0 !important;
+}
+
+/* Export Image & PDF Capture: Preserve full width of code and formulas without cropping */
+.export-capture-container pre,
+.export-capture-container code,
+.export-pdf-container pre,
+.export-pdf-container code {
+  white-space: pre !important;
+  word-break: normal !important;
+  word-wrap: normal !important;
+  overflow-x: visible !important;
+}
+
+.export-capture-container .overflow-x-auto,
+.export-pdf-container .overflow-x-auto {
+  overflow-x: visible !important;
+}
+
+/* User PDF Highlights */
+mark.pdf-user-highlight {
+  border-radius: 3px;
+  padding: 1px 3px;
+  mix-blend-mode: multiply;
+  cursor: pointer;
+}
+mark.pdf-user-highlight:hover {
+  outline: 1px dashed rgba(0, 0, 0, 0.4);
 }
 
 /* Syntax Highlighting Tokens (Prism) */

@@ -12,6 +12,7 @@ import {
   saveStoredThemeMode,
   exportBackup,
   exportChatAsMarkdown,
+  exportOutputsAsMarkdown,
 } from './utils/storage';
 import {
   initializeKeepChatDB,
@@ -35,6 +36,10 @@ import { getWhatsAppDateDivider } from './utils/date';
 import { ChatLogoModal } from './components/ChatLogoModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { ScrollToBottomButton } from './components/ScrollToBottomButton';
+import { ExportSnapshotModal } from './components/ExportSnapshotModal';
+import { ExportPdfModal } from './components/ExportPdfModal';
+import { MultiSelectBar } from './components/MultiSelectBar';
+import { ConfirmBulkDeleteModal } from './components/ConfirmBulkDeleteModal';
 
 export default function App() {
   const [isDBReady, setIsDBReady] = useState(false);
@@ -68,6 +73,15 @@ export default function App() {
   const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [chatToEdit, setChatToEdit] = useState<ChatThread | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  // Multi-Select and Image/PDF Export State
+  const [isSelectMode, setIsSelectMode] = useState(false);
+  const [selectedOutputIds, setSelectedOutputIds] = useState<Set<string>>(new Set());
+  const [exportModalOutputs, setExportModalOutputs] = useState<SavedOutput[]>([]);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [exportPdfModalOutputs, setExportPdfModalOutputs] = useState<SavedOutput[]>([]);
+  const [isExportPdfModalOpen, setIsExportPdfModalOpen] = useState(false);
+  const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
 
   // Compute effective theme ('light' or 'dark') based on user choice or OS
   const effectiveTheme: 'light' | 'dark' =
@@ -488,6 +502,111 @@ export default function App() {
     addToast(`Exported "${chat.title}" as Markdown (.md)`, 'success');
   };
 
+  // Selection & Image Export Handlers
+  const handleToggleSelectMode = () => {
+    setIsSelectMode((prev) => {
+      if (prev) {
+        setSelectedOutputIds(new Set());
+      }
+      return !prev;
+    });
+  };
+
+  const handleToggleSelectOutput = (outputId: string) => {
+    setSelectedOutputIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(outputId)) {
+        next.delete(outputId);
+      } else {
+        next.add(outputId);
+      }
+      return next;
+    });
+  };
+
+  const handleSelectAllOutputs = () => {
+    setSelectedOutputIds(new Set(activeChatMessages.map((m) => m.id)));
+  };
+
+  const handleDeselectAllOutputs = () => {
+    setSelectedOutputIds(new Set());
+  };
+
+  const handleOpenSingleExport = (output: SavedOutput) => {
+    setExportModalOutputs([output]);
+    setIsExportModalOpen(true);
+  };
+
+  const handleOpenMultiExport = () => {
+    const selected = activeChatMessages.filter((m) => selectedOutputIds.has(m.id));
+    if (selected.length === 0) {
+      addToast('Please select at least one output to export', 'info');
+      return;
+    }
+    setExportModalOutputs(selected);
+    setIsExportModalOpen(true);
+  };
+
+  const handleOpenSinglePdfExport = (output: SavedOutput) => {
+    setExportPdfModalOutputs([output]);
+    setIsExportPdfModalOpen(true);
+  };
+
+  const handleOpenMultiPdfExport = () => {
+    const selected = activeChatMessages.filter((m) => selectedOutputIds.has(m.id));
+    if (selected.length === 0) {
+      addToast('Please select at least one output to export as PDF', 'info');
+      return;
+    }
+    setExportPdfModalOutputs(selected);
+    setIsExportPdfModalOpen(true);
+  };
+
+  const handleExportSingleMarkdown = (output: SavedOutput) => {
+    if (!activeChat) return;
+    exportOutputsAsMarkdown(activeChat, [output]);
+    addToast(`Exported "${output.title || 'output'}" as Markdown (.md)`, 'success');
+  };
+
+  const handleExportSelectedMarkdown = () => {
+    if (!activeChat) return;
+    const selected = activeChatMessages.filter((m) => selectedOutputIds.has(m.id));
+    if (selected.length === 0) {
+      addToast('Please select at least one output to export as Markdown', 'info');
+      return;
+    }
+    const customFilename = `${activeChat.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-selected-${selected.length}-outputs.md`;
+    exportOutputsAsMarkdown(activeChat, selected, customFilename);
+    addToast(`Exported ${selected.length} outputs as Markdown (.md)`, 'success');
+  };
+
+  const handleConfirmBulkDelete = () => {
+    if (selectedOutputIds.size === 0) return;
+    const count = selectedOutputIds.size;
+    const nextMessages = messages.filter((m) => !selectedOutputIds.has(m.id));
+    setMessages(nextMessages);
+    saveAllMessagesToDB(nextMessages);
+
+    if (activeChat) {
+      const updatedChats = chats.map((c) =>
+        c.id === activeChat.id ? { ...c, updatedAt: Date.now() } : c
+      );
+      setChats(updatedChats);
+      saveAllChatsToDB(updatedChats);
+    }
+
+    setIsSelectMode(false);
+    setSelectedOutputIds(new Set());
+    setIsBulkDeleteModalOpen(false);
+    addToast(`Deleted ${count} output${count === 1 ? '' : 's'} successfully`, 'success');
+  };
+
+  // Reset selection mode whenever active chat changes
+  useEffect(() => {
+    setIsSelectMode(false);
+    setSelectedOutputIds(new Set());
+  }, [activeChatId]);
+
   if (!isDBReady) {
     return (
       <div
@@ -594,7 +713,27 @@ export default function App() {
                 setStarredOnlyFilter={setStarredOnlyFilter}
                 onUpdateChatAvatar={handleUpdateChatAvatar}
                 onViewLogo={(chat) => setViewingLogoChatId(chat.id)}
+                isSelectMode={isSelectMode}
+                onToggleSelectMode={handleToggleSelectMode}
               />
+
+              {/* Multi-Select Floating Action Bar */}
+              {isSelectMode && (
+                <MultiSelectBar
+                  selectedCount={selectedOutputIds.size}
+                  totalCount={activeChatMessages.length}
+                  onSelectAll={handleSelectAllOutputs}
+                  onDeselectAll={handleDeselectAllOutputs}
+                  onExportSelected={handleOpenMultiExport}
+                  onExportPdf={handleOpenMultiPdfExport}
+                  onExportMarkdown={handleExportSelectedMarkdown}
+                  onDeleteSelected={() => setIsBulkDeleteModalOpen(true)}
+                  onCancel={() => {
+                    setIsSelectMode(false);
+                    setSelectedOutputIds(new Set());
+                  }}
+                />
+              )}
 
               {/* Message Body Area with WhatsApp Wallpaper Pattern */}
               <div
@@ -654,6 +793,12 @@ export default function App() {
                               onEditOutput={handleEditOutput}
                               onUpdateTags={handleUpdateOutputTags}
                               onTagClick={(tag) => setInThreadSearchQuery(tag)}
+                              onExportImage={handleOpenSingleExport}
+                              onExportPdf={handleOpenSinglePdfExport}
+                              onExportMarkdown={handleExportSingleMarkdown}
+                              isSelectMode={isSelectMode}
+                              isSelected={selectedOutputIds.has(output.id)}
+                              onToggleSelect={handleToggleSelectOutput}
                             />
                           </React.Fragment>
                         );
@@ -707,6 +852,37 @@ export default function App() {
         onClose={() => setIsBackupModalOpen(false)}
         chats={chats}
         messages={messages}
+      />
+
+      {/* WhatsApp-Style Image Export Modal */}
+      {activeChat && (
+        <ExportSnapshotModal
+          isOpen={isExportModalOpen}
+          onClose={() => setIsExportModalOpen(false)}
+          chat={activeChat}
+          outputs={exportModalOutputs}
+          defaultTheme={effectiveTheme}
+          onToast={addToast}
+        />
+      )}
+
+      {/* Clean A4 Paginated Document PDF Export Modal */}
+      {activeChat && (
+        <ExportPdfModal
+          isOpen={isExportPdfModalOpen}
+          onClose={() => setIsExportPdfModalOpen(false)}
+          chat={activeChat}
+          outputs={exportPdfModalOutputs}
+          onToast={addToast}
+        />
+      )}
+
+      {/* Confirm Bulk Delete Selected Outputs Modal */}
+      <ConfirmBulkDeleteModal
+        isOpen={isBulkDeleteModalOpen}
+        onClose={() => setIsBulkDeleteModalOpen(false)}
+        onConfirm={handleConfirmBulkDelete}
+        count={selectedOutputIds.size}
       />
 
       {/* Offline Status Connectivity Banner */}

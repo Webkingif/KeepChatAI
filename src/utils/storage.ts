@@ -13,6 +13,14 @@ export function loadStoredChats(): ChatThread[] {
       return INITIAL_CHATS;
     }
     const parsed = JSON.parse(raw);
+    if (
+      Array.isArray(parsed) &&
+      parsed.some((c: any) => c.id === 'chat-1') &&
+      !parsed.some((c: any) => c.id === 'chat-welcome')
+    ) {
+      saveStoredChats(INITIAL_CHATS);
+      return INITIAL_CHATS;
+    }
     return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_CHATS;
   } catch (e) {
     console.error('Error loading stored chats:', e);
@@ -36,6 +44,14 @@ export function loadStoredMessages(): SavedOutput[] {
       return INITIAL_MESSAGES;
     }
     const parsed = JSON.parse(raw);
+    if (
+      Array.isArray(parsed) &&
+      parsed.some((m: any) => m.id === 'msg-1') &&
+      !parsed.some((m: any) => m.id === 'msg-welcome-1')
+    ) {
+      saveStoredMessages(INITIAL_MESSAGES);
+      return INITIAL_MESSAGES;
+    }
     return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_MESSAGES;
   } catch (e) {
     console.error('Error loading stored messages:', e);
@@ -108,19 +124,32 @@ export function exportBackup(chats: ChatThread[], messages: SavedOutput[]): AppE
   return data;
 }
 
-export function exportChatAsMarkdown(chat: ChatThread, messages: SavedOutput[]): void {
+export function exportOutputsAsMarkdown(
+  chat: ChatThread,
+  outputs: SavedOutput[],
+  customFilename?: string
+): void {
+  // Sort outputs chronologically: oldest output at the top, most recent output at the bottom
+  const sortedMessages = [...outputs].sort((a, b) => a.createdAt - b.createdAt);
+
   const lines: string[] = [];
   lines.push(`# ${chat.title}`);
   if (chat.description) lines.push(`*${chat.description}*\n`);
-  lines.push(`Category: ${chat.category} | Saved Outputs: ${messages.length}\n`);
+  lines.push(`Category: ${chat.category} | Exported Outputs: ${sortedMessages.length}\n`);
   lines.push(`Exported on: ${new Date().toLocaleString()}\n`);
   lines.push(`---\n`);
 
-  messages.forEach((msg, idx) => {
+  sortedMessages.forEach((msg, idx) => {
     lines.push(`## Output #${idx + 1}: ${msg.title || 'Untitled Output'}`);
     lines.push(`**Model:** ${msg.aiModel} | **Saved:** ${new Date(msg.createdAt).toLocaleString()}`);
+    if (msg.tags && msg.tags.length > 0) {
+      lines.push(`**Tags:** ${msg.tags.map((t) => (t.startsWith('#') ? t : `#${t}`)).join(', ')}`);
+    }
     if (msg.userPrompt) {
       lines.push(`\n**Prompt:**\n> ${msg.userPrompt}\n`);
+    }
+    if (msg.mediaType === 'image' && msg.mediaUrl) {
+      lines.push(`\n![${msg.mediaName || 'Attached Media'}](${msg.mediaUrl})\n`);
     }
     lines.push(`\n${msg.content}\n`);
     lines.push(`---\n`);
@@ -131,7 +160,11 @@ export function exportChatAsMarkdown(chat: ChatThread, messages: SavedOutput[]):
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${chat.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
+    const defaultFilename =
+      sortedMessages.length === 1 && sortedMessages[0].title
+        ? `${sortedMessages[0].title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`
+        : `${chat.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
+    a.download = customFilename || defaultFilename;
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
@@ -144,4 +177,8 @@ export function exportChatAsMarkdown(chat: ChatThread, messages: SavedOutput[]):
   } catch (err) {
     console.error('Markdown download error:', err);
   }
+}
+
+export function exportChatAsMarkdown(chat: ChatThread, messages: SavedOutput[]): void {
+  exportOutputsAsMarkdown(chat, messages);
 }

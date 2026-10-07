@@ -108,4 +108,69 @@
   - Replaced the generic robot icon with `pwa-192x192.png` in `src/App.tsx` during IndexedDB vault initialization
   - Added matching `pwa-192x192.png` app icon shell inside `index.html` to eliminate any white flash before React hydration
   - Removed unused `Bot` import from `src/App.tsx`
+- [x] Chronological Ordering for Markdown Thread Exports:
+  - Updated `exportChatAsMarkdown` in `src/utils/storage.ts` to strictly sort outputs by `a.createdAt - b.createdAt`
+  - Guarantees the oldest output in the thread is written at the top of the markdown file (Output #1) and the most recent output is at the bottom
+  - Included `#tag` listings in the metadata header of each exported markdown output
+- [x] Removed Math Formula Box Borders & Green Rectangles:
+  - Neutralized `.katex .fbox` and `.dark .katex .fbox` in `src/index.css` by removing borders, padding, and green background tints
+  - Set `.katex .boxpad` padding to 0 to eliminate artificial spacing
+  - `\boxed{...}` and `\fbox{...}` formulas now render seamlessly and cleanly as pure math in both light and dark modes
+- [x] Implemented Single & Multi-Output Image Export (WhatsApp Snapshot):
+  - Added dedicated 1-click "Export as Image" button on each `OutputCard.tsx`
+  - Added multi-select mode in `ChatHeader.tsx` and dropdown menu with interactive circular checkboxes
+  - Created `MultiSelectBar.tsx` sticky action bar with selection count, Select All / Deselect All, and Export as Image actions
+  - Created `ExportSnapshotModal.tsx` rendering authentic WhatsApp snapshots (chat title, avatar, date, KeepChat branding, wallpaper pattern, Markdown formatting, LaTeX, syntax code, and watermarks)
+  - Integrated `html-to-image` for 2× high-resolution PNG generation with one-click Download and "Copy Image to Clipboard" support
+- [x] Added Image Export Width Slider, Presets & Code Overflow Auto-Fit:
+  - Added continuous width slider in `ExportSnapshotModal.tsx` ranging from 480px to 1800px with live numeric readout
+  - Added 1-click presets: **Standard (640px)**, **Wide (960px)**, and **Ultra (1280px)**
+  - Added intelligent **⚡ Auto-Fit Code** button: measures the longest line of code or formula in the selected cards and automatically expands the container width to fit without cropping
+  - Added CSS rules in `src/index.css` for `.export-capture-container pre` and `code` to preserve unwrapped formatting without scrollbar truncations
+  - Supported horizontal preview panning/scrolling within the modal for wide snapshots on smaller screens
+- [x] Implemented Single & Multi-Output PDF Export:
+  - Installed `jspdf` for 100% client-side, offline PDF generation
+  - Created `src/utils/pdfExporter.ts` to slice high-resolution rendered documents into standard paginated A4 pages with running page numbers (`Page X of Y`) and branding footers
+  - Created `src/components/ExportPdfModal.tsx` for clean, professional A4 document previewing and downloading
+  - Added dedicated "Export as PDF" button on each `OutputCard.tsx`
+  - Added "PDF" export action to `MultiSelectBar.tsx` for bulk-exporting selected outputs into a continuous, paginated document with subtle dividers
+- [x] Added PDF Page Width Slider, Orientation Toggle & Code Auto-Fit:
+  - Added continuous width slider in `ExportPdfModal.tsx` ranging from 600px to 1800px with live numeric readout
+  - Added interactive Page Orientation switcher: **Portrait** (210×297mm) vs **Landscape** (297×210mm)
+  - Added 1-click presets: **Portrait A4 (750px)**, **Landscape A4 (1050px)**, and **Ultra-Wide (1350px)**
+  - Added **⚡ Auto-Fit Code** button: measures the longest line of code or formula across all selected outputs and automatically adjusts the PDF printable width and orientation
+  - Updated `src/utils/pdfExporter.ts` to slice multi-page documents matching the chosen orientation with running page counts (`Page X of Y`)
+  - Added CSS rules in `src/index.css` for `.export-pdf-container pre` and `code` to prevent text cropping and scrollbar artifacts
+- [x] Implemented Single & Multi-Output Markdown Export (.md):
+  - Created `exportOutputsAsMarkdown` in `src/utils/storage.ts` to generate formatted Markdown with full metadata (Thread title, AI model, tags, prompt blockquotes, and timestamps in chronological order)
+  - Added dedicated 1-click "Export as Markdown" action button (`FileCode` icon) on each `OutputCard.tsx`
+  - Added "Markdown" bulk-export action button to `MultiSelectBar.tsx` next to Image and PDF
+  - Connected direct browser `.md` file download triggers with sanitized filenames and toast alerts
+- [x] Enforced 100% Uniform Page Width and Height Across All PDF Pages:
+  - Fixed issue where subsequent pages in multi-page Landscape/custom documents fell back to standard Portrait
+  - Computed document-wide uniform millimeter dimensions `[pageWidthMm, pageHeightMm]` based on the user's selected width and orientation
+  - Guaranteed every page created with `pdf.addPage(format, orientation)` strictly preserves identical width, height, margins, and running footer coordinates across the entire document
+- [x] Implemented Selectable & Highlightable Vector Text PDF Export:
+  - Created `exportStructuredPdf` in `src/utils/pdfExporter.ts` to output true vector text that can be highlighted, selected, copied (`Ctrl+C`), and searched in any PDF reader
+  - Formatted code blocks using monospace `courier` font inside rounded light-gray (`#f3f4f6`) background boxes with preserved indentation
+  - Added a Mode Toggle in `ExportPdfModal.tsx` between **Snapshot PDF** (default) and **Selectable Text**
+  - Integrated uniform page dimensions, running headers, and `Page X of Y` footers across all pages
+- [x] Implemented Bulk Delete for Multi-Selected Outputs:
+  - Added a dedicated **Delete** action button with danger styling (`Trash2` icon) to `MultiSelectBar.tsx`
+  - Created `ConfirmBulkDeleteModal.tsx` displaying the exact count of items being deleted and warning about permanent removal
+  - Implemented `handleConfirmBulkDelete` in `App.tsx` that removes selected outputs from state, persists changes into IndexedDB, updates chat timestamp, automatically exits selection mode, and shows a toast alert
+- [x] Responsive Mobile Navigation & Header Optimization:
+  - Moved **Search in Thread**, **Starred Filter**, and **Multi-Select** buttons into the 3-dot dropdown menu on small screens (`sm:hidden`)
+  - Preserved standard header icon bar on desktop and larger screens (`hidden sm:flex`)
+  - Added an active indicator badge dot on the mobile 3-dot menu button whenever search, starred filter, or multi-select is active
+  - Added close/dismiss button on the in-thread search bar dropdown
+  - Made action labels on `MultiSelectBar.tsx` responsive to prevent mobile overflow on narrow viewports
+- [x] Welcome Message & Interactive Getting Started Guide Mock Data:
+  - Created a dedicated **Getting Started with KeepChat** guide thread (`chat-welcome`) pinned at the top of the vault
+  - Seeded comprehensive walkthrough outputs:
+    1. **Welcome Message Output**: Introduces KeepChat, privacy benefits, offline IndexedDB architecture, and zero-telemetry policy
+    2. **Step 1: Saving & Organization**: Walkthrough on bottom input bar, model selection (ChatGPT, Gemini, Claude, DeepSeek), prompts, Markdown, LaTeX math, and `#hashtags`
+    3. **Step 2: Export Options**: Walkthrough on single & multi-select exports to Image (PNG), paginated PDF (Snapshot & Selectable Text), and Markdown (`.md`)
+    4. **Step 3: Search, Filters & Backups**: Walkthrough on in-thread search, global sidebar search, starred filters, pinning threads, and JSON backups
+  - Updated IndexedDB and localStorage migration loaders to ensure new visitors and existing sample viewers cleanly load the Welcome Guide
 - [x] Verified with `lint_applet` and `compile_applet` (0 errors)

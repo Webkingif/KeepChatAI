@@ -19,6 +19,9 @@ import {
   X,
   Save,
   Plus,
+  Camera,
+  FileText,
+  FileCode,
 } from 'lucide-react';
 import { SavedOutput, AIModelType } from '../types/keepchat';
 import { MarkdownRenderer } from './MarkdownRenderer';
@@ -36,6 +39,12 @@ interface OutputCardProps {
   ) => void;
   onUpdateTags?: (id: string, tags: string[]) => void;
   onTagClick?: (tag: string) => void;
+  onExportImage?: (output: SavedOutput) => void;
+  onExportPdf?: (output: SavedOutput) => void;
+  onExportMarkdown?: (output: SavedOutput) => void;
+  isSelectMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelect?: (outputId: string) => void;
 }
 
 const AVAILABLE_MODELS: AIModelType[] = ['ChatGPT', 'Gemini', 'Claude', 'DeepSeek', 'Other'];
@@ -47,6 +56,12 @@ export const OutputCard: React.FC<OutputCardProps> = ({
   onEditOutput,
   onUpdateTags,
   onTagClick,
+  onExportImage,
+  onExportPdf,
+  onExportMarkdown,
+  isSelectMode = false,
+  isSelected = false,
+  onToggleSelect,
 }) => {
   const [copied, setCopied] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -225,15 +240,42 @@ export const OutputCard: React.FC<OutputCardProps> = ({
 
   return (
     <>
-      <div
-        className={`group relative w-full my-4 rounded-xl border transition-all duration-200 overflow-hidden ${
-          isEditing
-            ? 'border-[#00a884] ring-2 ring-[#00a884]/20 bg-white dark:bg-[#1f2c34] shadow-md'
-            : 'border-slate-200/80 dark:border-[#26353d] bg-white dark:bg-[#1f2c34] shadow-xs hover:shadow-md'
-        }`}
-        onKeyDown={isEditing ? handleKeyDown : undefined}
-      >
-        {/* Top Header Strip */}
+      <div className="flex items-start gap-2.5 my-3.5 w-full">
+        {isSelectMode && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleSelect?.(output.id);
+            }}
+            className="mt-3.5 p-1 rounded-full text-slate-400 hover:text-[#00a884] active:scale-95 transition-all cursor-pointer shrink-0"
+            title={isSelected ? 'Deselect output' : 'Select output'}
+            aria-label={isSelected ? 'Deselect output' : 'Select output'}
+          >
+            <div
+              className={`w-5 h-5 rounded-full flex items-center justify-center border-2 transition-all ${
+                isSelected
+                  ? 'bg-[#00a884] border-[#00a884] text-white shadow-xs'
+                  : 'border-slate-400 dark:border-slate-500 bg-white dark:bg-[#111b21]'
+              }`}
+            >
+              {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+            </div>
+          </button>
+        )}
+
+        <div
+          className={`group relative flex-1 min-w-0 rounded-xl border transition-all duration-200 overflow-hidden ${
+            isSelected
+              ? 'ring-2 ring-[#00a884] border-[#00a884] shadow-md bg-white dark:bg-[#1f2c34]'
+              : isEditing
+              ? 'border-[#00a884] ring-2 ring-[#00a884]/20 bg-white dark:bg-[#1f2c34] shadow-md'
+              : 'border-slate-200/80 dark:border-[#26353d] bg-white dark:bg-[#1f2c34] shadow-xs hover:shadow-md'
+          } ${isSelectMode ? 'cursor-pointer' : ''}`}
+          onClick={isSelectMode ? () => onToggleSelect?.(output.id) : undefined}
+          onKeyDown={isEditing ? handleKeyDown : undefined}
+        >
+          {/* Top Header Strip */}
         <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 bg-slate-50/80 dark:bg-[#182329]/80 border-b border-slate-200/70 dark:border-[#26353d]">
           <div className="flex items-center gap-2.5 min-w-0">
             {/* AI Model Tag */}
@@ -280,7 +322,10 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                 {/* Edit Output Button */}
                 {onEditOutput && (
                   <button
-                    onClick={handleStartEdit}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStartEdit();
+                    }}
                     className="flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
                     title="Edit output indefinitely"
                   >
@@ -289,9 +334,57 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                   </button>
                 )}
 
+                {/* Export as Image (Single Output) */}
+                {onExportImage && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onExportImage(output);
+                    }}
+                    className="p-1.5 rounded text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors cursor-pointer"
+                    title="Export output as image (PNG)"
+                    aria-label="Export output as image"
+                  >
+                    <Camera className="w-4 h-4" />
+                  </button>
+                )}
+
+                {/* Export as PDF (Single Output) */}
+                {onExportPdf && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onExportPdf(output);
+                    }}
+                    className="p-1.5 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                    title="Export output as PDF document"
+                    aria-label="Export output as PDF document"
+                  >
+                    <FileText className="w-4 h-4" />
+                  </button>
+                )}
+
+                {/* Export as Markdown (Single Output) */}
+                {onExportMarkdown && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onExportMarkdown(output);
+                    }}
+                    className="p-1.5 rounded text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors cursor-pointer"
+                    title="Export output as Markdown file (.md)"
+                    aria-label="Export output as Markdown file"
+                  >
+                    <FileCode className="w-4 h-4" />
+                  </button>
+                )}
+
                 {/* Copy Full Output (Text or Caption) */}
                 <button
-                  onClick={handleCopyFull}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopyFull();
+                  }}
                   className="flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
                   title="Copy output text"
                 >
@@ -310,7 +403,10 @@ export const OutputCard: React.FC<OutputCardProps> = ({
 
                 {/* Star / Bookmark */}
                 <button
-                  onClick={() => onToggleStar(output.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleStar(output.id);
+                  }}
                   className={`p-1.5 rounded transition-colors cursor-pointer ${
                     output.isStarred
                       ? 'text-amber-500 hover:text-amber-600 bg-amber-50 dark:bg-amber-950/30'
@@ -325,13 +421,19 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                 {showConfirmDelete ? (
                   <div className="flex items-center gap-1 pl-1">
                     <button
-                      onClick={() => onDelete(output.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(output.id);
+                      }}
                       className="px-2 py-0.5 text-xs font-medium text-white bg-rose-600 hover:bg-rose-700 rounded transition-colors cursor-pointer"
                     >
                       Confirm
                     </button>
                     <button
-                      onClick={() => setShowConfirmDelete(false)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowConfirmDelete(false);
+                      }}
                       className="px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-[#2a3942] rounded transition-colors cursor-pointer"
                     >
                       Cancel
@@ -339,7 +441,10 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                   </div>
                 ) : (
                   <button
-                    onClick={() => setShowConfirmDelete(true)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowConfirmDelete(true);
+                    }}
                     className="p-1.5 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                     title="Delete output"
                   >
@@ -666,6 +771,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
           </div>
         </div>
       </div>
+    </div>
 
       {/* Full-screen Image Viewer Lightbox */}
       {isImage && (

@@ -2,359 +2,137 @@ import { ChatThread, SavedOutput } from '../types/keepchat';
 
 export const INITIAL_CHATS: ChatThread[] = [
   {
-    id: 'chat-1',
-    title: 'Full-Stack Auth & Drizzle ORM',
-    description: 'Architecture patterns for secure session management and database relations',
-    category: 'Coding',
+    id: 'chat-welcome',
+    title: 'Getting Started with KeepChat',
+    description: 'Welcome guide & interactive walkthrough to help you master your local AI output vault',
+    category: 'Guide',
     defaultAiModel: 'ChatGPT',
-    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 3, // 3 days ago
-    updatedAt: Date.now() - 1000 * 60 * 35, // 35 mins ago
+    createdAt: Date.now() - 1000 * 60 * 60 * 5,
+    updatedAt: Date.now() - 1000 * 60 * 5,
     isPinned: true,
     avatarColor: 'from-emerald-500 to-teal-700',
-    iconName: 'code',
-  },
-  {
-    id: 'chat-2',
-    title: 'Gemini 2.5 Grounding & Prompts',
-    description: 'System prompts, JSON schema enforcement, and search grounding recipes',
-    category: 'Prompts',
-    defaultAiModel: 'Gemini',
-    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 5,
-    updatedAt: Date.now() - 1000 * 60 * 120,
-    isPinned: true,
-    avatarColor: 'from-blue-500 to-indigo-700',
     iconName: 'sparkles',
-  },
-  {
-    id: 'chat-3',
-    title: 'Vector Databases Comparative Matrix',
-    description: 'Benchmark analysis of Pinecone, pgvector, Qdrant, and Milvus for RAG',
-    category: 'Architecture',
-    defaultAiModel: 'Claude',
-    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 8,
-    updatedAt: Date.now() - 1000 * 60 * 60 * 6,
-    isPinned: false,
-    avatarColor: 'from-amber-500 to-orange-700',
-    iconName: 'database',
-  },
-  {
-    id: 'chat-4',
-    title: 'Autonomous Agent Workflows 2026',
-    description: 'Research notes on memory compaction, tool reflection, and human-in-the-loop loops',
-    category: 'Research',
-    defaultAiModel: 'ChatGPT',
-    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 12,
-    updatedAt: Date.now() - 1000 * 60 * 60 * 24,
-    isPinned: false,
-    avatarColor: 'from-purple-500 to-violet-700',
-    iconName: 'brain',
   },
 ];
 
 export const INITIAL_MESSAGES: SavedOutput[] = [
   {
-    id: 'msg-1',
-    chatId: 'chat-1',
-    title: 'Next.js 15 + Drizzle Auth Schema & Session Management',
-    userPrompt: 'Provide a robust TypeScript Drizzle ORM schema for users, sessions, and roles, plus a verification helper.',
+    id: 'msg-welcome-1',
+    chatId: 'chat-welcome',
+    title: 'Welcome to KeepChat · Your Private Local AI Vault',
+    userPrompt: 'What is KeepChat and how does it protect my AI outputs?',
     aiModel: 'ChatGPT',
-    tags: ['Next.js', 'Drizzle', 'TypeScript', 'Auth'],
+    content: `### Welcome to KeepChat! 🚀
+
+**KeepChat** is your private, local sanctuary for saving, organizing, and archiving valuable AI responses, code snippets, research notes, and creative prompts.
+
+#### Why KeepChat?
+- 🔒 **100% Private & Local**: Your data stays entirely in your browser using **IndexedDB**. There are no third-party servers, tracking, or data harvesting.
+- ⚡ **Offline-First PWA**: KeepChat functions seamlessly with or without internet connectivity.
+- 💬 **WhatsApp-Inspired Experience**: Organize your AI conversations into distinct thematic threads with familiar read receipts, timestamps, and audio playback.
+- 📦 **Zero Lock-In**: Export any single output or bulk export entire threads into **PNG images**, **PDF documents**, or **Markdown (\`.md\`)** anytime.
+
+Scroll down through the outputs in this thread to explore all the features!`,
+    tags: ['welcome', 'getting-started', 'privacy'],
     isStarred: true,
-    createdAt: Date.now() - 1000 * 60 * 35,
-    tokenCountEstimate: 850,
-    content: `### Production Schema: Users, Sessions & Role-Based Access Control
-
-Here is the hardened schema implementation using **Drizzle ORM** with PostgreSQL. This model supports atomic session revocation and granular workspace permissions.
-
-#### 1. Schema Definition (\`src/db/schema.ts\`)
-
-\`\`\`typescript
-import { pgTable, text, timestamp, uuid, boolean, pgEnum } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
-
-export const roleEnum = pgEnum('user_role', ['admin', 'member', 'billing_viewer']);
-
-export const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  email: text('email').notNull().unique(),
-  displayName: text('display_name').notNull(),
-  role: roleEnum('role').default('member').notNull(),
-  isActive: boolean('is_active').default(true).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
-
-export const sessions = pgTable('sessions', {
-  id: text('id').primaryKey(), // Cryptographically random 64-char hex string
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
-  ipAddress: text('ip_address'),
-  userAgent: text('user_agent'),
-});
-
-export const usersRelations = relations(users, ({ many }) => ({
-  sessions: many(sessions),
-}));
-\`\`\`
-
-#### 2. Session Validation Invariant
-
-> **Security Note:** Never trust client-provided user IDs directly in cookies. Always validate the cryptographic session token against the database and check expiration on every sensitive request.
-
-\`\`\`bash
-# Run migration verification
-npm run drizzle:push --strict
-\`\`\`
-
-#### 3. Technology Comparison
-
-| Engine | Type Safety | Migration Control | Edge Runtime Support |
-| :--- | :--- | :--- | :--- |
-| **Drizzle ORM** | Native TypeScript SQL-first | Fine-grained SQL files | Zero-dependency, ultra-fast |
-| **Prisma** | Generated client DSL | Schema push / migrate | Requires heavy engine binary |
-| **Kysely** | Pure SQL query builder | Manual migration hooks | Exceptional lightweight |
-
-All queries execute in sub-millisecond connection pools.`
+    createdAt: Date.now() - 1000 * 60 * 60 * 5,
   },
   {
-    id: 'msg-2',
-    chatId: 'chat-1',
-    title: 'Client-Side Cookie Verification & Middleware',
-    userPrompt: 'How should Edge middleware handle token extraction without hitting the database on static assets?',
-    aiModel: 'ChatGPT',
-    tags: ['Middleware', 'Edge', 'Security'],
-    isStarred: false,
-    createdAt: Date.now() - 1000 * 60 * 60 * 20,
-    tokenCountEstimate: 420,
-    content: `### Edge Route Filtering Pattern
-
-To ensure your Next.js middleware doesn't trigger database overhead for static assets or favicon requests, use path matcher exclusion:
-
-\`\`\`typescript
-export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt
-     */
-    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
-  ],
-};
-\`\`\`
-
-Key advantages:
-- Reduces cold start latency to **under 5ms**
-- Protects downstream APIs from malicious request flooding`
-  },
-  {
-    id: 'msg-3',
-    chatId: 'chat-2',
-    title: 'Gemini 2.5 Flash Structured JSON Output Specification',
-    userPrompt: 'Show me the exact system instruction and responseSchema config for extracting structured data using @google/genai.',
+    id: 'msg-welcome-2',
+    chatId: 'chat-welcome',
+    title: 'Step 1: Saving, Tagging & Categorizing AI Outputs',
+    userPrompt: 'How do I save responses from ChatGPT, Claude, Gemini, or DeepSeek into KeepChat?',
     aiModel: 'Gemini',
-    tags: ['Gemini', 'JSON Schema', 'TypeScript', 'SDK'],
-    isStarred: true,
-    createdAt: Date.now() - 1000 * 60 * 120,
-    tokenCountEstimate: 610,
-    content: `### Enforcing Strict JSON Schemas with the Gemini TypeScript SDK
+    content: `### How to Save & Organize AI Outputs
 
-With **Gemini 2.5 Flash**, you can guarantee deterministic JSON output conforming to your schema by passing \`responseMimeType: "application/json"\` alongside \`responseSchema\`.
+Whenever you get a useful answer or code snippet from an AI model, you can preserve it here in seconds:
 
-#### SDK Implementation
+#### 1. Using the Bottom Input Bar
+- **Select AI Model**: Click the model badge (*ChatGPT*, *Gemini*, *Claude*, *DeepSeek*, or *Other*) to attribute the output.
+- **Optional Title & Prompt**: Click **Title** or **Prompt** in the bottom input bar to record your original prompt or give the output a memorable title.
+- **Paste & Save**: Paste your text or code into the textarea and press **Save** (or \`Ctrl+Enter\` / \`Cmd+Enter\`).
+
+#### 2. Rich Markdown, Math & Code Highlighting
+KeepChat automatically formats Markdown headings, bullet points, tables, blockquotes, LaTeX math formulas ($E = mc^2$), and highlighted code blocks:
 
 \`\`\`typescript
-import { GoogleGenAI, Type } from '@google/genai';
-
-const ai = new GoogleGenAI();
-
-const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',
-  contents: 'Analyze the performance metrics for Q3 logistics report.',
-  config: {
-    systemInstruction: 'You are a meticulous financial analyst. Output pure verified JSON without markdown wrapping.',
-    responseMimeType: 'application/json',
-    responseSchema: {
-      type: Type.OBJECT,
-      properties: {
-        quarter: { type: Type.STRING },
-        overallEfficiencyScore: { type: Type.NUMBER },
-        keyBottlenecks: {
-          type: Type.ARRAY,
-          items: { type: Type.STRING }
-        },
-        actionItems: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              priority: { type: Type.STRING, enum: ['HIGH', 'MEDIUM', 'LOW'] },
-              task: { type: Type.STRING },
-              estimatedDays: { type: Type.INTEGER }
-            },
-            required: ['priority', 'task', 'estimatedDays']
-          }
-        }
-      },
-      required: ['quarter', 'overallEfficiencyScore', 'keyBottlenecks', 'actionItems']
-    }
-  }
-});
-
-const data = JSON.parse(response.text ?? '{}');
-console.log('Structured output verified:', data);
+interface KeepChatOutput {
+  id: string;
+  aiModel: 'ChatGPT' | 'Gemini' | 'Claude' | 'DeepSeek';
+  title?: string;
+  content: string;
+  tags: string[];
+  createdAt: number;
+}
 \`\`\`
 
-#### Best Practices:
-1. **Never use regex parsing** on unstructured text when schema enforcement is supported natively.
-2. Provide explicit enum constraints for status or priority fields.
-3. System instruction should remind the model to obey structural types.`
-  },
-  {
-    id: 'msg-4',
-    chatId: 'chat-3',
-    title: 'RAG Vector Index Architecture Comparison (2026)',
-    userPrompt: 'Compare Pinecone, pgvector, Qdrant, and Milvus for production RAG pipelines with 500k documents.',
-    aiModel: 'Claude',
-    tags: ['Vector DB', 'RAG', 'Architecture'],
-    isStarred: true,
-    createdAt: Date.now() - 1000 * 60 * 60 * 6,
-    tokenCountEstimate: 950,
-    content: `### Vector Database Architecture Decision Matrix
-
-When building an enterprise Retrieval-Augmented Generation (RAG) system with $\\approx$ 500,000 vector embeddings (1536-dim or 768-dim), here is the decision matrix:
-
-| Solution | Query Latency (p95) | Self-Hosted Option | Metadata Filtering | Operational Complexity |
-| :--- | :--- | :--- | :--- | :--- |
-| **Qdrant** | \`~12ms\` | ✅ Native Docker / Rust | Exceptional payload filtering | Low / High control |
-| **pgvector** | \`~28ms\` (HNSW) | ✅ Existing PostgreSQL | Standard SQL WHERE clauses | Zero additional infra |
-| **Pinecone** | \`~18ms\` | ❌ Fully Managed Cloud | Fast pre-filtering | Minimal |
-| **Milvus** | \`~15ms\` | ✅ Kubernetes Distributed | Advanced query expressions | Medium to High |
-
-#### Key Recommendation:
-- If you already run **PostgreSQL** in production: start with **pgvector with HNSW index** (\`m=16\`, \`ef_construction=64\`). You avoid running a separate database cluster.
-- If you need **sub-15ms search across complex nested JSON metadata**: choose **Qdrant**.
-
-\`\`\`sql
--- Creating HNSW index in pgvector for cosine similarity
-CREATE INDEX ON document_embeddings 
-USING hnsw (embedding vector_cosine_ops)
-WITH (m = 16, ef_construction = 64);
-\`\`\``
-  },
-  {
-    id: 'msg-5',
-    chatId: 'chat-4',
-    title: 'Memory Compaction and Context Pruning in Agent Loops',
-    userPrompt: 'How can an agent prevent infinite context growth while preserving critical user decisions?',
-    aiModel: 'ChatGPT',
-    tags: ['Agents', 'Memory', 'Context Window'],
+#### 3. Hashtags & Category Organization
+- Tag any output with \`#hashtags\` (e.g. \`#react\`, \`#prompts\`, \`#finance\`). Clicking any tag filters the thread instantly!
+- Organize your chats into categories like *Coding*, *Research*, *Prompts*, or *Guide* from the sidebar.`,
+    tags: ['saving-outputs', 'markdown', 'tags', 'organization'],
     isStarred: false,
-    createdAt: Date.now() - 1000 * 60 * 60 * 24,
-    tokenCountEstimate: 540,
-    content: `### The 3-Tier Agentic Memory Protocol
-
-To sustain long-running autonomous workflows across days of interaction without exceeding token budgets:
-
-1. **Episodic Working Buffer**:
-   - Recent 10 turns preserved verbatim.
-   - High fidelity for immediate back-and-forth context.
-2. **Semantic Milestone Log**:
-   - Every time a user confirms an architectural decision, append an immutable decision bullet to the system prompt header.
-3. **Recursive Summarization Tree**:
-   - As working memory crosses 16k tokens, compress turns 1–8 into a succinct factual rollup.
-
-> *"Context engineering is not about expanding windows; it is about ruthless relevance filtering."*`
+    createdAt: Date.now() - 1000 * 60 * 60 * 4,
   },
   {
-    id: 'msg-6',
-    chatId: 'chat-4',
-    title: 'Quadratic Equation Derivation with Complex Roots',
-    userPrompt: 'To find the roots of the quadratic equation x^2 + 5x + 8 = 0, calculate the discriminant and apply the quadratic formula.',
-    aiModel: 'DeepSeek',
-    tags: ['Math', 'LaTeX', 'Algebra'],
-    isStarred: true,
-    createdAt: Date.now() - 1000 * 60 * 15,
-    tokenCountEstimate: 420,
-    content: `To find the roots of the quadratic equation 
-
-$$x^2 + 5x + 8 = 0$$
-
-we can use the quadratic formula:
-
-$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
-
-For this equation, the coefficients are:
-
-* $a = 1$
-* $b = 5$
-* $c = 8$
-
-**Step 1: Calculate the discriminant ($b^2 - 4ac$)**
-
-$$b^2 - 4ac = (5)^2 - 4(1)(8)$$
-
-$$b^2 - 4ac = 25 - 32$$
-
-$$b^2 - 4ac = -7$$
-
-**Step 2: Apply the quadratic formula**
-
-Because the discriminant is negative ($-7$), the equation has no real solutions. Instead, it has two complex solutions involving the imaginary unit $i$ (where $i = \\sqrt{-1}$).
-
-$$x = \\frac{-5 \\pm \\sqrt{-7}}{2(1)}$$
-
-$$x = \\frac{-5 \\pm i\\sqrt{7}}{2}$$
-
-**Final Answer:**
-
-The two complex roots for the equation are:
-
-$$x_1 = -\\frac{5}{2} + \\frac{\\sqrt{7}}{2}i$$
-
-$$x_2 = -\\frac{5}{2} - \\frac{\\sqrt{7}}{2}i$$`
-  },
-  {
-    id: 'msg-7',
-    chatId: 'chat-4',
-    title: 'LaTeX Bracket Delimiters \\[...\\] and Boxed Complex Roots',
-    userPrompt: 'Solve x^2 + 5x + 8 = 0 using quadratic formula with boxed final answers.',
+    id: 'msg-welcome-3',
+    chatId: 'chat-welcome',
+    title: 'Step 2: Single & Multi-Select Exports (Image, PDF & Markdown)',
+    userPrompt: 'How do I export outputs to share with others or include in documentation?',
     aiModel: 'Claude',
-    tags: ['Math', 'LaTeX', 'Boxed'],
+    content: `### Powerful Export Options
+
+KeepChat offers 3 professional ways to share and archive your AI outputs:
+
+#### 📸 1. Export as Image (PNG)
+- Click the **Camera** icon on any output card to open the **Image Export Modal**.
+- Authentic WhatsApp-styled layout with your chat name, date, and clean wallpaper background.
+- **⚡ Auto-Fit Code Slider**: Adjust document width (480px to 1800px) or click **Auto-Fit Code** so long code lines never get cut off!
+- **One-Click Download** or **Copy Image to Clipboard** (\`Ctrl+V\` straight into Slack, Discord, or Notion).
+
+#### 📄 2. Export as PDF Document
+- Click the **Document** icon (\`FileText\`) on any card to export a paginated multi-page PDF.
+- **Snapshot Mode**: Visual capture preserving layout and styling.
+- **Selectable Text Mode**: Native vector text where text and code blocks can be highlighted and copied directly from your PDF reader!
+- **Custom Page Width & Auto-Fit**: Choose Portrait A4 (210×297mm), Landscape A4 (297×210mm), or custom wide page widths.
+
+#### 📝 3. Export as Markdown (.md)
+- Click the **Markdown** icon (\`FileCode\`) for instant \`.md\` file download complete with metadata, prompts, and hashtags.
+
+#### 🎯 4. Multi-Select Bulk Mode
+- Click the **Select** checkbox in the top header (or inside the **3-dot menu** on mobile).
+- Select multiple outputs and use the sticky bar to export them all as a single combined **Image**, **PDF**, or **Markdown** file, or **Delete** them in bulk!`,
+    tags: ['export', 'image-snapshot', 'pdf', 'markdown', 'multi-select'],
     isStarred: true,
-    createdAt: Date.now() - 1000 * 60 * 5,
-    tokenCountEstimate: 380,
-    content: `Solve using the quadratic formula:
+    createdAt: Date.now() - 1000 * 60 * 60 * 3,
+  },
+  {
+    id: 'msg-welcome-4',
+    chatId: 'chat-welcome',
+    title: 'Step 3: Search, Starred Filters, Pinning & Backups',
+    userPrompt: 'How do I quickly find outputs, filter favorites, and back up my vault?',
+    aiModel: 'DeepSeek',
+    content: `### Search, Filters, Pinning & Vault Backups
 
-\\[
-x^2+5x+8=0
-\\]
+Stay fast and organized as your collection grows:
 
-Here \\(a=1,\\ b=5,\\ c=8\\).
+#### 🔍 1. Instant Search
+- **Global Search**: Type in the sidebar search bar to find any chat title or category.
+- **In-Thread Search**: Click the magnifying glass in the chat header (or in the 3-dot menu on mobile) to search keywords and code across all outputs in the current thread.
 
-\\[
-x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}
-\\]
+#### ⭐ 2. Starred Outputs Filter
+- Click the **Star** icon on any card to favorite it.
+- Toggle the **Star** filter in the top header (or 3-dot menu on mobile) to view only starred outputs.
 
-\\[
-x=\\frac{-5\\pm\\sqrt{25-32}}{2}
-\\]
+#### 📌 3. Pinning Favorite Threads
+- Click the **Pin** button in the chat header or hover over any chat in the sidebar to keep top threads pinned at the top.
 
-\\[
-x=\\frac{-5\\pm\\sqrt{-7}}{2}
-\\]
-
-Since \\(\\sqrt{-7}=i\\sqrt7\\),
-
-\\[
-\\boxed{x=\\frac{-5\\pm i\\sqrt7}{2}}
-\\]
-
-So there are no real solutions; the two complex solutions are
-
-\\[
-\\boxed{x_1=\\frac{-5+i\\sqrt7}{2},\\qquad x_2=\\frac{-5-i\\sqrt7}{2}}
-\\]`
-  }
+#### 💾 4. Backup & Restore (Settings)
+- Click the **Gear** icon at the bottom-left of the sidebar to access **Settings**.
+- **Export Vault Backup**: Downloads a complete \`.json\` file containing all your threads, outputs, and tags.
+- **Restore Backup**: Import your \`.json\` file on any computer or browser to restore your entire vault.
+- **Theme Toggle**: Switch between WhatsApp Dark, Clean Light, or System theme.`,
+    tags: ['search', 'starred', 'pinning', 'backup', 'settings'],
+    isStarred: false,
+    createdAt: Date.now() - 1000 * 60 * 60 * 2,
+  },
 ];

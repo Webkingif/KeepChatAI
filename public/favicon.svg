@@ -1,43 +1,78 @@
-<svg width="64" height="64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
   <defs>
-    <radialGradient id="kc-medallion-grad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(100 95) rotate(90) scale(85)">
-      <stop offset="0%" stop-color="#25553b" />
-      <stop offset="60%" stop-color="#173a27" />
-      <stop offset="100%" stop-color="#0b2216" />
+    <!-- Background Shield Gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="60%" stop-color="#2d6a4f"/>
+      <stop offset="95%" stop-color="#1b4332"/>
+      <stop offset="100%" stop-color="#081c15"/>
     </radialGradient>
-    <linearGradient id="kc-gold-grad" x1="80" y1="30" x2="120" y2="175" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#f7dc9f" />
-      <stop offset="35%" stop-color="#d9a557" />
-      <stop offset="70%" stop-color="#b47833" />
-      <stop offset="100%" stop-color="#7a4a1b" />
+    
+    <!-- Golden Key & Text Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf0d5"/>
+      <stop offset="25%" stop-color="#d4af37"/>
+      <stop offset="65%" stop-color="#aa7c11"/>
+      <stop offset="100%" stop-color="#5c4004"/>
     </linearGradient>
-    <linearGradient id="kc-bubble-grad" x1="100" y1="45" x2="100" y2="105" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#86ce6c" />
-      <stop offset="55%" stop-color="#4f9a46" />
-      <stop offset="100%" stop-color="#2e6c2f" />
-    </linearGradient>
-    <linearGradient id="kc-arrow-grad" x1="85" y1="95" x2="115" y2="60" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#24602f" />
-      <stop offset="50%" stop-color="#7be184" />
-      <stop offset="100%" stop-color="#c7f998" />
+    
+    <!-- Inner Chat Bubble Gradient -->
+    <linearGradient id="leafGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1b4332"/>
+      <stop offset="50%" stop-color="#40916c"/>
+      <stop offset="100%" stop-color="#95d5b2"/>
     </linearGradient>
   </defs>
-  <circle cx="100" cy="100" r="92" fill="#143122" stroke="#427d58" stroke-width="4" />
-  <circle cx="100" cy="100" r="84" fill="url(#kc-medallion-grad)" stroke="#1d4831" stroke-width="2" />
-  <g fill="#295b3e" opacity="0.9">
-    <path d="M48 95 C43 85 45 74 53 66 C53 74 51 86 48 95 Z" />
-    <path d="M54 70 C49 61 53 51 63 45 C61 54 58 64 54 70 Z" />
-    <path d="M152 95 C157 85 155 74 147 66 C147 74 149 86 152 95 Z" />
-    <path d="M146 70 C151 61 147 51 137 45 C139 54 142 64 146 70 Z" />
-  </g>
-  <path d="M98 108 L100 166 L102 166 L102 108 Z" fill="#e8ba6e" stroke="#875322" stroke-width="0.8" />
-  <path d="M99 110 C93 115 88 123 88 132 C93 130 98 127 99 123 Z" fill="url(#kc-gold-grad)" />
-  <path d="M99 125 C92 130 87 138 88 146 C93 144 98 140 99 136 Z" fill="url(#kc-gold-grad)" />
-  <path d="M101 110 C107 115 112 123 112 132 C107 130 102 127 101 123 Z" fill="url(#kc-gold-grad)" />
-  <path d="M101 125 C108 130 113 138 112 146 C107 144 102 140 101 136 Z" fill="url(#kc-gold-grad)" />
-  <rect x="88" y="102" width="24" height="5" rx="2.5" fill="url(#kc-gold-grad)" stroke="#7a4a1b" stroke-width="1" />
-  <path d="M100 35 C123 35 141 53 141 75 C141 97 123 114 100 114 C95 114 91 113 87 111 L76 117 L79 105 C74 97 71 86 71 75 C71 53 89 35 100 35 Z" fill="url(#kc-gold-grad)" stroke="#693e15" stroke-width="2.5" />
-  <path d="M100 42 C119 42 134 57 134 75 C134 93 119 107 100 107 C96 107 92 106 88 104 L81 108 L83 99 C79 92 77 84 77 75 C77 57 91 42 100 42 Z" fill="url(#kc-bubble-grad)" stroke="#1c552a" stroke-width="1.5" />
-  <path d="M87 91 C89 82 94 74 103 69 C109 66 114 65 118 64 L116 71 C112 72 107 73 103 76 C96 80 93 86 91 92 Z" fill="url(#kc-arrow-grad)" />
-  <path d="M113 58 L126 62 L120 75 L117 68 L108 67 Z" fill="#d2f9a2" stroke="#1d5f29" stroke-width="1.2" />
+
+  <!-- Dark Green Circular Backdrop -->
+  <circle cx="300" cy="250" r="160" fill="url(#bgGrad)" />
+
+  <!-- Gold Chat Bubble (The Outer Bow of the Key) -->
+  <path d="M 300 110 
+           A 90 90 0 1 1 213 225 
+           L 190 270 
+           L 240 250 
+           A 90 90 0 0 1 300 290 
+           A 90 90 0 1 1 300 110 Z" 
+        fill="none" stroke="url(#goldGrad)" stroke-width="20" stroke-linejoin="round"/>
+        
+  <!-- Inner Green Bubble -->
+  <path d="M 300 130 
+           A 70 70 0 1 1 233 220 
+           L 215 255 
+           L 255 240 
+           A 70 70 0 0 1 300 270 
+           A 70 70 0 1 1 300 130 Z" 
+        fill="url(#leafGrad)"/>
+
+  <!-- Inner Golden Arrow/Leaf Motif -->
+  <path d="M 260 230 
+           C 270 210, 290 200, 310 180 
+           L 290 170 
+           L 330 160 
+           L 320 200 
+           L 305 185 
+           C 285 205, 275 220, 260 230 Z" 
+        fill="url(#goldGrad)"/>
+
+  <!-- Golden Key Shaft -->
+  <rect x="288" y="290" width="24" height="40" fill="url(#goldGrad)" />
+  <rect x="270" y="300" width="60" height="12" rx="4" fill="url(#goldGrad)" />
+  
+  <!-- The Golden Feather (Key Teeth) -->
+  <path d="M 300 330 
+           C 330 350, 330 420, 300 450 
+           C 270 420, 270 350, 300 330 Z" 
+        fill="url(#goldGrad)"/>
+  
+  <!-- Feather Detailing (The Quine & Barb Cuts) -->
+  <path d="M 300 330 L 300 445" stroke="#5c4004" stroke-width="3" fill="none"/>
+  <path d="M 300 360 L 315 345" stroke="#5c4004" stroke-width="2" fill="none"/>
+  <path d="M 300 380 L 285 365" stroke="#5c4004" stroke-width="2" fill="none"/>
+  <path d="M 300 400 L 315 385" stroke="#5c4004" stroke-width="2" fill="none"/>
+  <path d="M 300 420 L 290 410" stroke="#5c4004" stroke-width="2" fill="none"/>
+
+  <!-- The KeepChat Banner Text -->
+  <text x="300" y="540" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="76" text-anchor="middle">
+    <tspan fill="#1b4332">Keep</tspan><tspan fill="url(#goldGrad)">Chat</tspan>
+  </text>
 </svg>

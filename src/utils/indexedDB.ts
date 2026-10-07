@@ -362,9 +362,14 @@ export async function initializeKeepChatDB(): Promise<{
       }
     }
 
-    // If completely fresh (empty), seed with initial samples
-    if (currentChats.length === 0) {
-      console.log('Seeding initial samples into IndexedDB...');
+    // If completely fresh (empty) or only has legacy default sample chats, seed with welcome guide
+    const hasLegacySamples =
+      currentChats.length > 0 &&
+      currentChats.some((c) => c.id === 'chat-1') &&
+      !currentChats.some((c) => c.id === 'chat-welcome');
+
+    if (currentChats.length === 0 || hasLegacySamples) {
+      console.log('Seeding initial welcome guide samples into IndexedDB...');
       await saveAllChatsToDB(INITIAL_CHATS);
       await saveAllMessagesToDB(INITIAL_MESSAGES);
       currentChats = INITIAL_CHATS;
