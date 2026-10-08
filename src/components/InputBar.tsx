@@ -15,8 +15,11 @@ import {
   Copy,
   Check,
   Lightbulb,
+  ListTodo,
+  Calendar,
 } from 'lucide-react';
 import { AIModelType } from '../types/keepchat';
+import { toDateTimeLocalInputValue, fromDateTimeLocalInputValue } from '../utils/date';
 
 interface InputBarProps {
   defaultModel: AIModelType;
@@ -31,6 +34,9 @@ interface InputBarProps {
     mediaName?: string;
     mediaSize?: number;
     audioDuration?: number;
+    isTask?: boolean;
+    taskDeadline?: number;
+    taskTitle?: string;
   }) => void;
   onErrorToast?: (msg: string) => void;
   onToast?: (msg: string, type?: 'success' | 'error' | 'info') => void;
@@ -56,6 +62,11 @@ export const InputBar: React.FC<InputBarProps> = ({
   const [tagsInput, setTagsInput] = useState('');
   const [aiModel, setAiModel] = useState<AIModelType>(defaultModel);
   const [showMetadata, setShowMetadata] = useState(false);
+  const [isTask, setIsTask] = useState(false);
+  const [taskDeadline, setTaskDeadline] = useState<number>(() => Date.now() + 1000 * 60 * 60 * 24);
+  const [taskDeadlineInput, setTaskDeadlineInput] = useState<string>(() =>
+    toDateTimeLocalInputValue(Date.now() + 1000 * 60 * 60 * 24)
+  );
 
   // Mobile popovers
   const [showMobileModelMenu, setShowMobileModelMenu] = useState(false);
@@ -287,6 +298,9 @@ export const InputBar: React.FC<InputBarProps> = ({
         mediaUrl: attachedImage.dataUrl,
         mediaName: attachedImage.name,
         mediaSize: attachedImage.size,
+        isTask: isTask || undefined,
+        taskDeadline: isTask ? taskDeadline : undefined,
+        taskTitle: isTask ? (title.trim() || undefined) : undefined,
       });
       setAttachedImage(null);
     } else {
@@ -297,6 +311,9 @@ export const InputBar: React.FC<InputBarProps> = ({
         aiModel,
         tags: parsedTags,
         mediaType: 'text',
+        isTask: isTask || undefined,
+        taskDeadline: isTask ? taskDeadline : undefined,
+        taskTitle: isTask ? (title.trim() || undefined) : undefined,
       });
     }
 
@@ -304,6 +321,7 @@ export const InputBar: React.FC<InputBarProps> = ({
     setTitle('');
     setUserPrompt('');
     setTagsInput('');
+    setIsTask(false);
     setShowMetadata(false);
     setShowMobileModelMenu(false);
     setShowMobileTipPopover(false);
@@ -596,6 +614,31 @@ export const InputBar: React.FC<InputBarProps> = ({
                   placeholder="Tags (e.g. #react, #api)"
                   className="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
                 />
+                <div className="pt-1.5 border-t border-slate-100 dark:border-[#2a3942] flex flex-col gap-1.5">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-700 dark:text-slate-300">
+                    <input
+                      type="checkbox"
+                      checked={isTask}
+                      onChange={(e) => setIsTask(e.target.checked)}
+                      className="rounded text-[#00a884] focus:ring-[#00a884]"
+                    />
+                    <span className="flex items-center gap-1">
+                      <ListTodo className="w-3.5 h-3.5 text-[#00a884]" />
+                      Save as Task with Deadline
+                    </span>
+                  </label>
+                  {isTask && (
+                    <input
+                      type="datetime-local"
+                      value={taskDeadlineInput}
+                      onChange={(e) => {
+                        setTaskDeadlineInput(e.target.value);
+                        setTaskDeadline(fromDateTimeLocalInputValue(e.target.value));
+                      }}
+                      className="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white"
+                    />
+                  )}
+                </div>
               </div>
             )}
 
@@ -724,6 +767,37 @@ export const InputBar: React.FC<InputBarProps> = ({
               placeholder="Original user prompt that generated this output (optional)"
               className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
             />
+
+            {/* Task & Deadline Option */}
+            <div className="pt-2 border-t border-slate-100 dark:border-[#2a3942] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+              <label className="flex items-center gap-2 cursor-pointer font-medium text-slate-700 dark:text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={isTask}
+                  onChange={(e) => setIsTask(e.target.checked)}
+                  className="rounded text-[#00a884] focus:ring-[#00a884]"
+                />
+                <span className="flex items-center gap-1.5">
+                  <ListTodo className="w-4 h-4 text-[#00a884]" />
+                  Save as actionable task with deadline
+                </span>
+              </label>
+
+              {isTask && (
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-400 text-xs">Deadline:</span>
+                  <input
+                    type="datetime-local"
+                    value={taskDeadlineInput}
+                    onChange={(e) => {
+                      setTaskDeadlineInput(e.target.value);
+                      setTaskDeadline(fromDateTimeLocalInputValue(e.target.value));
+                    }}
+                    className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
+                  />
+                </div>
+              )}
+            </div>
           </div>
         )}
 

@@ -72,6 +72,10 @@ interface KeepChatOutput {
     tags: ['saving-outputs', 'markdown', 'tags', 'organization'],
     isStarred: false,
     createdAt: Date.now() - 1000 * 60 * 60 * 4,
+    isTask: true,
+    taskTitle: 'Step 1: Save & Tag AI outputs',
+    taskDeadline: Date.now() + 1000 * 60 * 60 * 48, // Upcoming: 2 days in future
+    taskCompleted: false,
   },
   {
     id: 'msg-welcome-3',
@@ -104,6 +108,10 @@ KeepChat offers 3 professional ways to share and archive your AI outputs:
     tags: ['export', 'image-snapshot', 'pdf', 'markdown', 'multi-select'],
     isStarred: true,
     createdAt: Date.now() - 1000 * 60 * 60 * 3,
+    isTask: true,
+    taskTitle: 'Step 2: Review Export Formats & Auto-Fit',
+    taskDeadline: Date.now() - 1000 * 60 * 60 * 24, // Overdue: 1 day in past
+    taskCompleted: false,
   },
   {
     id: 'msg-welcome-4',

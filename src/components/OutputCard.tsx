@@ -22,12 +22,22 @@ import {
   Camera,
   FileText,
   FileCode,
+  ListTodo,
+  AlertTriangle,
+  CalendarCheck,
+  Calendar,
 } from 'lucide-react';
 import { SavedOutput, AIModelType } from '../types/keepchat';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { AudioPlayer } from './AudioPlayer';
 import { ImageViewerModal } from './ImageViewerModal';
-import { formatWhatsAppTime, formatFullDateTime } from '../utils/date';
+import {
+  formatWhatsAppTime,
+  formatFullDateTime,
+  isDeadlineOverdue,
+  formatDeadlineRelative,
+  formatDeadlineDateTime,
+} from '../utils/date';
 
 interface OutputCardProps {
   output: SavedOutput;
@@ -45,6 +55,11 @@ interface OutputCardProps {
   isSelectMode?: boolean;
   isSelected?: boolean;
   onToggleSelect?: (outputId: string) => void;
+  onTurnIntoTask?: (output: SavedOutput) => void;
+  onChangeDeadline?: (output: SavedOutput) => void;
+  onToggleTaskComplete?: (outputId: string) => void;
+  onRemoveTask?: (outputId: string) => void;
+  onOpenTasksPage?: () => void;
 }
 
 const AVAILABLE_MODELS: AIModelType[] = ['ChatGPT', 'Gemini', 'Claude', 'DeepSeek', 'Other'];
@@ -62,6 +77,11 @@ export const OutputCard: React.FC<OutputCardProps> = ({
   isSelectMode = false,
   isSelected = false,
   onToggleSelect,
+  onTurnIntoTask,
+  onChangeDeadline,
+  onToggleTaskComplete,
+  onRemoveTask,
+  onOpenTasksPage,
 }) => {
   const [copied, setCopied] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -237,6 +257,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
 
   const isImage = output.mediaType === 'image' && Boolean(output.mediaUrl);
   const isAudio = output.mediaType === 'audio' && Boolean(output.mediaUrl);
+  const isOverdue = Boolean(output.isTask && !output.taskCompleted && isDeadlineOverdue(output.taskDeadline));
 
   return (
     <>
@@ -270,6 +291,12 @@ export const OutputCard: React.FC<OutputCardProps> = ({
               ? 'ring-2 ring-[#00a884] border-[#00a884] shadow-md bg-white dark:bg-[#1f2c34]'
               : isEditing
               ? 'border-[#00a884] ring-2 ring-[#00a884]/20 bg-white dark:bg-[#1f2c34] shadow-md'
+              : output.isTask && !output.taskCompleted && isOverdue
+              ? 'border-rose-400 dark:border-rose-700/80 ring-2 ring-rose-500/25 bg-white dark:bg-[#1f2c34] shadow-sm'
+              : output.isTask && !output.taskCompleted && !isOverdue
+              ? 'border-emerald-300 dark:border-teal-700/80 ring-2 ring-[#00a884]/20 bg-white dark:bg-[#1f2c34] shadow-sm'
+              : output.isTask && output.taskCompleted
+              ? 'border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-[#1f2c34]/80 opacity-90'
               : 'border-slate-200/80 dark:border-[#26353d] bg-white dark:bg-[#1f2c34] shadow-xs hover:shadow-md'
           } ${isSelectMode ? 'cursor-pointer' : ''}`}
           onClick={isSelectMode ? () => onToggleSelect?.(output.id) : undefined}
@@ -319,6 +346,21 @@ export const OutputCard: React.FC<OutputCardProps> = ({
           <div className="flex items-center gap-1 shrink-0 ml-auto">
             {!isEditing ? (
               <>
+                {/* Turn into Task Button (if not already a task) */}
+                {!output.isTask && onTurnIntoTask && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onTurnIntoTask(output);
+                    }}
+                    className="flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-[#00a884] dark:hover:text-[#25d366] hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+                    title="Turn this output into a task with a deadline"
+                  >
+                    <ListTodo className="w-3.5 h-3.5 text-[#00a884]" />
+                    <span className="hidden sm:inline">Add Task</span>
+                  </button>
+                )}
+
                 {/* Edit Output Button */}
                 {onEditOutput && (
                   <button
@@ -474,6 +516,127 @@ export const OutputCard: React.FC<OutputCardProps> = ({
             )}
           </div>
         </div>
+
+        {/* Task Deadline Banner (Visually Distinct: Overdue vs Upcoming vs Completed) */}
+        {output.isTask && (
+          <div
+            className={`mx-4 mt-3 p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-all ${
+              output.taskCompleted
+                ? 'border-l-4 border-l-slate-400 bg-slate-50 dark:bg-[#182329] border-slate-200 dark:border-[#26353d] opacity-80'
+                : isOverdue
+                ? 'border-l-4 border-l-rose-500 bg-rose-50/70 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900/50 text-rose-900 dark:text-rose-100 shadow-rose-900/5 ring-1 ring-rose-500/10'
+                : 'border-l-4 border-l-[#00a884] bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900/50 text-emerald-900 dark:text-emerald-100'
+            }`}
+          >
+            <div className="flex items-start sm:items-center gap-2.5 min-w-0">
+              {/* Complete / Incomplete Checkbox */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleTaskComplete?.(output.id);
+                }}
+                className={`mt-0.5 sm:mt-0 w-4.5 h-4.5 rounded border flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
+                  output.taskCompleted
+                    ? 'bg-slate-500 border-slate-500 text-white'
+                    : isOverdue
+                    ? 'border-rose-400 dark:border-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/40 bg-white dark:bg-[#111b21]'
+                    : 'border-slate-300 dark:border-slate-500 hover:border-[#00a884] bg-white dark:bg-[#111b21]'
+                }`}
+                title={output.taskCompleted ? 'Mark as incomplete' : 'Mark as complete'}
+              >
+                {output.taskCompleted && <Check className="w-3 h-3 stroke-[3]" />}
+              </button>
+
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                  {output.taskCompleted ? (
+                    <span className="font-semibold text-slate-600 dark:text-slate-400">
+                      Task Completed
+                    </span>
+                  ) : isOverdue ? (
+                    <span className="font-bold text-rose-700 dark:text-rose-400 flex items-center gap-1">
+                      <AlertTriangle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 animate-pulse" />
+                      OVERDUE TASK
+                    </span>
+                  ) : (
+                    <span className="font-semibold text-emerald-700 dark:text-teal-400 flex items-center gap-1">
+                      <CalendarCheck className="w-3.5 h-3.5 text-[#00a884]" />
+                      ACTIVE TASK
+                    </span>
+                  )}
+
+                  <span className="text-slate-300 dark:text-slate-600" aria-hidden="true">
+                    ·
+                  </span>
+
+                  <span
+                    className={`font-medium ${
+                      isOverdue
+                        ? 'text-rose-700 dark:text-rose-300 font-semibold'
+                        : 'text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    {formatDeadlineRelative(output.taskDeadline)}
+                  </span>
+
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
+                    ({formatDeadlineDateTime(output.taskDeadline)})
+                  </span>
+                </div>
+
+                {output.taskTitle && (
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5 truncate">
+                    {output.taskTitle}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Actions: Change Deadline, Tasks Page, Remove */}
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto text-xs">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChangeDeadline?.(output);
+                }}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-[#111b21] hover:bg-slate-100 dark:hover:bg-[#202c33] border border-slate-200 dark:border-[#2a3942] text-slate-700 dark:text-slate-200 font-medium transition-colors cursor-pointer shadow-2xs"
+                title="Change deadline"
+              >
+                <Calendar className="w-3.5 h-3.5 text-[#00a884]" />
+                <span>Change Deadline</span>
+              </button>
+
+              {onOpenTasksPage && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenTasksPage();
+                  }}
+                  className="inline-flex items-center gap-1 px-2 py-1 text-slate-600 dark:text-slate-300 hover:text-[#00a884] dark:hover:text-[#25d366] transition-colors cursor-pointer font-medium"
+                  title="View all tasks on the Tasks Page"
+                >
+                  <ListTodo className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Tasks Page</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveTask?.(output.id);
+                }}
+                className="p-1 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
+                title="Remove task status (keeps output)"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* User Prompt (if provided and not editing) */}
         {!isEditing && output.userPrompt && (

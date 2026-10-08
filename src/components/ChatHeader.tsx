@@ -119,11 +119,11 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 
       <div className="flex items-center justify-between px-3 md:px-4 py-2.5 min-h-[58px]">
         {/* Left Slot: Mobile Back Button + Avatar + Title Info */}
-        <div className="flex items-center gap-2 md:gap-3 min-w-0">
+        <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
           {/* Native Back Arrow for Mobile View */}
           <button
             onClick={onBack}
-            className="md:hidden p-2 -ml-1 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+            className="md:hidden p-2 -ml-1 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer shrink-0"
             title="Back to chats"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -160,8 +160,8 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           </div>
 
           {/* Thread Title & Meta Info */}
-          <div className="min-w-0 cursor-pointer" onClick={() => onEditChat(chat)}>
-            <div className="flex items-center gap-1.5">
+          <div className="min-w-0 flex-1 cursor-pointer" onClick={() => onEditChat(chat)}>
+            <div className="flex items-center gap-1.5 min-w-0">
               <h2 className="text-sm md:text-base font-semibold text-slate-900 dark:text-slate-100 truncate">
                 {chat.title}
               </h2>
@@ -196,10 +196,10 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 
         {/* Right Slot: Actions */}
         <div className="flex items-center gap-1 shrink-0">
-          {/* Direct Pin / Unpin Button */}
+          {/* Direct Pin / Unpin Button (Hidden on small screens) */}
           <button
             onClick={() => onPinToggle(chat.id)}
-            className={`p-2 rounded-full transition-colors cursor-pointer ${
+            className={`hidden sm:flex p-2 rounded-full transition-colors cursor-pointer ${
               chat.isPinned
                 ? 'text-[#00a884] dark:text-teal-400 bg-emerald-50 dark:bg-teal-950/40'
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
@@ -274,7 +274,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               title="More thread options"
               aria-label="More thread options"
             >
-              <MoreVertical className="w-4 h-4" />
+              <MoreVertical className="w-5 h-5" />
               {/* Active filter / selection indicator dot on small screens */}
               {(starredOnlyFilter || inThreadSearchQuery || isSelectMode) && (
                 <span className="sm:hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#00a884] ring-2 ring-[#f0f2f5] dark:ring-[#202c33]" />
@@ -288,7 +288,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                   className="fixed inset-0 z-30"
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 top-full mt-1 w-56 bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-1.5 z-40 animate-in fade-in zoom-in-95 duration-100">
+                <div className="absolute right-0 top-full mt-1.5 w-60 max-w-[calc(100vw-24px)] bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-2 z-40 animate-in fade-in zoom-in-95 duration-100 max-h-[85vh] overflow-y-auto">
                   {/* Small Screen: Search in Thread */}
                   <button
                     onClick={() => {
