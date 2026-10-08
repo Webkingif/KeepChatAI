@@ -38,6 +38,11 @@ export interface SavedOutput {
   audioDuration?: number; // Duration in seconds
   isEdited?: boolean;
   editedAt?: number;
+  isTask?: boolean;
+  taskDeadline?: number; // Unix timestamp in ms
+  taskCompleted?: boolean;
+  taskCompletedAt?: number;
+  taskTitle?: string;
 }
 
 export interface AppExportData {

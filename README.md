@@ -1,11 +1,11 @@
 # KeepChat — AI Output Vault & Organizer
 
 <p align="center">
-  <img src="public/pwa-512x512.png" alt="KeepChat Logo" width="88" height="88" />
+  <img src="public/pwa-512x512.png" alt="KeepChat Logo" width="96" height="96" />
 </p>
 
 <p align="center">
-  <strong>A centralized WhatsApp-inspired vault to save, organize, search, and view Markdown-formatted AI outputs from ChatGPT, Gemini, Claude, and DeepSeek.</strong>
+  <strong>A centralized, WhatsApp-inspired vault to save, organize, search, and view Markdown-formatted AI outputs from ChatGPT, Gemini, Claude, and DeepSeek — with output-to-task tracking and multi-format exports.</strong>
 </p>
 
 <p align="center">
@@ -16,127 +16,193 @@
   <img src="https://img.shields.io/badge/Storage-IndexedDB_Local--First-25D366?logo=googlechrome&logoColor=white" alt="IndexedDB" />
   <img src="https://img.shields.io/badge/PWA-100%25_Offline_Ready-008069?logo=pwa&logoColor=white" alt="PWA Ready" />
   <img src="https://img.shields.io/badge/Math-KaTeX-007ACC?logo=katex&logoColor=white" alt="KaTeX" />
+  <img src="https://img.shields.io/badge/PDF_Engine-jsPDF-E74C3C?logo=adobe-acrobat-reader&logoColor=white" alt="jsPDF" />
+  <img src="https://img.shields.io/badge/Snapshots-html--to--image-FF6F00?logo=html5&logoColor=white" alt="html-to-image" />
 </p>
 
 ---
 
 ## 📖 Overview
 
-As we interact daily with AI models like **ChatGPT**, **Claude**, **Google Gemini**, and **DeepSeek**, valuable insights, code solutions, research notes, and formulas often get scattered and lost across browser tabs and disjointed chat histories.
+As we interact daily with AI models like **ChatGPT**, **Claude**, **Google Gemini**, and **DeepSeek**, valuable insights, code architectures, formulas, and actionable instructions quickly get scattered across browser tabs and disjointed chat histories.
 
-**KeepChat** solves this with a familiar, ultra-responsive **WhatsApp-style conversational interface**. It provides an offline-first personal repository to paste, archive, tag, and search AI outputs with native support for full Markdown rendering, syntax-highlighted code blocks, mathematical LaTeX equations, voice notes, and image attachments.
+**KeepChat** transforms this experience into a familiar, ultra-responsive **WhatsApp-style conversational interface**. It provides an offline-first personal repository to paste, archive, tag, and search AI outputs with native support for full Markdown rendering, syntax-highlighted code blocks, mathematical LaTeX equations, voice notes, and image attachments.
+
+Beyond simple archiving, KeepChat turns outputs into action with **integrated deadline task tracking**, **multi-card image snapshots**, **paginated PDF documents (with selectable vector text)**, and **chronological Markdown exports**.
 
 ---
 
 ## ✨ Key Features
 
-- **💬 WhatsApp-Inspired Experience**:
-  - Classic dual-pane layout with light and dark mode WhatsApp wallpaper backgrounds.
-  - Familiar date dividers (*TODAY*, *YESTERDAY*, past dates) and thread bubbles.
-  - Floating circular scroll-to-bottom button when reviewing earlier messages.
-  - Responsive mobile single-screen navigation with fluid slide transitions.
+### 💬 Authentic WhatsApp-Inspired Experience
+- **Adaptive Layout**: Persistent dual-pane view on desktop (`>768px`) with fluid WhatsApp Web proportioning; native single-pane flow on mobile (`<768px`) with smooth transitions and back navigation.
+- **Visual Fidelity**: Authentic light (`#F0F2F5`) and dark (`#111B21` / `#202C33`) WhatsApp themes with authentic wallpaper pattern backgrounds.
+- **Date Dividers**: Natural inline date badges grouping saved outputs (**TODAY**, **YESTERDAY**, or formatted calendar dates) that scroll smoothly with the stream.
+- **Floating Scroll-to-Bottom Button**: WhatsApp-style circular action button that smoothly slides in when scrolling past 150px and scrolls directly to the newest message.
+- **Ergonomic Send Button**: 48px circular emerald action button with flight micro-animations, tactile feedback, and keyboard shortcuts (`Ctrl+Enter` / `Cmd+Enter`).
+- **Chat Pinning**: Pin up to 5 high-priority threads with hover quick-actions, header toggles, and mobile 450ms long-press gesture sheets.
 
-- **🤖 Multi-Model Organization**:
-  - Organize notes across dedicated threads for **ChatGPT**, **Google Gemini**, **Claude**, **DeepSeek**, or custom AI models.
-  - Custom chat avatars, icons, and colors.
-  - Thread-level default AI model selection with single-click model switching.
+### 🤖 Multi-Model Organization & Thread Avatars
+- **AI Model Classification**: Dedicated threads and output tags for **ChatGPT**, **Google Gemini**, **Claude**, **DeepSeek**, or custom models.
+- **Custom Chat Photos**: Upload custom avatars in the chat creation/edit modal or directly via the chat header camera trigger.
+- **Chat Logo Lightbox**: Tap any avatar in the header or sidebar to open the full-screen photo viewer with high-resolution download, zoom, and change actions.
 
-- **📝 Markdown, LaTeX & Syntax Highlighting**:
-  - Full GitHub-Flavored Markdown (GFM) tables, checklists, blockquotes, and links.
-  - Beautiful inline (`$...$`) and block (`$$...$$`) LaTeX math formulas powered by **KaTeX**.
-  - Code syntax highlighting with copyable code blocks and language tags powered by **PrismJS**.
+### ✅ Output-to-Task Conversion & Dedicated Tasks View
+- **Actionable AI Outputs**: Convert any saved output into an actionable task with 1 click.
+- **Changeable Deadlines**: Set deadlines with quick presets (*Today*, *Tomorrow*, *In 2 Days*, *In 1 Week*) or custom date-time pickers.
+- **Dedicated Tasks Hub**: Access a centralized task management dashboard with instant summary metrics:
+  - **Total Tasks**
+  - **Overdue Tasks** (high-contrast rose border, urgent badge, relative overdue calculation)
+  - **Upcoming Tasks** (emerald border, countdown badge)
+  - **Completed Tasks** (muted strikethrough styling)
+- **Task Management Controls**: 1-click completion toggles, quick extend actions (`+1d`, `+3d`, `+1w`), change deadline modal, and **"Open in Chat"** navigation to jump straight to the source message.
 
-- **🎙️ Voice Notes & Attachments**:
-  - Built-in audio voice recorder to save quick spoken thoughts or AI dictations.
-  - Custom audio player with playback speed toggle (`1.0x`, `1.5x`, `2.0x`) and progress seek bar.
-  - Image attachments with full-screen lightbox preview.
+### 📸 Single & Multi-Output Image Export (WhatsApp Snapshot)
+- **High-Resolution PNG Capture**: Render selected outputs into an authentic WhatsApp snapshot with chat title, avatar, date, KeepChat branding, and wallpaper.
+- **Interactive Width Slider**: Adjust export width continuously from 480px to 1800px with live numeric feedback.
+- **1-Click Width Presets**: **Standard (640px)**, **Wide (960px)**, and **Ultra (1280px)**.
+- **⚡ Auto-Fit Code**: Measures the longest line of code or math formula and automatically widens the snapshot to prevent text truncation.
+- **Download & Clipboard**: One-click PNG file download and direct *"Copy Image to Clipboard"*.
 
-- **🔍 Lightning-Fast Search & Filtering**:
-  - Global search across all chat threads by title, category, or preview text.
-  - In-thread instant search filtering messages by prompt, output text, or custom tags.
-  - One-click Starred/Favorite messages filter (`⭐`).
+### 📄 Multi-Mode Paginated PDF Export
+- **100% Client-Side PDF Generation**: Fast, offline PDF creation powered by `jspdf`.
+- **Snapshot Mode**: Visual PDF rendering with WhatsApp styling, bubbles, and background.
+- **Selectable Vector Text Mode**: Highlightable, searchable, and copyable text PDF with monospace code boxes and indent preservation.
+- **Orientation & Sizing**: Portrait (210×297mm) and Landscape (297×210mm) with presets for **Portrait A4 (750px)**, **Landscape A4 (1050px)**, and **Ultra-Wide (1350px)**.
+- **Uniform Dimensions & Pagination**: Guarantees identical page width and height across all pages with running headers and `Page X of Y` footers.
+- **Code Auto-Fit**: Measures code lines and adjusts printable dimensions to fit without cropping.
 
-- **🛡️ 100% Offline-First Architecture**:
-  - Full client-side persistence in browser **IndexedDB** with zero telemetry or tracking.
-  - Progressive Web App (PWA) with Workbox service worker precaching: launches and works without any active network connection.
-  - Complete data ownership: one-click JSON backup, restore, and Markdown export.
+### 📝 Single & Multi-Output Markdown Export (.md)
+- **Clean Markdown Files**: Export single cards or multi-selected outputs as `.md` files.
+- **Strict Chronological Ordering**: Ensures outputs are saved from oldest (top) to newest (bottom).
+- **Rich Metadata**: Includes chat thread title, AI model badge, `#tags`, timestamp, and prompt blockquotes.
+
+### ☑️ Multi-Select & Bulk Operations
+- **Interactive Selection**: Enter multi-select mode from the header or menu with circular checkboxes.
+- **Sticky Multi-Select Bar**: Live counter, Select All / Deselect All, and instant action triggers.
+- **Bulk Actions**: Export selection to **Image**, **PDF**, or **Markdown**, or trigger **Bulk Delete** with confirmation modal.
+
+### ✏️ Indefinite Inline Output Editing & Tagging
+- **Zero Lockout Editing**: Edit any output card at any time without restrictions.
+- **Inline Editor**: Switch AI model tag, update prompt title, and edit raw Markdown with `Ctrl+Enter` save.
+- **Edited Timestamp**: Subtle WhatsApp-style `Edited ·` badge beside the timestamp with date-time tooltip.
+- **Output Tag Management**: Inline `+ Tag` button for quick tagging, hover `x` deletion, and 1-click `#tag` filtering.
+
+### 📐 Publication-Grade LaTeX Math & Code Highlighting
+- **Full LaTeX Math (via KaTeX)**: Render inline (`$...$`, `\(...\)`) and display block (`$$...$$`, `\[...\]`) math formulas without unwanted border boxes or green tints.
+- **Syntax Highlighting (via PrismJS)**: Monospace code blocks with language indicators and 1-click copy-to-clipboard.
+- **AI Formatting Assistant**: Permanent tip reminder and 1-click clipboard prompt: `"Format as a copyable block of markdown"`.
+
+### 🎙️ Voice Notes & Image Attachments
+- **Voice Memo Recorder**: Native `MediaRecorder` audio capture with live timer, waveform animation, discard, and send controls.
+- **WhatsApp Audio Player**: Interactive player with play/pause, scrub bar, waveform bars, and `1.0x / 1.5x / 2.0x` speed toggles.
+- **Image Attachments**: Attach photos to outputs with full-screen lightbox preview and download actions.
+
+### 🛡️ 100% Offline-First Architecture & Privacy
+- **IndexedDB Engine**: All chats, outputs, voice recordings, and attachments persist in browser IndexedDB (`keepchat_db` v1) with transparent localStorage fallback.
+- **Workbox PWA Pre-Caching**: Navigation fallback (`/index.html`) ensures instant startup even in airplane mode.
+- **Zero Telemetry**: No third-party analytics, tracking pixels, or external API calls. Your AI outputs remain 100% private to your browser.
+- **Full Vault Backup & Restore**: One-click complete JSON backup export and import.
 
 ---
 
 ## 🏛️ System Architecture
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        KeepChat React 19 Frontend                      │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│   ┌───────────────────────────┐    ┌───────────────────────────────┐   │
-│   │   Sidebar / Thread List   │    │    Active Conversation View   │   │
-│   │  • Pinned / Starred chats │    │  • DateDivider scroll stream  │   │
-│   │  • Category pills         │    │  • OutputCard (Markdown/Math) │   │
-│   │  • Global real-time search│    │  • Voice player & attachments │   │
-│   │  • PWA install button     │    │  • ScrollToBottomButton       │   │
-│   └─────────────┬─────────────┘    └───────────────┬───────────────┘   │
-│                 │                                  │                   │
-│                 └─────────────────┬────────────────┘                   │
-│                                   ▼                                    │
-│                 ┌───────────────────────────────────┐                  │
-│                 │      Local-First Storage Layer    │                  │
-│                 │      (src/utils/indexedDB.ts)     │                  │
-│                 └─────────────────┬─────────────────┘                  │
-│                                   │                                    │
-│             ┌─────────────────────┴─────────────────────┐              │
-│             ▼                                           ▼              │
-│  ┌───────────────────────┐                    ┌───────────────────┐    │
-│  │ IndexedDB (Primary)   │                    │ localStorage      │    │
-│  │ Store: chats, messages│                    │ Fallback & Themes │    │
-│  └───────────────────────┘                    └───────────────────┘    │
-│                                                                        │
-├────────────────────────────────────────────────────────────────────────┤
-│                       PWA & Offline Service Worker                     │
-│  • Workbox Navigation Fallback (`/index.html`)                         │
-│  • Precached Bundles, KaTeX Webfonts, Icons & Styles                   │
-│  • CacheFirst Strategy for Google Web Fonts                            │
-└────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                KeepChat React 19 Application                           │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                        │
+│   ┌───────────────────────────┐    ┌───────────────────────────────────────────────┐   │
+│   │   Sidebar & Navigation    │    │              Main Content Area                │   │
+│   │  • Pinned threads (max 5) │    ├───────────────────────┬───────────────────────┤   │
+│   │  • Category & tag filters │    │   Active Chat Thread  │   Dedicated Tasks Hub │   │
+│   │  • Chats / Tasks switcher │    │ • DateDivider stream  │ • Metrics summary     │   │
+│   │  • Global real-time search│    │ • OutputCard & Tags   │ • Overdue / Upcoming  │   │
+│   │  • PWA install trigger    │    │ • Voice / Image cards │ • Filter tabs & search│   │
+│   │  • Settings & JSON backup │    │ • InputBar (≤ 8% vh)  │ • Complete & extend   │   │
+│   └─────────────┬─────────────┘    └───────────┬───────────┴───────────┬───────────┘   │
+│                 │                              │                       │               │
+│                 └──────────────────────────────┼───────────────────────┘               │
+│                                                ▼                                       │
+│                       ┌─────────────────────────────────────────────────┐              │
+│                       │          Multi-Select & Export Systems          │              │
+│                       ├─────────────────────────────────────────────────┤              │
+│                       │ • MultiSelectBar (Counter, Select/Deselect All) │              │
+│                       │ • ExportSnapshotModal (PNG via html-to-image)   │              │
+│                       │ • ExportPdfModal (Snapshot & Vector via jsPDF)  │              │
+│                       │ • exportOutputsAsMarkdown (.md chronological)   │              │
+│                       │ • ConfirmBulkDeleteModal (Safe batch deletion)  │              │
+│                       └────────────────────────┬────────────────────────┘              │
+│                                                │                                       │
+│                                                ▼                                       │
+│                       ┌─────────────────────────────────────────────────┐              │
+│                       │            Local-First Storage Engine           │              │
+│                       │            (src/utils/indexedDB.ts)             │              │
+│                       └────────────────────────┬────────────────────────┘              │
+│                                                │                                       │
+│                         ┌──────────────────────┴──────────────────────┐                │
+│                         ▼                                             ▼                │
+│             ┌────────────────────────┐                    ┌───────────────────────┐    │
+│             │  IndexedDB (Primary)   │                    │  localStorage         │    │
+│             │  Stores: chats,        │                    │  Fallback & Settings  │    │
+│             │  messages, meta        │                    │  Theme preference     │    │
+│             └────────────────────────┘                    └───────────────────────┘    │
+│                                                                                        │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│                           Progressive Web App (PWA) Layer                              │
+│  • Workbox Navigation Fallback (`/index.html`)                                         │
+│  • Asset precaching (Scripts, KaTeX Webfonts, CSS, Icons)                              │
+│  • Offline connectivity detection (`OfflineIndicator` & `useOnlineStatus`)             │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 📱 Progressive Web App (PWA) & Offline Usage
 
-KeepChat is engineered as a standalone Progressive Web App that works seamlessly offline.
+KeepChat is designed as an installable, standalone Progressive Web App that functions seamlessly without an internet connection.
 
 ### Installation Instructions
 
 | Platform | How to Install |
 | :--- | :--- |
 | **Android / Chrome** | Tap the **Install KeepChat** banner button in the sidebar header or tap `⋮` in Chrome and choose **Install app** or **Add to Home screen**. |
-| **iOS / Safari** | Tap the **Share** button (box with upward arrow) at the bottom of Safari, scroll down, and select **Add to Home Screen**. |
-| **macOS / Windows / Linux** | Click the **Install** icon in the Chrome/Edge address bar or click the download icon in KeepChat's sidebar header. |
+| **iOS / Safari** | Tap the **Share** button (square with arrow) at the bottom of Safari, scroll down, and select **Add to Home Screen**. |
+| **macOS / Windows / Linux** | Click the **Install** icon in your browser address bar or click the download icon in KeepChat's sidebar header. |
 
 ### Offline Guarantee
 - **App Shell**: The service worker activates immediately on load, caching all scripts, stylesheets, and KaTeX mathematical font assets.
-- **Data Persistence**: All created chats, prompts, outputs, voice recordings, and attachments live inside your browser's IndexedDB. You can create, edit, search, and organize chats in airplane mode.
+- **Data Persistence**: All created chats, prompts, outputs, tasks, voice recordings, and attachments live inside browser IndexedDB.
+- **Zero Loss**: You can create, edit, search, export, and organize chats completely in airplane mode.
 
 ---
 
 ## 💡 AI Prompting & Markdown Cheatsheet
 
-For the cleanest outputs when chatting with ChatGPT, Gemini, or Claude, end your prompt with this directive:
+To get the cleanest, most structured outputs from ChatGPT, Claude, Gemini, or DeepSeek, append this directive to your prompt:
 
 ```markdown
 Format as a copyable block of markdown. Include headers, code blocks with languages, and LaTeX math ($...$ or $$...$$) where applicable.
 ```
 
+*(Tip: KeepChat has a 1-click "Copy Prompt" button in the bottom input bar and empty thread views).*
+
 ### Supported Syntax in KeepChat
 
-#### 1. Code Blocks with Highlighting
+#### 1. Code Blocks with Syntax Highlighting
 ````markdown
-```python
-def fibonacci(n: int) -> int:
-    if n <= 1:
-        return n
-    return fibonacci(n - 1) + fibonacci(n - 2)
+```typescript
+interface TaskItem {
+  id: string;
+  title: string;
+  deadline: string;
+  isCompleted: boolean;
+}
+
+export function isOverdue(task: TaskItem): boolean {
+  return !task.isCompleted && new Date(task.deadline) < new Date();
+}
 ```
 ````
 
@@ -148,18 +214,24 @@ def fibonacci(n: int) -> int:
   f(x) = \int_{-\infty}^\infty \hat{f}(\xi)\,e^{2\pi i \xi x}\,d\xi
   $$
   ```
+- **Complex Formulas & Matrices**:
+  ```markdown
+  $$
+  A = \begin{pmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{pmatrix}, \quad \det(A) = a_{11}a_{22} - a_{12}a_{21}
+  $$
+  ```
 
 #### 3. Task Lists & Tables
 ```markdown
-| Feature | Supported | Description |
+| Feature | Status | Export Format |
 | :--- | :---: | :--- |
-| Markdown | ✅ | Full GFM formatting |
-| KaTeX Math | ✅ | Inline and display blocks |
-| Offline | ✅ | 100% client-side PWA |
+| Image Snapshot | ✅ | PNG (480px–1800px) |
+| Paginated PDF | ✅ | Portrait & Landscape A4 |
+| Markdown Vault | ✅ | .md (Chronological) |
 
-- [x] Create project
-- [x] Configure PWA
-- [ ] Save new outputs
+- [x] Paste AI response
+- [x] Convert to task with deadline
+- [ ] Export summary report
 ```
 
 ---
@@ -167,10 +239,10 @@ def fibonacci(n: int) -> int:
 ## 🚀 Getting Started & Local Development
 
 ### Prerequisites
-- **Node.js**: v18.0.0 or higher
-- **npm**: v9.0.0 or higher
+- **Node.js**: `v18.0.0` or higher
+- **npm**: `v9.0.0` or higher (or `bun` / `pnpm`)
 
-### Installation
+### Installation & Setup
 
 1. **Clone the repository**:
    ```bash
@@ -193,7 +265,7 @@ def fibonacci(n: int) -> int:
    ```bash
    npm run build
    ```
-   Production assets and the PWA service worker will be compiled into the `dist/` directory.
+   Compiles production-optimized assets and service worker into `dist/`.
 
 5. **Typecheck & Lint**:
    ```bash
@@ -206,27 +278,29 @@ def fibonacci(n: int) -> int:
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Framework** | [React 19](https://react.dev/) | Component architecture & modern hooks |
-| **Build Tool** | [Vite 8](https://vite.dev/) | Ultra-fast bundling & development server |
-| **Language** | [TypeScript 5](https://www.typescriptlang.org/) | Type safety & strict contracts |
-| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first responsive design & WhatsApp styling |
-| **Offline / PWA** | [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) | Service worker generation & asset precaching |
-| **Storage** | [IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) | High-capacity, local-first client storage |
-| **Markdown** | [react-markdown](https://github.com/remarkjs/react-markdown) | Markdown rendering with GFM support |
-| **Math Engine** | [KaTeX](https://katex.org/) | High-speed LaTeX formula typesetting |
-| **Syntax Highlighting** | [PrismJS](https://prismjs.com/) | Code colorization for popular languages |
-| **Icons** | [Lucide React](https://lucide.dev/) | Clean, consistent icons |
+| **Framework** | [React 19](https://react.dev/) | Modern concurrent UI architecture & hooks |
+| **Build Tool** | [Vite 8](https://vite.dev/) | Ultra-fast bundling, HMR, and development tooling |
+| **Language** | [TypeScript 5](https://www.typescriptlang.org/) | Strict static typing and schemas |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first responsive design & WhatsApp theming |
+| **Storage Engine** | [IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) | Client-side, local-first database (`chats`, `messages`, `meta`) |
+| **Offline & PWA** | [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) | Service worker, Workbox precaching, and app manifest |
+| **Markdown Parser** | [react-markdown](https://github.com/remarkjs/react-markdown) | GFM tables, checklists, blockquotes, and custom elements |
+| **Math Rendering** | [KaTeX](https://katex.org/) & [remark-math](https://github.com/remarkjs/remark-math) | Publication-grade LaTeX formula typesetting |
+| **Syntax Highlighting** | [PrismJS](https://prismjs.com/) | Code colorization with language tags and copy button |
+| **PDF Generation** | [jsPDF](https://github.com/parallax/jsPDF) | Client-side paginated PDF rendering (Snapshot & Vector text) |
+| **Image Snapshots** | [html-to-image](https://github.com/bubkoo/html-to-image) | High-resolution 2× PNG snapshots with width controls |
+| **Icons** | [Lucide React](https://lucide.dev/) | Consistent, lightweight vector icons |
 
 ---
 
 ## 🔒 Privacy & Data Ownership
 
-- **Zero Cloud Tracking**: KeepChat does not send your saved chats or AI outputs to any external server.
-- **Local-Only**: Everything stays in your browser's private IndexedDB storage.
-- **Portable**: Export your entire vault to standard JSON or individual chats to `.md` files at any time.
+- **100% Local-First**: All your data lives exclusively in your browser's private IndexedDB storage.
+- **Zero Cloud Leakage**: No external database, tracking pixels, or AI API transmissions.
+- **Total Portability**: Export any chat or selection to **PNG**, **PDF**, or **Markdown**, or export your complete database to **JSON** anytime.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is open-source and licensed under the [MIT License](LICENSE).

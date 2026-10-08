@@ -145,6 +145,10 @@ export function exportOutputsAsMarkdown(
     if (msg.tags && msg.tags.length > 0) {
       lines.push(`**Tags:** ${msg.tags.map((t) => (t.startsWith('#') ? t : `#${t}`)).join(', ')}`);
     }
+    if (msg.isTask) {
+      const deadlineStr = msg.taskDeadline ? new Date(msg.taskDeadline).toLocaleString() : 'None';
+      lines.push(`**Task Status:** ${msg.taskCompleted ? 'Completed' : 'Pending'} | **Deadline:** ${deadlineStr}`);
+    }
     if (msg.userPrompt) {
       lines.push(`\n**Prompt:**\n> ${msg.userPrompt}\n`);
     }

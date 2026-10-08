@@ -173,4 +173,48 @@
     3. **Step 2: Export Options**: Walkthrough on single & multi-select exports to Image (PNG), paginated PDF (Snapshot & Selectable Text), and Markdown (`.md`)
     4. **Step 3: Search, Filters & Backups**: Walkthrough on in-thread search, global sidebar search, starred filters, pinning threads, and JSON backups
   - Updated IndexedDB and localStorage migration loaders to ensure new visitors and existing sample viewers cleanly load the Welcome Guide
+- [x] Output-to-Task Conversion, Changeable Deadlines & Dedicated Tasks Page:
+  - Added task schema properties to `SavedOutput`: `isTask`, `taskDeadline`, `taskCompleted`, `taskCompletedAt`, `taskTitle`
+  - Created date utilities: `isDeadlineOverdue`, `formatDeadlineRelative`, `formatDeadlineDateTime`, `toDateTimeLocalInputValue`, `fromDateTimeLocalInputValue`
+  - Created `TaskDeadlineModal.tsx` for optionally converting any output into a task, setting target deadlines with presets (Today, Tomorrow, In 2 Days, 1 Week, custom date-time picker) or removing task status
+  - Built dedicated `TasksView.tsx` page showcasing all tasks in the vault:
+    - Summary metrics bar: Total Tasks, Overdue Tasks (highlighted in rose), Upcoming Tasks (emerald), Completed Tasks
+    - Segmented filter controls: All, Overdue, Upcoming, Completed
+    - Search by task title, markdown content, chat name, or tags, plus sort options
+    - Distinct visual contrast for tasks whose deadline has passed (Overdue) vs upcoming tasks:
+      - Overdue Tasks: Bold rose left border (`border-l-4 border-l-rose-500`), rose background tint, alert icon, high-contrast urgent badge with exact overdue time
+      - Upcoming Tasks: Emerald left border (`border-l-4 border-l-[#00a884]`), clean card surface, calendar badge with countdown
+      - Completed Tasks: Slate muted border, strikethrough styling, completion checkmark
+    - Interactive 1-click completion checkbox, Change Deadline trigger, quick extend presets (+1d, +3d, +1w), Remove Task button, and "Open in Chat" button that navigates directly to the thread and highlights the output
+  - Integrated Task Deadline Banner directly onto `OutputCard.tsx` with deadline display, status alerts, inline complete checkbox, Change Deadline button, and Tasks Page shortcut
+  - Added option in `InputBar.tsx` to immediately save new outputs as actionable tasks with target deadlines
+  - Added direct Tasks access in `Sidebar.tsx`: header action button with overdue alert pulse, dropdown option, and top segmented switcher between Chats and Tasks
+  - Added sample upcoming and overdue tasks to initial `seedData.ts` for immediate demonstration
+  - Persisted all task states and deadline modifications directly in IndexedDB with localStorage fallback
+- [x] Fixed Task Card Title Orientation & Due Date Badge Separation (`TasksView.tsx`):
+  - Solved issue where task titles wrapped into narrow vertical columns on mobile and smaller cards by granting the title full horizontal width (`w-full` / `min-w-0 flex-1`) across the card header and removing restrictive `break-words`.
+  - Reorganized task card layout to clearly separate the Due Date Badge from the Source Chat attribution ("chat the task is located").
+  - The Due Date Badge (Overdue alert pill with live relative countdown or Upcoming badge) is now positioned cleanly in the status row alongside the title.
+  - The Source Chat attribution is placed in a dedicated metadata row below the title as an attractive chip (`px-2 py-0.5 rounded-md bg-slate-100 dark:bg-[#111b21]`) with `MessageSquare` icon, alongside AI Model badges and hashtags, completely eliminating overlapping or awkward stacking.
+- [x] Updated and expanded `README.md`:
+  - Documented full feature matrix including output-to-task conversion, dedicated Tasks Hub (`TasksView.tsx`), and deadline management
+  - Documented multi-format export engines: high-resolution WhatsApp snapshot images (PNG with width slider & code auto-fit), paginated PDF export (Snapshot & selectable vector text via jsPDF), and chronological Markdown (.md)
+  - Documented multi-select bulk operations and safe bulk delete
+  - Updated system architecture diagram, tech stack table with new libraries (`jspdf`, `html-to-image`), and offline PWA instructions
+- [x] Comprehensive 100% Offline Capability Audit & Verification:
+  - Audited PWA configuration in `vite.config.ts`: verified Workbox precaching of 60 entries (3.77MB) covering all JS, CSS, KaTeX mathematical webfonts, HTML shell, and icons
+  - Verified `navigateFallback: '/index.html'` with immediate service worker registration (`registerSW({ immediate: true })`), `skipWaiting: true`, and `clientsClaim: true` for zero-latency offline boot
+  - Audited all dependencies: 0 external CDN script tags, 0 runtime `fetch` / HTTP requests in `src/`
+  - Verified local-first persistence: IndexedDB (`keepchat_db` v1) with automatic `localStorage` synchronization and fallback
+  - Verified client-side offline engines: KaTeX & Prism for math/code formatting, `jsPDF` for vector and snapshot PDF export, `html-to-image` for PNG snapshots
+  - Modernized `vite.config.ts` path resolution to `import.meta.dirname`
+- [x] Implemented Tag Filtering for Tasks (`TasksView.tsx`):
+  - Extracted unique tags across all tasks with real-time frequency counting (`availableTags`)
+  - Added dedicated interactive Tag Filter strip in the task controls bar with "All Tags" pill, styled `#tag` chips with task counts, and 1-click active tag clearing
+  - Added 1-click tag filtering on task cards: tapping any `#tag` chip in the task metadata row immediately filters the task list to matching tasks (or toggles filter off)
+  - Updated empty states to indicate active tag filter (`No Tasks Tagged #tag`) with a direct "Clear Tag Filter" button
+  - Added tag filtering section in the mobile 3-dots drawer and active indicator dot on the header menu
 - [x] Verified with `lint_applet` and `compile_applet` (0 errors)
+
+
+

@@ -40,6 +40,8 @@ import { ExportSnapshotModal } from './components/ExportSnapshotModal';
 import { ExportPdfModal } from './components/ExportPdfModal';
 import { MultiSelectBar } from './components/MultiSelectBar';
 import { ConfirmBulkDeleteModal } from './components/ConfirmBulkDeleteModal';
+import { TasksView } from './components/TasksView';
+import { TaskDeadlineModal } from './components/TaskDeadlineModal';
 
 export default function App() {
   const [isDBReady, setIsDBReady] = useState(false);
@@ -59,8 +61,12 @@ export default function App() {
   const [inThreadSearchQuery, setInThreadSearchQuery] = useState('');
   const [starredOnlyFilter, setStarredOnlyFilter] = useState(false);
 
-  // Settings & Theme State
-  const [activeLeftView, setActiveLeftView] = useState<'chats' | 'settings'>('chats');
+  // Navigation & View State: 'chats' | 'tasks' | 'settings'
+  const [activeMainView, setActiveMainView] = useState<'chats' | 'tasks' | 'settings'>('chats');
+  const [taskModalOutput, setTaskModalOutput] = useState<SavedOutput | null>(null);
+  const [highlightedOutputId, setHighlightedOutputId] = useState<string | null>(null);
+
+  // Theme State
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => loadStoredThemeMode());
   const [systemPrefersDark, setSystemPrefersDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined' && window.matchMedia) {
@@ -363,6 +369,9 @@ export default function App() {
     mediaName?: string;
     mediaSize?: number;
     audioDuration?: number;
+    isTask?: boolean;
+    taskDeadline?: number;
+    taskTitle?: string;
   }) => {
     if (!activeChatId) return;
 
@@ -381,6 +390,10 @@ export default function App() {
       mediaName: data.mediaName,
       mediaSize: data.mediaSize,
       audioDuration: data.audioDuration,
+      isTask: data.isTask,
+      taskDeadline: data.taskDeadline,
+      taskTitle: data.taskTitle,
+      taskCompleted: false,
     };
 
     setMessages((prev) => [...prev, newOutput]);
@@ -392,6 +405,99 @@ export default function App() {
 
     // Smooth scroll down to view newly saved output
     setTimeout(() => scrollToBottom('smooth'), 100);
+
+    if (data.isTask) {
+      addToast('Saved output and added as task with deadline', 'success');
+    }
+  };
+
+  // Task Management Handlers
+  const handleSetOutputTask = (outputId: string, deadline: number, taskTitle?: string) => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === outputId
+          ? {
+              ...m,
+              isTask: true,
+              taskDeadline: deadline,
+              taskTitle: taskTitle !== undefined ? taskTitle : m.taskTitle || m.title || m.userPrompt,
+              taskCompleted: m.taskCompleted ?? false,
+            }
+          : m
+      )
+    );
+    addToast('Task deadline saved successfully', 'success');
+  };
+
+  const handleChangeDeadline = (outputId: string, newDeadline: number, taskTitle?: string) => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === outputId
+          ? {
+              ...m,
+              taskDeadline: newDeadline,
+              taskTitle: taskTitle !== undefined ? taskTitle : m.taskTitle,
+            }
+          : m
+      )
+    );
+    addToast('Task deadline updated', 'success');
+  };
+
+  const handleToggleTaskComplete = (outputId: string) => {
+    setMessages((prev) =>
+      prev.map((m) => {
+        if (m.id === outputId) {
+          const nextCompleted = !m.taskCompleted;
+          if (nextCompleted) {
+            addToast('Task marked as completed! 🎉', 'success');
+          } else {
+            addToast('Task marked as pending', 'info');
+          }
+          return {
+            ...m,
+            taskCompleted: nextCompleted,
+            taskCompletedAt: nextCompleted ? Date.now() : undefined,
+          };
+        }
+        return m;
+      })
+    );
+  };
+
+  const handleRemoveTask = (outputId: string) => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === outputId
+          ? {
+              ...m,
+              isTask: false,
+              taskDeadline: undefined,
+              taskTitle: undefined,
+              taskCompleted: undefined,
+              taskCompletedAt: undefined,
+            }
+          : m
+      )
+    );
+    addToast('Removed from tasks (output kept in chat)', 'info');
+  };
+
+  const handleJumpToOutputFromTask = (chatId: string, outputId?: string) => {
+    setActiveMainView('chats');
+    setActiveChatId(chatId);
+    if (outputId) {
+      setHighlightedOutputId(outputId);
+      setTimeout(() => {
+        const el = document.getElementById(`output-card-${outputId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 150);
+      setTimeout(() => {
+        setHighlightedOutputId(null);
+      }, 3000);
+    }
   };
 
   const handleDeleteOutput = (outputId: string) => {
@@ -648,16 +754,18 @@ export default function App() {
         {/* Left Pane (Sidebar or Settings) */}
         <div
           className={`h-full z-10 transition-all duration-200 ${
-            activeLeftView === 'settings'
+            activeMainView === 'settings'
               ? 'flex w-full md:w-auto'
+              : activeMainView === 'tasks'
+              ? 'hidden md:flex'
               : activeChatId
               ? 'hidden md:flex'
               : 'flex w-full md:w-auto'
           }`}
         >
-          {activeLeftView === 'settings' ? (
+          {activeMainView === 'settings' ? (
             <SettingsView
-              onBack={() => setActiveLeftView('chats')}
+              onBack={() => setActiveMainView('chats')}
               themeMode={themeMode}
               onSelectThemeMode={handleSelectThemeMode}
               effectiveTheme={effectiveTheme}
@@ -667,13 +775,18 @@ export default function App() {
               chats={chats}
               messages={messages}
               activeChatId={activeChatId}
-              onSelectChat={(id) => setActiveChatId(id)}
+              onSelectChat={(id) => {
+                setActiveChatId(id);
+                setActiveMainView('chats');
+              }}
               onNewChat={handleOpenNewChat}
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              onOpenSettings={() => setActiveLeftView('settings')}
+              onOpenSettings={() => setActiveMainView('settings')}
+              onOpenTasks={() => setActiveMainView('tasks')}
+              isTasksActive={activeMainView === 'tasks'}
               onPinToggle={handleTogglePin}
               onEditChat={handleEditChat}
               onDeleteChat={handleDeleteChat}
@@ -686,17 +799,29 @@ export default function App() {
           )}
         </div>
 
-        {/* Right Pane (Messages View or Empty Desktop Selection) */}
+        {/* Right Pane (Tasks View, Chat View, or Empty Desktop Selection) */}
         <div
           className={`flex-1 h-full flex-col min-w-0 transition-all duration-200 ${
-            activeLeftView === 'settings'
+            activeMainView === 'settings'
               ? 'hidden md:flex'
+              : activeMainView === 'tasks'
+              ? 'flex w-full'
               : activeChatId
               ? 'flex'
               : 'hidden md:flex'
           }`}
         >
-          {activeChat ? (
+          {activeMainView === 'tasks' ? (
+            <TasksView
+              chats={chats}
+              messages={messages}
+              onBackToChats={() => setActiveMainView('chats')}
+              onOpenChat={handleJumpToOutputFromTask}
+              onChangeDeadline={handleChangeDeadline}
+              onToggleTaskComplete={handleToggleTaskComplete}
+              onRemoveTask={handleRemoveTask}
+            />
+          ) : activeChat ? (
             <div className="flex-1 h-full flex flex-col min-w-0 bg-[#efeae2] dark:bg-[#0b141a] relative">
               {/* Header */}
               <ChatHeader
@@ -786,20 +911,34 @@ export default function App() {
                         return (
                           <React.Fragment key={output.id}>
                             {showDivider && <DateDivider label={dateGroup} />}
-                            <OutputCard
-                              output={output}
-                              onDelete={handleDeleteOutput}
-                              onToggleStar={handleToggleStar}
-                              onEditOutput={handleEditOutput}
-                              onUpdateTags={handleUpdateOutputTags}
-                              onTagClick={(tag) => setInThreadSearchQuery(tag)}
-                              onExportImage={handleOpenSingleExport}
-                              onExportPdf={handleOpenSinglePdfExport}
-                              onExportMarkdown={handleExportSingleMarkdown}
-                              isSelectMode={isSelectMode}
-                              isSelected={selectedOutputIds.has(output.id)}
-                              onToggleSelect={handleToggleSelectOutput}
-                            />
+                            <div
+                              id={`output-card-${output.id}`}
+                              className={
+                                highlightedOutputId === output.id
+                                  ? 'rounded-2xl ring-4 ring-[#00a884] ring-offset-2 ring-offset-[#efeae2] dark:ring-offset-[#0b141a] transition-all duration-300'
+                                  : ''
+                              }
+                            >
+                              <OutputCard
+                                output={output}
+                                onDelete={handleDeleteOutput}
+                                onToggleStar={handleToggleStar}
+                                onEditOutput={handleEditOutput}
+                                onUpdateTags={handleUpdateOutputTags}
+                                onTagClick={(tag) => setInThreadSearchQuery(tag)}
+                                onExportImage={handleOpenSingleExport}
+                                onExportPdf={handleOpenSinglePdfExport}
+                                onExportMarkdown={handleExportSingleMarkdown}
+                                isSelectMode={isSelectMode}
+                                isSelected={selectedOutputIds.has(output.id)}
+                                onToggleSelect={handleToggleSelectOutput}
+                                onTurnIntoTask={(out) => setTaskModalOutput(out)}
+                                onChangeDeadline={(out) => setTaskModalOutput(out)}
+                                onToggleTaskComplete={handleToggleTaskComplete}
+                                onRemoveTask={handleRemoveTask}
+                                onOpenTasksPage={() => setActiveMainView('tasks')}
+                              />
+                            </div>
                           </React.Fragment>
                         );
                       })}
@@ -883,6 +1022,15 @@ export default function App() {
         onClose={() => setIsBulkDeleteModalOpen(false)}
         onConfirm={handleConfirmBulkDelete}
         count={selectedOutputIds.size}
+      />
+
+      {/* Set or Change Task Deadline Modal */}
+      <TaskDeadlineModal
+        isOpen={Boolean(taskModalOutput)}
+        onClose={() => setTaskModalOutput(null)}
+        output={taskModalOutput}
+        onSaveTask={handleSetOutputTask}
+        onRemoveTask={handleRemoveTask}
       />
 
       {/* Offline Status Connectivity Banner */}

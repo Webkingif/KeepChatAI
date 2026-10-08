@@ -22,9 +22,11 @@ import {
   Bot,
   Settings,
   PinOff,
+  ListTodo,
+  AlertTriangle,
 } from 'lucide-react';
 import { ChatThread, SavedOutput, MAX_PINNED_CHATS } from '../types/keepchat';
-import { formatWhatsAppTime } from '../utils/date';
+import { formatWhatsAppTime, isDeadlineOverdue } from '../utils/date';
 import { MobileChatActionSheet } from './MobileChatActionSheet';
 import { KeepChatLogo } from './KeepChatLogo';
 import { PWAInstallButton } from './PWAInstallButton';
@@ -40,6 +42,8 @@ interface SidebarProps {
   selectedCategory: string;
   setSelectedCategory: (cat: string) => void;
   onOpenSettings: () => void;
+  onOpenTasks?: () => void;
+  isTasksActive?: boolean;
   onPinToggle: (chatId: string) => void;
   onEditChat?: (chat: ChatThread) => void;
   onDeleteChat?: (chatId: string) => void;
@@ -72,6 +76,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   selectedCategory,
   setSelectedCategory,
   onOpenSettings,
+  onOpenTasks,
+  isTasksActive,
   onPinToggle,
   onEditChat,
   onDeleteChat,
@@ -89,6 +95,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const isLongPressTriggered = useRef(false);
 
   const pinnedCount = chats.filter((c) => c.isPinned).length;
+
+  const { totalTasksCount, overdueTasksCount } = React.useMemo(() => {
+    let total = 0;
+    let overdue = 0;
+    messages.forEach((m) => {
+      if (m.isTask) {
+        total++;
+        if (!m.taskCompleted && isDeadlineOverdue(m.taskDeadline)) {
+          overdue++;
+        }
+      }
+    });
+    return { totalTasksCount: total, overdueTasksCount: overdue };
+  }, [messages]);
 
   const handleTouchStart = (chat: ChatThread, e: React.TouchEvent) => {
     isLongPressTriggered.current = false;
@@ -218,24 +238,54 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-1">
-          {/* In-App PWA Install Trigger */}
-          <PWAInstallButton variant="header" />
+        <div className="flex items-center gap-1 shrink-0">
+          {/* In-App PWA Install Trigger (Desktop / Larger screens) */}
+          <div className="hidden sm:flex">
+            <PWAInstallButton variant="header" />
+          </div>
 
-          {/* New Chat Button (Desktop) */}
+          {/* Tasks & Deadlines Page Trigger (Desktop) */}
+          {onOpenTasks && (
+            <button
+              onClick={onOpenTasks}
+              className={`hidden sm:flex relative p-2 rounded-full transition-colors cursor-pointer ${
+                isTasksActive
+                  ? 'bg-teal-500/15 text-[#00a884] dark:text-[#25d366]'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
+              }`}
+              title="Tasks & Deadlines Page"
+            >
+              <ListTodo className="w-5 h-5" />
+              {overdueTasksCount > 0 ? (
+                <span
+                  className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-[#f0f2f5] dark:ring-[#202c33] animate-pulse"
+                  title={`${overdueTasksCount} overdue task${overdueTasksCount === 1 ? '' : 's'}`}
+                />
+              ) : totalTasksCount > 0 ? (
+                <span
+                  className="absolute top-1 right-1 w-2 h-2 bg-[#00a884] rounded-full ring-2 ring-[#f0f2f5] dark:ring-[#202c33]"
+                  title={`${totalTasksCount} task${totalTasksCount === 1 ? '' : 's'}`}
+                />
+              ) : null}
+            </button>
+          )}
+
+          {/* New Chat Button */}
           <button
             onClick={onNewChat}
             className="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
             title="Create new chat thread"
+            aria-label="Create new chat"
           >
             <Plus className="w-5 h-5" />
           </button>
 
-          {/* Settings Button */}
+          {/* Settings Button (Desktop) */}
           <button
             onClick={onOpenSettings}
-            className="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+            className="hidden sm:flex p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
             title="Settings (Theme & Appearance)"
+            aria-label="Settings"
           >
             <Settings className="w-5 h-5" />
           </button>
@@ -244,22 +294,51 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowOptions(!showOptions)}
-              className="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+              className="relative p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
               title="Backup and options"
+              aria-label="Backup and options"
             >
-              <MoreVertical className="w-4 h-4" />
+              <MoreVertical className="w-5 h-5" />
+              {/* Show active indicator dot on small screens if overdue tasks exist */}
+              {overdueTasksCount > 0 && (
+                <span className="sm:hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-[#f0f2f5] dark:ring-[#202c33] animate-pulse" />
+              )}
             </button>
 
             {showOptions && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => setShowOptions(false)} />
-                <div className="absolute right-0 mt-1 w-56 bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-1.5 z-40 animate-in fade-in duration-100">
+                <div className="absolute right-0 mt-1.5 w-60 max-w-[calc(100vw-24px)] bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-2 z-40 animate-in fade-in zoom-in-95 duration-100">
+                  {onOpenTasks && (
+                    <button
+                      onClick={() => {
+                        onOpenTasks();
+                        setShowOptions(false);
+                      }}
+                      className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <ListTodo className="w-4 h-4 text-[#00a884]" />
+                        <span>Tasks & Deadlines</span>
+                      </div>
+                      {overdueTasksCount > 0 ? (
+                        <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-200">
+                          {overdueTasksCount} overdue
+                        </span>
+                      ) : totalTasksCount > 0 ? (
+                        <span className="text-[10px] text-slate-400">
+                          {totalTasksCount}
+                        </span>
+                      ) : null}
+                    </button>
+                  )}
+
                   <button
                     onClick={() => {
                       onOpenSettings();
                       setShowOptions(false);
                     }}
-                    className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
                     <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                     <span>Settings (Appearance)</span>
@@ -272,7 +351,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       onExportAll();
                       setShowOptions(false);
                     }}
-                    className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
                     <FolderDown className="w-4 h-4 text-[#00a884]" />
                     <span>Backup All Vault Data (JSON)</span>
@@ -283,7 +362,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       fileInputRef.current?.click();
                       setShowOptions(false);
                     }}
-                    className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
                     <FolderUp className="w-4 h-4 text-blue-500" />
                     <span>Restore Vault from File</span>
@@ -296,7 +375,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       onResetSamples();
                       setShowOptions(false);
                     }}
-                    className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-amber-600 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
                     <RotateCcw className="w-4 h-4" />
                     <span>Reset to Default Samples</span>
@@ -317,8 +396,49 @@ export const Sidebar: React.FC<SidebarProps> = ({
         className="hidden"
       />
 
+      {/* Mode Switcher: Chats vs Tasks */}
+      <div className="px-3 pt-2.5 pb-1">
+        <div className="grid grid-cols-2 p-1 bg-slate-200/70 dark:bg-[#202c33] rounded-xl text-xs font-medium">
+          <button
+            onClick={() => {
+              if (isTasksActive && chats.length > 0) {
+                onSelectChat(activeChatId || chats[0].id);
+              }
+            }}
+            className={`py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              !isTasksActive
+                ? 'bg-white dark:bg-[#111b21] text-slate-900 dark:text-white shadow-2xs font-semibold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <MessageSquare className="w-3.5 h-3.5" />
+            <span>Chats</span>
+            <span className="text-[10px] opacity-75 tabular-nums">({chats.length})</span>
+          </button>
+
+          <button
+            onClick={() => onOpenTasks?.()}
+            className={`py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              isTasksActive
+                ? 'bg-white dark:bg-[#111b21] text-[#00a884] dark:text-[#25d366] shadow-2xs font-bold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <ListTodo className="w-3.5 h-3.5" />
+            <span>Tasks</span>
+            {overdueTasksCount > 0 ? (
+              <span className="px-1.5 py-0.2 bg-rose-500 text-white rounded-full text-[10px] font-bold leading-tight animate-pulse">
+                {overdueTasksCount}
+              </span>
+            ) : totalTasksCount > 0 ? (
+              <span className="text-[10px] opacity-75 tabular-nums">({totalTasksCount})</span>
+            ) : null}
+          </button>
+        </div>
+      </div>
+
       {/* Search Bar Zone */}
-      <div className="px-3 pt-2.5 pb-2">
+      <div className="px-3 pt-1 pb-2">
         <div className="relative flex items-center w-full bg-white dark:bg-[#202c33] rounded-lg border border-slate-200/80 dark:border-[#2a3942] shadow-2xs focus-within:ring-1 focus-within:ring-[#00a884] focus-within:border-transparent transition-all">
           <Search className="w-4 h-4 ml-3 text-slate-400 shrink-0" />
           <input
