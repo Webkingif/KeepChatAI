@@ -9,6 +9,16 @@
 </p>
 
 <p align="center">
+  <a href="https://keepchatai.netlify.app/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Live_App-keepchatai.netlify.app-00A884?style=for-the-badge&logo=netlify&logoColor=white" alt="Live App on Netlify" />
+  </a>
+</p>
+
+<p align="center">
+  🌐 <strong>Live Web App: <a href="https://keepchatai.netlify.app/">https://keepchatai.netlify.app/</a></strong>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Vite-8.x-646CFF?logo=vite&logoColor=white" alt="Vite" />
@@ -23,6 +33,8 @@
 ---
 
 ## 📖 Overview
+
+> 🚀 **Try the Live App Now**: You can use KeepChat immediately in your browser or install it as a native offline PWA at **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)**. Zero login or installation required!
 
 As we interact daily with AI models like **ChatGPT**, **Claude**, **Google Gemini**, and **DeepSeek**, valuable insights, code architectures, formulas, and actionable instructions quickly get scattered across browser tabs and disjointed chat histories.
 
@@ -161,15 +173,15 @@ Beyond simple archiving, KeepChat turns outputs into action with **integrated de
 
 ## 📱 Progressive Web App (PWA) & Offline Usage
 
-KeepChat is designed as an installable, standalone Progressive Web App that functions seamlessly without an internet connection.
+KeepChat is deployed and installable directly from **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)**. It functions seamlessly both online and 100% offline without any continuous network connection.
 
 ### Installation Instructions
 
 | Platform | How to Install |
 | :--- | :--- |
-| **Android / Chrome** | Tap the **Install KeepChat** banner button in the sidebar header or tap `⋮` in Chrome and choose **Install app** or **Add to Home screen**. |
-| **iOS / Safari** | Tap the **Share** button (square with arrow) at the bottom of Safari, scroll down, and select **Add to Home Screen**. |
-| **macOS / Windows / Linux** | Click the **Install** icon in your browser address bar or click the download icon in KeepChat's sidebar header. |
+| **Android / Chrome** | Open **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)**, tap the **Install KeepChat** banner button in the sidebar header or tap `⋮` in Chrome and choose **Install app** or **Add to Home screen**. |
+| **iOS / Safari** | Open **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)** in Safari, tap the **Share** button (square with upward arrow) at the bottom, scroll down, and select **Add to Home Screen**. |
+| **macOS / Windows / Linux** | Visit **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)**, click the **Install** icon in your browser address bar or click the download icon in KeepChat's sidebar header. |
 
 ### Offline Guarantee
 - **App Shell**: The service worker activates immediately on load, caching all scripts, stylesheets, and KaTeX mathematical font assets.
@@ -238,11 +250,15 @@ export function isOverdue(task: TaskItem): boolean {
 
 ## 🚀 Getting Started & Local Development
 
-### Prerequisites
+### 🌐 Instant Access (No Setup Required)
+
+Open **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)** in any modern browser on desktop, mobile, or tablet to start using KeepChat immediately. You can also install it to your home screen or desktop launcher as an offline PWA with 1 click.
+
+### Local Development Prerequisites
 - **Node.js**: `v18.0.0` or higher
 - **npm**: `v9.0.0` or higher (or `bun` / `pnpm`)
 
-### Installation & Setup
+### Local Installation & Setup
 
 1. **Clone the repository**:
    ```bash

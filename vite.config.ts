@@ -18,13 +18,16 @@ export default defineConfig(() => {
           'pwa-192x192.png',
           'pwa-512x512.png',
           'pwa-maskable-512x512.png',
+          'og-image-kc.jpg',
+          'sitemap.xml',
+          'robots.txt',
         ],
         manifest: {
           id: '/',
           name: 'KeepChat - AI Output Vault & Organizer',
           short_name: 'KeepChat',
           description:
-            'A centralized WhatsApp-inspired vault to save, organize, search, and view Markdown-formatted AI outputs from ChatGPT, Gemini, and Claude.',
+            'A centralized WhatsApp-inspired vault to save, organize, search, and view Markdown-formatted AI outputs from ChatGPT, Gemini, Claude, and DeepSeek. Live at https://keepchatai.netlify.app/',
           theme_color: '#008069',
           background_color: '#111b21',
           display: 'standalone',
@@ -53,7 +56,7 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,webmanifest}'],
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,xml,txt,woff,woff2,webmanifest}'],
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api/],
           clientsClaim: true,
