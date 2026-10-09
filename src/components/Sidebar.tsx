@@ -228,9 +228,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex items-center gap-2.5">
           <KeepChatLogo size={36} variant="icon" className="drop-shadow-xs" />
           <div className="flex flex-col">
-            <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white leading-none">
+            <h1 className="font-bold text-base tracking-tight text-slate-900 dark:text-white leading-none">
               KeepChat
-            </span>
+            </h1>
             <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium leading-none mt-0.5">
               AI Output Vault
             </span>
@@ -244,40 +244,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <PWAInstallButton variant="header" />
           </div>
 
-          {/* Tasks & Deadlines Page Trigger (Desktop) */}
-          {onOpenTasks && (
-            <button
-              onClick={onOpenTasks}
-              className={`hidden sm:flex relative p-2 rounded-full transition-colors cursor-pointer ${
-                isTasksActive
-                  ? 'bg-teal-500/15 text-[#00a884] dark:text-[#25d366]'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
-              }`}
-              title="Tasks & Deadlines Page"
-            >
-              <ListTodo className="w-5 h-5" />
-              {overdueTasksCount > 0 ? (
-                <span
-                  className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-[#f0f2f5] dark:ring-[#202c33] animate-pulse"
-                  title={`${overdueTasksCount} overdue task${overdueTasksCount === 1 ? '' : 's'}`}
-                />
-              ) : totalTasksCount > 0 ? (
-                <span
-                  className="absolute top-1 right-1 w-2 h-2 bg-[#00a884] rounded-full ring-2 ring-[#f0f2f5] dark:ring-[#202c33]"
-                  title={`${totalTasksCount} task${totalTasksCount === 1 ? '' : 's'}`}
-                />
-              ) : null}
-            </button>
-          )}
+
 
           {/* New Chat Button */}
           <button
             onClick={onNewChat}
             className="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
             title="Create new chat thread"
-            aria-label="Create new chat"
+            aria-label="Create new chat thread"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-5 h-5" aria-hidden="true" />
           </button>
 
           {/* Settings Button (Desktop) */}
@@ -285,9 +261,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onClick={onOpenSettings}
             className="hidden sm:flex p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
             title="Settings (Theme & Appearance)"
-            aria-label="Settings"
+            aria-label="Open Settings"
           >
-            <Settings className="w-5 h-5" />
+            <Settings className="w-5 h-5" aria-hidden="true" />
           </button>
 
           {/* Backup & Options Menu */}
@@ -296,21 +272,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => setShowOptions(!showOptions)}
               className="relative p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
               title="Backup and options"
-              aria-label="Backup and options"
+              aria-label="Backup and vault options"
+              aria-haspopup="menu"
+              aria-expanded={showOptions}
             >
-              <MoreVertical className="w-5 h-5" />
+              <MoreVertical className="w-5 h-5" aria-hidden="true" />
               {/* Show active indicator dot on small screens if overdue tasks exist */}
               {overdueTasksCount > 0 && (
-                <span className="sm:hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-[#f0f2f5] dark:ring-[#202c33] animate-pulse" />
+                <span className="sm:hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-[#f0f2f5] dark:ring-[#202c33] animate-pulse" aria-hidden="true" />
               )}
             </button>
 
             {showOptions && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => setShowOptions(false)} />
-                <div className="absolute right-0 mt-1.5 w-60 max-w-[calc(100vw-24px)] bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-2 z-40 animate-in fade-in zoom-in-95 duration-100">
+                <div
+                  role="menu"
+                  aria-label="Vault options"
+                  className="absolute right-0 mt-1.5 w-60 max-w-[calc(100vw-24px)] bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-2 z-40 animate-in fade-in zoom-in-95 duration-100"
+                >
                   {onOpenTasks && (
                     <button
+                      role="menuitem"
                       onClick={() => {
                         onOpenTasks();
                         setShowOptions(false);
@@ -318,7 +301,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                     >
                       <div className="flex items-center gap-2.5">
-                        <ListTodo className="w-4 h-4 text-[#00a884]" />
+                        <ListTodo className="w-4 h-4 text-[#00a884]" aria-hidden="true" />
                         <span>Tasks & Deadlines</span>
                       </div>
                       {overdueTasksCount > 0 ? (
@@ -334,50 +317,54 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   )}
 
                   <button
+                    role="menuitem"
                     onClick={() => {
                       onOpenSettings();
                       setShowOptions(false);
                     }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
-                    <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                    <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" aria-hidden="true" />
                     <span>Settings (Appearance)</span>
                   </button>
 
                   <div className="my-1 border-t border-slate-100 dark:border-[#2a3942]" />
 
                   <button
+                    role="menuitem"
                     onClick={() => {
                       onExportAll();
                       setShowOptions(false);
                     }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
-                    <FolderDown className="w-4 h-4 text-[#00a884]" />
+                    <FolderDown className="w-4 h-4 text-[#00a884]" aria-hidden="true" />
                     <span>Backup All Vault Data (JSON)</span>
                   </button>
 
                   <button
+                    role="menuitem"
                     onClick={() => {
                       fileInputRef.current?.click();
                       setShowOptions(false);
                     }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
-                    <FolderUp className="w-4 h-4 text-blue-500" />
+                    <FolderUp className="w-4 h-4 text-blue-500" aria-hidden="true" />
                     <span>Restore Vault from File</span>
                   </button>
 
                   <div className="my-1 border-t border-slate-100 dark:border-[#2a3942]" />
 
                   <button
+                    role="menuitem"
                     onClick={() => {
                       onResetSamples();
                       setShowOptions(false);
                     }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-amber-600 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
-                    <RotateCcw className="w-4 h-4" />
+                    <RotateCcw className="w-4 h-4" aria-hidden="true" />
                     <span>Reset to Default Samples</span>
                   </button>
                 </div>
@@ -394,12 +381,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
         onChange={onImportBackup}
         accept=".json"
         className="hidden"
+        aria-label="Upload JSON backup file to restore vault"
       />
 
       {/* Mode Switcher: Chats vs Tasks */}
       <div className="px-3 pt-2.5 pb-1">
-        <div className="grid grid-cols-2 p-1 bg-slate-200/70 dark:bg-[#202c33] rounded-xl text-xs font-medium">
+        <div
+          role="tablist"
+          aria-label="Vault view selector"
+          className="grid grid-cols-2 p-1 bg-slate-200/70 dark:bg-[#202c33] rounded-xl text-xs font-medium"
+        >
           <button
+            role="tab"
+            aria-selected={!isTasksActive}
+            aria-label={`Chats tab, ${chats.length} threads`}
             onClick={() => {
               if (isTasksActive && chats.length > 0) {
                 onSelectChat(activeChatId || chats[0].id);
@@ -411,12 +406,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <MessageSquare className="w-3.5 h-3.5" />
+            <MessageSquare className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Chats</span>
             <span className="text-[10px] opacity-75 tabular-nums">({chats.length})</span>
           </button>
 
           <button
+            role="tab"
+            aria-selected={isTasksActive}
+            aria-label={`Tasks tab${overdueTasksCount > 0 ? `, ${overdueTasksCount} overdue` : ''}, ${totalTasksCount} tasks`}
             onClick={() => onOpenTasks?.()}
             className={`py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               isTasksActive
@@ -424,10 +422,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <ListTodo className="w-3.5 h-3.5" />
+            <ListTodo className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Tasks</span>
             {overdueTasksCount > 0 ? (
-              <span className="px-1.5 py-0.2 bg-rose-500 text-white rounded-full text-[10px] font-bold leading-tight animate-pulse">
+              <span className="px-1.5 py-0.2 bg-rose-500 text-white rounded-full text-[10px] font-bold leading-tight animate-pulse" aria-hidden="true">
                 {overdueTasksCount}
               </span>
             ) : totalTasksCount > 0 ? (
@@ -440,33 +438,40 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Search Bar Zone */}
       <div className="px-3 pt-1 pb-2">
         <div className="relative flex items-center w-full bg-white dark:bg-[#202c33] rounded-lg border border-slate-200/80 dark:border-[#2a3942] shadow-2xs focus-within:ring-1 focus-within:ring-[#00a884] focus-within:border-transparent transition-all">
-          <Search className="w-4 h-4 ml-3 text-slate-400 shrink-0" />
+          <Search className="w-4 h-4 ml-3 text-slate-400 shrink-0" aria-hidden="true" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search chats..."
+            aria-label="Search chats"
             className="w-full py-2 pl-2.5 pr-8 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 bg-transparent focus:outline-hidden"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
               className="absolute right-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 cursor-pointer"
+              aria-label="Clear search text"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           )}
         </div>
       </div>
 
       {/* Category Filter Tabs */}
-      <div className="px-3 pb-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <div
+        role="region"
+        aria-label="Chat category filters"
+        className="px-3 pb-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar"
+      >
         {CATEGORIES.map((cat) => {
           const isSelected = selectedCategory === cat;
           return (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
+              aria-pressed={isSelected}
               className={`px-3 py-1 rounded-full text-[11px] font-medium transition-colors cursor-pointer shrink-0 ${
                 isSelected
                   ? 'bg-[#00a884] text-white shadow-2xs'
@@ -479,34 +484,42 @@ export const Sidebar: React.FC<SidebarProps> = ({
         })}
         <button
           onClick={() => setSelectedCategory(selectedCategory === 'Pinned' ? 'All' : 'Pinned')}
+          aria-pressed={selectedCategory === 'Pinned'}
           className={`px-2.5 py-1 rounded-full text-[11px] font-medium flex items-center gap-1 transition-colors cursor-pointer shrink-0 ${
             selectedCategory === 'Pinned'
               ? 'bg-[#00a884] text-white shadow-2xs'
               : 'bg-white/80 dark:bg-[#202c33] text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-[#2a3942] border border-slate-200/60 dark:border-[#2a3942]'
           }`}
           title={`Filter pinned chats (${pinnedCount}/${MAX_PINNED_CHATS})`}
+          aria-label={`Filter pinned chats (${pinnedCount} of ${MAX_PINNED_CHATS} pinned)`}
         >
-          <Pin className="w-3 h-3 rotate-45" />
+          <Pin className="w-3 h-3 rotate-45" aria-hidden="true" />
           <span>Pinned ({pinnedCount}/{MAX_PINNED_CHATS})</span>
         </button>
         <button
           onClick={() => setSelectedCategory(selectedCategory === 'Starred' ? 'All' : 'Starred')}
+          aria-pressed={selectedCategory === 'Starred'}
           className={`px-2.5 py-1 rounded-full text-[11px] font-medium flex items-center gap-1 transition-colors cursor-pointer shrink-0 ${
             selectedCategory === 'Starred'
               ? 'bg-amber-500 text-white shadow-2xs'
               : 'bg-white/80 dark:bg-[#202c33] text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-[#2a3942] border border-slate-200/60 dark:border-[#2a3942]'
           }`}
+          aria-label="Filter starred chats"
         >
-          <Star className="w-3 h-3 fill-current" />
+          <Star className="w-3 h-3 fill-current" aria-hidden="true" />
           <span>Starred</span>
         </button>
       </div>
 
       {/* Scrollable Chat Threads List */}
-      <div className="flex-1 overflow-y-auto divide-y divide-slate-200/60 dark:divide-[#222d34]/60">
+      <div
+        role="region"
+        aria-label="Chat threads"
+        className="flex-1 overflow-y-auto divide-y divide-slate-200/60 dark:divide-[#222d34]/60"
+      >
         {filteredChats.length === 0 ? (
           <div className="p-8 text-center text-slate-400 dark:text-slate-500">
-            <MessageSquare className="w-10 h-10 mx-auto mb-2.5 stroke-1 opacity-60" />
+            <MessageSquare className="w-10 h-10 mx-auto mb-2.5 stroke-1 opacity-60" aria-hidden="true" />
             <p className="text-xs font-medium">No chat threads found</p>
             <p className="text-[11px] mt-1 text-slate-400 dark:text-slate-600">
               {searchQuery ? 'Try adjusting your search query' : 'Create a new thread to get started'}
@@ -533,12 +546,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
             return (
               <div
                 key={chat.id}
+                role="button"
+                tabIndex={0}
+                aria-current={isActive ? 'true' : undefined}
+                aria-label={`${chat.title}, ${outputCount} saved output${outputCount === 1 ? '' : 's'}${chat.isPinned ? ', pinned' : ''}`}
                 onClick={() => handleChatClick(chat)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleChatClick(chat);
+                  }
+                }}
                 onTouchStart={(e) => handleTouchStart(chat, e)}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
                 onContextMenu={(e) => handleContextMenu(chat, e)}
-                className={`group flex items-center gap-3 px-3.5 py-3 transition-colors cursor-pointer relative select-none ${
+                className={`group flex items-center gap-3 px-3.5 py-3 transition-colors cursor-pointer relative select-none focus-visible:outline-hidden focus-visible:bg-[#e9edef] dark:focus-visible:bg-[#2a3942] ${
                   isActive
                     ? 'bg-[#e9edef] dark:bg-[#2a3942]'
                     : 'hover:bg-slate-200/60 dark:hover:bg-[#202c33]/70'
@@ -546,16 +569,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
               >
                 {/* Active indicator bar */}
                 {isActive && (
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00a884]" />
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00a884]" aria-hidden="true" />
                 )}
 
                 {/* Avatar with click-to-view */}
                 <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View logo photo for ${chat.title}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onViewLogo?.(chat);
                   }}
-                  className={`w-11 h-11 rounded-full overflow-hidden flex items-center justify-center text-white shrink-0 shadow-xs cursor-pointer hover:scale-105 active:scale-95 transition-transform ${
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onViewLogo?.(chat);
+                    }
+                  }}
+                  className={`w-11 h-11 rounded-full overflow-hidden flex items-center justify-center text-white shrink-0 shadow-xs cursor-pointer hover:scale-105 active:scale-95 transition-transform focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-hidden ${
                     chat.customAvatarUrl
                       ? 'border border-slate-200 dark:border-black/30'
                       : `bg-gradient-to-br ${chat.avatarColor || 'from-emerald-500 to-teal-700'}`
@@ -565,11 +598,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   {chat.customAvatarUrl ? (
                     <img
                       src={chat.customAvatarUrl}
-                      alt={chat.title}
+                      alt={`Avatar for ${chat.title}`}
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <IconCmp className="w-5 h-5 stroke-[2.2]" />
+                    <IconCmp className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
                   )}
                 </div>
 
@@ -615,11 +648,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             ? `Maximum ${MAX_PINNED_CHATS} pinned chats reached`
                             : `Pin chat to top (${pinnedCount}/${MAX_PINNED_CHATS})`
                         }
+                        aria-label={
+                          chat.isPinned
+                            ? `Unpin chat ${chat.title}`
+                            : `Pin chat ${chat.title} to top`
+                        }
                       >
                         {chat.isPinned ? (
-                          <Pin className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 rotate-45 fill-teal-600/30 dark:fill-teal-400/30" />
+                          <Pin className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 rotate-45 fill-teal-600/30 dark:fill-teal-400/30" aria-hidden="true" />
                         ) : (
-                          <Pin className="w-3.5 h-3.5 rotate-45" />
+                          <Pin className="w-3.5 h-3.5 rotate-45" aria-hidden="true" />
                         )}
                       </button>
                     </div>
@@ -636,8 +674,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         onClick={onNewChat}
         className="md:hidden fixed bottom-5 right-5 z-30 w-14 h-14 rounded-2xl bg-[#00a884] hover:bg-[#008069] text-white shadow-xl shadow-emerald-950/20 flex items-center justify-center transition-transform active:scale-90 cursor-pointer"
         title="Create new chat thread"
+        aria-label="Create new chat thread"
       >
-        <Plus className="w-6 h-6 stroke-[2.5]" />
+        <Plus className="w-6 h-6 stroke-[2.5]" aria-hidden="true" />
       </button>
 
       {/* Mobile WhatsApp-Style Quick Action Sheet */}

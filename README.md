@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>A centralized, WhatsApp-inspired vault to save, organize, search, and view Markdown-formatted AI outputs from ChatGPT, Gemini, Claude, and DeepSeek — with output-to-task tracking and multi-format exports.</strong>
+  <strong>A centralized, WhatsApp-inspired vault to save, organize, search, and view Markdown-formatted AI outputs from ChatGPT, Gemini, Claude, and DeepSeek — featuring a futuristic tasks command hub, live progress telemetry HUD, and multi-format exports.</strong>
 </p>
 
 <p align="center">
@@ -40,7 +40,7 @@ As we interact daily with AI models like **ChatGPT**, **Claude**, **Google Gemin
 
 **KeepChat** transforms this experience into a familiar, ultra-responsive **WhatsApp-style conversational interface**. It provides an offline-first personal repository to paste, archive, tag, and search AI outputs with native support for full Markdown rendering, syntax-highlighted code blocks, mathematical LaTeX equations, voice notes, and image attachments.
 
-Beyond simple archiving, KeepChat turns outputs into action with **integrated deadline task tracking**, **multi-card image snapshots**, **paginated PDF documents (with selectable vector text)**, and **chronological Markdown exports**.
+Beyond simple archiving, KeepChat turns insights into execution with a **futuristic Tasks Command Hub** featuring a live progress telemetry HUD, **multi-card image snapshots**, **paginated PDF documents (with selectable vector text)**, and **chronological Markdown exports**.
 
 ---
 
@@ -54,20 +54,27 @@ Beyond simple archiving, KeepChat turns outputs into action with **integrated de
 - **Ergonomic Send Button**: 48px circular emerald action button with flight micro-animations, tactile feedback, and keyboard shortcuts (`Ctrl+Enter` / `Cmd+Enter`).
 - **Chat Pinning**: Pin up to 5 high-priority threads with hover quick-actions, header toggles, and mobile 450ms long-press gesture sheets.
 
+### ⚡ Futuristic Tasks Command Hub & Telemetry HUD
+- **Deep Obsidian & Neon Aesthetic**: Minimalist modern command interface styled in deep obsidian (`#0A0F14` / `#0D1520`) with sharp cyan (`#22D3EE`) and emerald accents, glowing hairline borders, and refined micro-interactions.
+- **Live Progress Telemetry HUD**:
+  - **Completion Gauge**: Circular SVG progress gauge showing real-time completion percentage and active task ratios.
+  - **Impending Task Radar**: Active countdown tracker prioritizing the most urgent deadline or overdue task.
+  - **Status Telemetry Breakdown**: Instant counters for All Tasks, Pending, Overdue, and Completed.
+  - **Tag Matrix**: Frequency-ranked filter chips to cross-filter tasks across multiple chat threads.
+- **Single-Card-Per-Row Widescreen Layout**: One expansive card per row across all viewport widths, ensuring ample horizontal breathing room for complex code blocks, math formulas, and prompt contexts.
+- **Minimalist Hairline Perimeter**: Clean perimeter borders without distracting side bars or color blocks, ensuring a high-density, futuristic look.
+- **Instant Operational Controls**:
+  - 1-click completion toggle with smooth state transitions.
+  - Quick-extend buttons (`+1d`, `+3d`, `+1w`) for rapid deadline recalibration.
+  - Deadline Recalibration Modal with preset intervals and custom datetime picker.
+  - Expandable/collapsible prompt summaries and rendered Markdown output previews.
+  - **"Open in Chat"** navigation to jump straight to the source message inside the original chat thread.
+  - Clean task removal with confirmation.
+
 ### 🤖 Multi-Model Organization & Thread Avatars
 - **AI Model Classification**: Dedicated threads and output tags for **ChatGPT**, **Google Gemini**, **Claude**, **DeepSeek**, or custom models.
 - **Custom Chat Photos**: Upload custom avatars in the chat creation/edit modal or directly via the chat header camera trigger.
 - **Chat Logo Lightbox**: Tap any avatar in the header or sidebar to open the full-screen photo viewer with high-resolution download, zoom, and change actions.
-
-### ✅ Output-to-Task Conversion & Dedicated Tasks View
-- **Actionable AI Outputs**: Convert any saved output into an actionable task with 1 click.
-- **Changeable Deadlines**: Set deadlines with quick presets (*Today*, *Tomorrow*, *In 2 Days*, *In 1 Week*) or custom date-time pickers.
-- **Dedicated Tasks Hub**: Access a centralized task management dashboard with instant summary metrics:
-  - **Total Tasks**
-  - **Overdue Tasks** (high-contrast rose border, urgent badge, relative overdue calculation)
-  - **Upcoming Tasks** (emerald border, countdown badge)
-  - **Completed Tasks** (muted strikethrough styling)
-- **Task Management Controls**: 1-click completion toggles, quick extend actions (`+1d`, `+3d`, `+1w`), change deadline modal, and **"Open in Chat"** navigation to jump straight to the source message.
 
 ### 📸 Single & Multi-Output Image Export (WhatsApp Snapshot)
 - **High-Resolution PNG Capture**: Render selected outputs into an authentic WhatsApp snapshot with chat title, avatar, date, KeepChat branding, and wallpaper.
@@ -128,11 +135,11 @@ Beyond simple archiving, KeepChat turns outputs into action with **integrated de
 │   ┌───────────────────────────┐    ┌───────────────────────────────────────────────┐   │
 │   │   Sidebar & Navigation    │    │              Main Content Area                │   │
 │   │  • Pinned threads (max 5) │    ├───────────────────────┬───────────────────────┤   │
-│   │  • Category & tag filters │    │   Active Chat Thread  │   Dedicated Tasks Hub │   │
-│   │  • Chats / Tasks switcher │    │ • DateDivider stream  │ • Metrics summary     │   │
-│   │  • Global real-time search│    │ • OutputCard & Tags   │ • Overdue / Upcoming  │   │
-│   │  • PWA install trigger    │    │ • Voice / Image cards │ • Filter tabs & search│   │
-│   │  • Settings & JSON backup │    │ • InputBar (≤ 8% vh)  │ • Complete & extend   │   │
+│   │  • Category & tag filters │    │   Active Chat Thread  │  Futuristic Tasks Hub │   │
+│   │  • Chats / Tasks switcher │    │ • DateDivider stream  │ • Telemetry HUD & Bar │   │
+│   │  • Global real-time search│    │ • OutputCard & Tags   │ • 1 Card / Row Stream │   │
+│   │  • PWA install trigger    │    │ • Voice / Image cards │ • Status & Tag Matrix │   │
+│   │  • Settings & JSON backup │    │ • InputBar (≤ 8% vh)  │ • Extend, Done & Chat │   │
 │   └─────────────┬─────────────┘    └───────────┬───────────┴───────────┬───────────┘   │
 │                 │                              │                       │               │
 │                 └──────────────────────────────┼───────────────────────┘               │
@@ -166,7 +173,7 @@ Beyond simple archiving, KeepChat turns outputs into action with **integrated de
 │  • Workbox Navigation Fallback (`/index.html`)                                         │
 │  • Asset precaching (Scripts, KaTeX Webfonts, CSS, Icons)                              │
 │  • Offline connectivity detection (`OfflineIndicator` & `useOnlineStatus`)             │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+│  └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -297,7 +304,7 @@ Open **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)** in a
 | **Framework** | [React 19](https://react.dev/) | Modern concurrent UI architecture & hooks |
 | **Build Tool** | [Vite 8](https://vite.dev/) | Ultra-fast bundling, HMR, and development tooling |
 | **Language** | [TypeScript 5](https://www.typescriptlang.org/) | Strict static typing and schemas |
-| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first responsive design & WhatsApp theming |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first responsive design, futuristic obsidian styling & WhatsApp themes |
 | **Storage Engine** | [IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) | Client-side, local-first database (`chats`, `messages`, `meta`) |
 | **Offline & PWA** | [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) | Service worker, Workbox precaching, and app manifest |
 | **Markdown Parser** | [react-markdown](https://github.com/remarkjs/react-markdown) | GFM tables, checklists, blockquotes, and custom elements |

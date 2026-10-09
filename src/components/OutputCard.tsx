@@ -299,6 +299,8 @@ export const OutputCard: React.FC<OutputCardProps> = ({
               ? 'border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-[#1f2c34]/80 opacity-90'
               : 'border-slate-200/80 dark:border-[#26353d] bg-white dark:bg-[#1f2c34] shadow-xs hover:shadow-md'
           } ${isSelectMode ? 'cursor-pointer' : ''}`}
+          role="article"
+          aria-label={`${output.title || 'AI output'} from ${output.aiModel || 'assistant'}`}
           onClick={isSelectMode ? () => onToggleSelect?.(output.id) : undefined}
           onKeyDown={isEditing ? handleKeyDown : undefined}
         >
@@ -309,21 +311,21 @@ export const OutputCard: React.FC<OutputCardProps> = ({
             <div
               className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md border text-xs font-medium ${modelBadge.color}`}
             >
-              <ModelIcon className="w-3.5 h-3.5 shrink-0" />
+              <ModelIcon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
               <span>{modelBadge.label}</span>
             </div>
 
             {/* Media Type Icon Badge */}
             {isImage && (
               <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-teal-400 bg-emerald-50 dark:bg-teal-950/30 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-teal-900/40">
-                <ImageIcon className="w-3 h-3" />
+                <ImageIcon className="w-3 h-3" aria-hidden="true" />
                 Image
               </span>
             )}
 
             {isAudio && (
               <span className="inline-flex items-center gap-1 text-[11px] font-medium text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/30 px-2 py-0.5 rounded-md border border-teal-200 dark:border-teal-900/40">
-                <Mic className="w-3 h-3" />
+                <Mic className="w-3 h-3" aria-hidden="true" />
                 Voice Note
               </span>
             )}
@@ -355,8 +357,9 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     }}
                     className="flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-[#00a884] dark:hover:text-[#25d366] hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
                     title="Turn this output into a task with a deadline"
+                    aria-label="Add task with deadline"
                   >
-                    <ListTodo className="w-3.5 h-3.5 text-[#00a884]" />
+                    <ListTodo className="w-3.5 h-3.5 text-[#00a884]" aria-hidden="true" />
                     <span className="hidden sm:inline">Add Task</span>
                   </button>
                 )}
@@ -370,8 +373,9 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     }}
                     className="flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
                     title="Edit output indefinitely"
+                    aria-label="Edit output"
                   >
-                    <Pencil className="w-3.5 h-3.5" />
+                    <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
                     <span className="hidden sm:inline">Edit</span>
                   </button>
                 )}
@@ -387,7 +391,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     title="Export output as image (PNG)"
                     aria-label="Export output as image"
                   >
-                    <Camera className="w-4 h-4" />
+                    <Camera className="w-4 h-4" aria-hidden="true" />
                   </button>
                 )}
 
@@ -402,7 +406,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     title="Export output as PDF document"
                     aria-label="Export output as PDF document"
                   >
-                    <FileText className="w-4 h-4" />
+                    <FileText className="w-4 h-4" aria-hidden="true" />
                   </button>
                 )}
 
@@ -417,7 +421,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     title="Export output as Markdown file (.md)"
                     aria-label="Export output as Markdown file"
                   >
-                    <FileCode className="w-4 h-4" />
+                    <FileCode className="w-4 h-4" aria-hidden="true" />
                   </button>
                 )}
 
@@ -429,15 +433,16 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                   }}
                   className="flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
                   title="Copy output text"
+                  aria-label={copied ? 'Output copied to clipboard' : 'Copy output content'}
                 >
                   {copied ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-teal-400" />
+                      <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-teal-400" aria-hidden="true" />
                       <span className="text-emerald-600 dark:text-teal-400 font-medium">Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5" />
+                      <Copy className="w-3.5 h-3.5" aria-hidden="true" />
                       <span className="hidden sm:inline">Copy</span>
                     </>
                   )}
@@ -455,13 +460,15 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                       : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-[#2a3942]'
                   }`}
                   title={output.isStarred ? 'Remove Star' : 'Star Output'}
+                  aria-label={output.isStarred ? 'Unstar output' : 'Star output'}
+                  aria-pressed={output.isStarred}
                 >
-                  <Star className={`w-4 h-4 ${output.isStarred ? 'fill-amber-500' : ''}`} />
+                  <Star className={`w-4 h-4 ${output.isStarred ? 'fill-amber-500' : ''}`} aria-hidden="true" />
                 </button>
 
                 {/* Delete Button */}
                 {showConfirmDelete ? (
-                  <div className="flex items-center gap-1 pl-1">
+                  <div className="flex items-center gap-1 pl-1" role="region" aria-label="Confirm deletion">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -489,8 +496,9 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     }}
                     className="p-1.5 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                     title="Delete output"
+                    aria-label="Delete output"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4" aria-hidden="true" />
                   </button>
                 )}
               </>
@@ -501,6 +509,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                   onClick={handleCancelEdit}
                   className="px-2.5 py-1 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] rounded-md transition-colors cursor-pointer"
                   title="Discard changes (Esc)"
+                  aria-label="Cancel editing"
                 >
                   Cancel
                 </button>
@@ -508,8 +517,9 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                   onClick={handleSaveEdit}
                   className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-white bg-[#00a884] hover:bg-[#008069] rounded-md transition-colors shadow-2xs cursor-pointer"
                   title="Save revisions (Ctrl+Enter)"
+                  aria-label="Save changes"
                 >
-                  <Check className="w-3.5 h-3.5" />
+                  <Check className="w-3.5 h-3.5" aria-hidden="true" />
                   Save
                 </button>
               </div>
@@ -532,6 +542,9 @@ export const OutputCard: React.FC<OutputCardProps> = ({
               {/* Complete / Incomplete Checkbox */}
               <button
                 type="button"
+                role="checkbox"
+                aria-checked={Boolean(output.taskCompleted)}
+                aria-label={output.taskCompleted ? 'Mark task as incomplete' : 'Mark task as complete'}
                 onClick={(e) => {
                   e.stopPropagation();
                   onToggleTaskComplete?.(output.id);
@@ -545,7 +558,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                 }`}
                 title={output.taskCompleted ? 'Mark as incomplete' : 'Mark as complete'}
               >
-                {output.taskCompleted && <Check className="w-3 h-3 stroke-[3]" />}
+                {output.taskCompleted && <Check className="w-3 h-3 stroke-[3]" aria-hidden="true" />}
               </button>
 
               <div className="min-w-0">
@@ -655,7 +668,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
             <div className="relative group/img rounded-xl overflow-hidden border border-slate-200/80 dark:border-[#26353d] bg-slate-900/5 dark:bg-black/20 max-w-2xl">
               <img
                 src={output.mediaUrl}
-                alt={output.mediaName || output.title || 'Uploaded media'}
+                alt={output.mediaName ? `Output image attachment: ${output.mediaName}` : output.title ? `Output image: ${output.title}` : 'Output image attachment'}
                 className="w-full max-h-[460px] object-contain rounded-xl cursor-zoom-in transition-transform duration-200 hover:scale-[1.01]"
                 onClick={() => setIsViewingImage(true)}
               />
@@ -665,16 +678,18 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                   onClick={() => setIsViewingImage(true)}
                   className="p-1.5 rounded-lg bg-black/60 text-white hover:bg-black/80 backdrop-blur-xs transition-colors cursor-pointer"
                   title="Full screen preview"
+                  aria-label="Full screen image preview"
                 >
-                  <Maximize2 className="w-4 h-4" />
+                  <Maximize2 className="w-4 h-4" aria-hidden="true" />
                 </button>
                 <a
                   href={output.mediaUrl}
                   download={output.mediaName || 'keepchat-image.png'}
                   className="p-1.5 rounded-lg bg-black/60 text-white hover:bg-black/80 backdrop-blur-xs transition-colors"
                   title="Download image"
+                  aria-label="Download image"
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4" aria-hidden="true" />
                 </a>
               </div>
             </div>
@@ -705,10 +720,11 @@ export const OutputCard: React.FC<OutputCardProps> = ({
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* AI Model Tag Selector */}
                 <div className="sm:w-48 shrink-0">
-                  <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  <label htmlFor={`model-select-${output.id}`} className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
                     AI Model Tag
                   </label>
                   <select
+                    id={`model-select-${output.id}`}
                     value={draftModel}
                     onChange={(e) => setDraftModel(e.target.value as AIModelType)}
                     className="w-full text-xs py-2 px-3 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-white dark:bg-[#111b21] text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[#00a884] focus:ring-1 focus:ring-[#00a884] cursor-pointer"
@@ -723,10 +739,11 @@ export const OutputCard: React.FC<OutputCardProps> = ({
 
                 {/* Prompt Title Field */}
                 <div className="flex-1 min-w-0">
-                  <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  <label htmlFor={`title-input-${output.id}`} className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
                     Prompt Title (Optional)
                   </label>
                   <input
+                    id={`title-input-${output.id}`}
                     type="text"
                     value={draftTitle}
                     onChange={(e) => setDraftTitle(e.target.value)}
@@ -738,10 +755,11 @@ export const OutputCard: React.FC<OutputCardProps> = ({
 
               {/* Row 2: Markdown Content Textarea */}
               <div>
-                <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                <label htmlFor={`content-input-${output.id}`} className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Output Content (Markdown Supported)
                 </label>
                 <textarea
+                  id={`content-input-${output.id}`}
                   value={draftContent}
                   onChange={(e) => setDraftContent(e.target.value)}
                   rows={8}
@@ -752,7 +770,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
 
               {/* Row 3: Tags Editor */}
               <div>
-                <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                <label htmlFor={`tag-input-${output.id}`} className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Tags (Press Enter or comma to add)
                 </label>
                 <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-white dark:bg-[#111b21] min-h-[38px] focus-within:border-[#00a884] focus-within:ring-1 focus-within:ring-[#00a884]">
@@ -761,22 +779,25 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                       key={idx}
                       className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-[#202c33] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#2a3942]"
                     >
-                      <Tag className="w-2.5 h-2.5 text-[#00a884]" />
+                      <Tag className="w-2.5 h-2.5 text-[#00a884]" aria-hidden="true" />
                       <span>#{tag}</span>
                       <button
                         type="button"
                         onClick={() => setDraftTags(draftTags.filter((_, i) => i !== idx))}
                         className="hover:text-rose-500 cursor-pointer ml-0.5 p-0.5 rounded-full"
                         title={`Remove #${tag}`}
+                        aria-label={`Remove #${tag}`}
                       >
-                        <X className="w-3 h-3" />
+                        <X className="w-3 h-3" aria-hidden="true" />
                       </button>
                     </span>
                   ))}
                   <input
+                    id={`tag-input-${output.id}`}
                     type="text"
                     placeholder={draftTags.length === 0 ? 'Type tag and press Enter or comma...' : 'Add another tag...'}
                     value={draftTagInput}
+                    aria-label="Add tag name"
                     onChange={(e) => setDraftTagInput(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ',') {
@@ -811,7 +832,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     onClick={handleSaveEdit}
                     className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#00a884] hover:bg-[#008069] transition-all shadow-xs active:scale-95 cursor-pointer"
                   >
-                    <Save className="w-3.5 h-3.5" />
+                    <Save className="w-3.5 h-3.5" aria-hidden="true" />
                     Save Changes
                   </button>
                 </div>
@@ -836,7 +857,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     className="inline-flex items-center gap-1 hover:text-[#00a884] dark:hover:text-[#00a884] cursor-pointer"
                     title={`Filter chat by #${tag}`}
                   >
-                    <Tag className="w-2.5 h-2.5 text-[#00a884]" />
+                    <Tag className="w-2.5 h-2.5 text-[#00a884]" aria-hidden="true" />
                     <span>#{tag}</span>
                   </button>
                   <button
@@ -849,7 +870,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     title={`Remove #${tag}`}
                     aria-label={`Remove #${tag}`}
                   >
-                    <X className="w-2.5 h-2.5" />
+                    <X className="w-2.5 h-2.5" aria-hidden="true" />
                   </button>
                 </div>
               ))}
@@ -860,7 +881,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                 onSubmit={handleAddNewTag}
                 className="inline-flex items-center gap-1 bg-white dark:bg-[#111b21] rounded-full border border-[#00a884] px-2 py-0.5 shadow-2xs animate-in zoom-in-95 duration-100"
               >
-                <span className="text-[11px] text-[#00a884] font-semibold">#</span>
+                <span className="text-[11px] text-[#00a884] font-semibold" aria-hidden="true">#</span>
                 <input
                   ref={newTagInputRef}
                   type="text"
@@ -873,14 +894,16 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     }
                   }}
                   placeholder="tag"
+                  aria-label="New tag name"
                   className="w-16 sm:w-20 text-[11px] bg-transparent text-slate-800 dark:text-slate-200 focus:outline-none"
                 />
                 <button
                   type="submit"
                   className="text-[#00a884] hover:text-[#008069] p-0.5 rounded cursor-pointer"
                   title="Add tag"
+                  aria-label="Confirm new tag"
                 >
-                  <Check className="w-3 h-3" />
+                  <Check className="w-3 h-3" aria-hidden="true" />
                 </button>
                 <button
                   type="button"
@@ -890,8 +913,9 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                   }}
                   className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-0.5 rounded cursor-pointer"
                   title="Cancel"
+                  aria-label="Cancel new tag"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-3 h-3" aria-hidden="true" />
                 </button>
               </form>
             ) : (
@@ -903,8 +927,9 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                 }}
                 className="inline-flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500 hover:text-[#00a884] dark:hover:text-[#00a884] px-1.5 py-0.5 rounded-full hover:bg-slate-200/50 dark:hover:bg-[#202c33] transition-colors cursor-pointer"
                 title="Add tag to output"
+                aria-label="Add tag to output"
               >
-                <Plus className="w-3 h-3" />
+                <Plus className="w-3 h-3" aria-hidden="true" />
                 <span>Tag</span>
               </button>
             )}

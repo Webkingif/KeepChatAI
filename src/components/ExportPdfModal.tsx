@@ -111,6 +111,17 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
     }
   }, [isOpen, outputs]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || outputs.length === 0) return null;
 
   // Sort outputs chronologically: oldest at top, newest at bottom
@@ -160,7 +171,7 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Export Output as PDF"
+      aria-labelledby="export-pdf-title"
       className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150"
     >
       <div className="bg-white dark:bg-[#111b21] rounded-2xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 dark:border-[#2a3942] overflow-hidden animate-in zoom-in-95 duration-150">
@@ -168,15 +179,15 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-[#26353d] bg-slate-50/80 dark:bg-[#182329]/80 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-rose-600 to-amber-600 text-white flex items-center justify-center shadow-xs">
-              <FileText className="w-4 h-4" />
+              <FileText className="w-4 h-4" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
+              <h2 id="export-pdf-title" className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                 {outputs.length === 1
                   ? 'Export Output as PDF Document'
                   : `Export ${outputs.length} Outputs as PDF Document`}
               </h2>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-slate-600 dark:text-slate-400">
                 Clean, continuous paginated A4 format with page numbers
               </p>
             </div>
@@ -185,17 +196,17 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
-            title="Close modal"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none"
+            aria-label="Close export PDF dialog"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Width Adjustment, Orientation & Presets Toolbar */}
         <div className="px-4 sm:px-5 py-2.5 bg-slate-100/90 dark:bg-[#162228] border-b border-slate-200 dark:border-[#26353d] flex flex-wrap items-center justify-between gap-3 shrink-0 text-xs">
           {/* Format Mode: Selectable Vector Text vs Snapshot */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0" role="radiogroup" aria-label="PDF export mode">
             <span className="font-semibold text-slate-700 dark:text-slate-200 mr-1 hidden sm:inline">
               Format:
             </span>
@@ -203,34 +214,40 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
               <button
                 type="button"
                 onClick={() => setPdfMode('selectable')}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                role="radio"
+                aria-checked={pdfMode === 'selectable'}
+                aria-label="Selectable vector text mode"
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none ${
                   pdfMode === 'selectable'
                     ? 'bg-white dark:bg-[#111b21] text-rose-600 dark:text-amber-400 shadow-2xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                 }`}
                 title="Selectable vector text: Text, headings, and code can be highlighted and copied"
               >
-                <Type className="w-3.5 h-3.5" />
+                <Type className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Selectable Text</span>
               </button>
               <button
                 type="button"
                 onClick={() => setPdfMode('snapshot')}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                role="radio"
+                aria-checked={pdfMode === 'snapshot'}
+                aria-label="Snapshot image PDF mode"
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none ${
                   pdfMode === 'snapshot'
                     ? 'bg-white dark:bg-[#111b21] text-rose-600 dark:text-amber-400 shadow-2xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                 }`}
                 title="Visual snapshot PDF"
               >
-                <Camera className="w-3.5 h-3.5" />
+                <Camera className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Snapshot</span>
               </button>
             </div>
           </div>
 
           {/* Orientation Toggle */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0" role="radiogroup" aria-label="Page orientation">
             <span className="font-semibold text-slate-700 dark:text-slate-200 mr-1 hidden sm:inline">
               Page:
             </span>
@@ -241,7 +258,10 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
                   setOrientation('p');
                   if (docWidth > 850) setDocWidth(750);
                 }}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                role="radio"
+                aria-checked={orientation === 'p'}
+                aria-label="Portrait orientation"
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none ${
                   orientation === 'p'
                     ? 'bg-white dark:bg-[#111b21] text-rose-600 dark:text-amber-400 shadow-2xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -256,7 +276,10 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
                   setOrientation('l');
                   if (docWidth < 950) setDocWidth(1050);
                 }}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                role="radio"
+                aria-checked={orientation === 'l'}
+                aria-label="Landscape orientation"
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none ${
                   orientation === 'l'
                     ? 'bg-white dark:bg-[#111b21] text-rose-600 dark:text-amber-400 shadow-2xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -270,14 +293,15 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
 
           {/* Width Slider */}
           <div className="flex items-center gap-2.5 min-w-[200px] sm:min-w-[240px] flex-1">
-            <div className="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-200 shrink-0">
-              <Sliders className="w-3.5 h-3.5 text-rose-600 dark:text-amber-400" />
+            <label htmlFor="pdf-width-slider" className="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-200 shrink-0 cursor-pointer">
+              <Sliders className="w-3.5 h-3.5 text-rose-600 dark:text-amber-400" aria-hidden="true" />
               <span>Width:</span>
               <span className="font-mono text-rose-600 dark:text-amber-400 font-bold tabular-nums">
                 {docWidth}px
               </span>
-            </div>
+            </label>
             <input
+              id="pdf-width-slider"
               type="range"
               min={600}
               max={1800}
@@ -290,7 +314,11 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
                   setOrientation('l');
                 }
               }}
-              className="w-full accent-rose-600 cursor-pointer"
+              aria-label="PDF printable document width in pixels"
+              aria-valuemin={600}
+              aria-valuemax={1800}
+              aria-valuenow={docWidth}
+              className="w-full accent-rose-600 cursor-pointer focus-visible:outline-none"
               title="Drag to adjust PDF printable width"
             />
           </div>
@@ -464,7 +492,7 @@ export const ExportPdfModal: React.FC<ExportPdfModalProps> = ({
                       <div className="mb-4">
                         <img
                           src={item.mediaUrl}
-                          alt={item.mediaName || 'Attached Media'}
+                          alt={item.mediaName || (item.title ? `Image for ${item.title}` : 'Attached media image')}
                           className="max-h-96 w-auto rounded border border-slate-200 object-contain"
                         />
                       </div>

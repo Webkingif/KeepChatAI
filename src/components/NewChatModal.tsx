@@ -84,6 +84,17 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
     }
   }, [initialData, isOpen]);
 
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,18 +145,25 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
   const CurrentIconCmp = selectedIconObj.icon;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="new-chat-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
+    >
       <div className="relative w-full max-w-md bg-white dark:bg-[#202c33] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#2a3942] overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 bg-slate-50 dark:bg-[#111b21] border-b border-slate-200 dark:border-[#2a3942] shrink-0">
-          <h2 className="text-base font-semibold text-slate-900 dark:text-white">
+          <h2 id="new-chat-modal-title" className="text-base font-semibold text-slate-900 dark:text-white">
             {initialData ? 'Edit Chat Thread' : 'New Chat Thread'}
           </h2>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+            className="p-1.5 rounded-full text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
+            aria-label="Close dialog"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -153,31 +171,33 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
         <form onSubmit={handleSubmit} className="p-5 space-y-4 overflow-y-auto flex-1">
           {/* Thread Title */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            <label htmlFor="new-chat-title-input" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
               Thread Title *
             </label>
             <input
+              id="new-chat-title-input"
               type="text"
               required
               autoFocus
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Next.js 15 Migrations & Auth"
-              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-[#2a3942] bg-white dark:bg-[#111b21] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#00a884] focus:border-transparent transition-all"
+              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-[#2a3942] bg-white dark:bg-[#111b21] text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#00a884] focus:border-transparent transition-all"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            <label htmlFor="new-chat-desc-input" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
               Description / Topic Focus
             </label>
             <input
+              id="new-chat-desc-input"
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Brief summary of outputs stored in this thread"
-              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-[#2a3942] bg-white dark:bg-[#111b21] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#00a884] focus:border-transparent transition-all"
+              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-[#2a3942] bg-white dark:bg-[#111b21] text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#00a884] focus:border-transparent transition-all"
             />
           </div>
 
@@ -199,11 +219,11 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                   {customAvatarUrl ? (
                     <img
                       src={customAvatarUrl}
-                      alt="Chat Logo"
+                      alt={title ? `Logo preview for ${title}` : 'Chat logo preview'}
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <CurrentIconCmp className="w-7 h-7 stroke-[2.2]" />
+                    <CurrentIconCmp className="w-7 h-7 stroke-[2.2]" aria-hidden="true" />
                   )}
                 </div>
               </div>
@@ -217,13 +237,14 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                     accept="image/*"
                     className="hidden"
                     onChange={handleImageUpload}
+                    aria-label="Upload custom chat logo image file"
                   />
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-[#202c33] border border-slate-300 dark:border-[#2a3942] text-slate-700 dark:text-slate-200 hover:border-[#00a884] dark:hover:border-teal-400 hover:text-[#00a884] transition-colors shadow-2xs cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-[#202c33] border border-slate-300 dark:border-[#2a3942] text-slate-700 dark:text-slate-200 hover:border-[#00a884] dark:hover:border-teal-400 hover:text-[#00a884] transition-colors shadow-2xs cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
                   >
-                    <Camera className="w-3.5 h-3.5" />
+                    <Camera className="w-3.5 h-3.5" aria-hidden="true" />
                     <span>{customAvatarUrl ? 'Change Photo' : 'Upload Image'}</span>
                   </button>
 
@@ -231,15 +252,16 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setCustomAvatarUrl(null)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none"
                       title="Reset to default icon and color"
+                      aria-label="Reset to default icon and color"
                     >
-                      <RotateCcw className="w-3 h-3" />
+                      <RotateCcw className="w-3 h-3" aria-hidden="true" />
                       <span>Reset to Default</span>
                     </button>
                   )}
                 </div>
-                <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                <p className="text-[11px] text-slate-600 dark:text-slate-400">
                   {customAvatarUrl
                     ? 'Custom logo active. Tap Reset to Default to revert back to default icon.'
                     : 'Upload a custom photo or pick a default style below.'}
@@ -251,10 +273,11 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
           {/* Category & Primary Model */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="new-chat-category-select" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                 Category
               </label>
               <select
+                id="new-chat-category-select"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-[#2a3942] bg-white dark:bg-[#111b21] text-slate-900 dark:text-white text-sm focus:outline-hidden focus:ring-2 focus:ring-[#00a884]"
@@ -268,10 +291,11 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="new-chat-model-select" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                 Primary Model
               </label>
               <select
+                id="new-chat-model-select"
                 value={defaultAiModel}
                 onChange={(e) => setDefaultAiModel(e.target.value as AIModelType)}
                 className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-[#2a3942] bg-white dark:bg-[#111b21] text-slate-900 dark:text-white text-sm focus:outline-hidden focus:ring-2 focus:ring-[#00a884]"
@@ -293,24 +317,27 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
               </label>
             </div>
 
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-3" role="radiogroup" aria-label="Avatar gradient colors">
               {COLOR_OPTIONS.map((col) => (
                 <button
                   type="button"
                   key={col}
                   onClick={() => setAvatarColor(col)}
-                  className={`w-7 h-7 rounded-full bg-gradient-to-br ${col} flex items-center justify-center transition-transform hover:scale-110 cursor-pointer ${
+                  aria-label={`Color style ${col}`}
+                  aria-checked={avatarColor === col}
+                  role="radio"
+                  className={`w-7 h-7 rounded-full bg-gradient-to-br ${col} flex items-center justify-center transition-transform hover:scale-110 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none ${
                     avatarColor === col
                       ? 'ring-2 ring-offset-2 ring-[#00a884] dark:ring-offset-[#202c33]'
                       : ''
                   }`}
                 >
-                  {avatarColor === col && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
+                  {avatarColor === col && <Check className="w-3.5 h-3.5 text-white stroke-[3]" aria-hidden="true" />}
                 </button>
               ))}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" role="radiogroup" aria-label="Avatar icons">
               {ICONS.map((item) => {
                 const IconCmp = item.icon;
                 const isSelected = iconName === item.name;
@@ -319,14 +346,17 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                     type="button"
                     key={item.name}
                     onClick={() => setIconName(item.name)}
-                    className={`p-2 rounded-lg border text-xs flex items-center justify-center transition-colors cursor-pointer ${
+                    aria-label={`Icon ${item.label}`}
+                    aria-checked={isSelected}
+                    role="radio"
+                    className={`p-2 rounded-lg border text-xs flex items-center justify-center transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none ${
                       isSelected
                         ? 'border-[#00a884] bg-emerald-50 dark:bg-teal-950/40 text-[#00a884]'
-                        : 'border-slate-200 dark:border-[#2a3942] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#182229]'
+                        : 'border-slate-200 dark:border-[#2a3942] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#182229]'
                     }`}
                     title={item.label}
                   >
-                    <IconCmp className="w-4 h-4" />
+                    <IconCmp className="w-4 h-4" aria-hidden="true" />
                   </button>
                 );
               })}
@@ -338,13 +368,13 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#111b21] transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#111b21] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#00a884] hover:bg-[#008069] transition-colors shadow-xs cursor-pointer"
+              className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#00a884] hover:bg-[#008069] transition-colors shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
             >
               {initialData ? 'Save Changes' : 'Create Thread'}
             </button>

@@ -114,6 +114,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
         ref={avatarInputRef}
         accept="image/*"
         className="hidden"
+        aria-label="Upload custom chat avatar"
         onChange={handleAvatarFileSelected}
       />
 
@@ -125,15 +126,26 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
             onClick={onBack}
             className="md:hidden p-2 -ml-1 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer shrink-0"
             title="Back to chats"
+            aria-label="Back to chats list"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5" aria-hidden="true" />
           </button>
 
           {/* Avatar Icon with Click-to-View Full Photo & Hover Badge */}
           <div
+            role="button"
+            tabIndex={0}
             onClick={() => (onViewLogo ? onViewLogo(chat) : avatarInputRef.current?.click())}
-            className="relative group/avatar cursor-pointer shrink-0"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                if (onViewLogo) onViewLogo(chat);
+                else avatarInputRef.current?.click();
+              }
+            }}
+            className="relative group/avatar cursor-pointer shrink-0 rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#00a884]"
             title="Click to view full photo"
+            aria-label={`View full logo for ${chat.title}`}
           >
             <div
               className={`w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden flex items-center justify-center text-white shadow-xs transition-transform active:scale-95 ${
@@ -145,28 +157,40 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               {chat.customAvatarUrl ? (
                 <img
                   src={chat.customAvatarUrl}
-                  alt={chat.title}
+                  alt={`Avatar photo for ${chat.title}`}
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <IconCmp className="w-4 h-4 md:w-5 md:h-5 stroke-[2.2]" />
+                <IconCmp className="w-4 h-4 md:w-5 md:h-5 stroke-[2.2]" aria-hidden="true" />
               )}
             </div>
 
             {/* View Full Overlay on Hover */}
-            <div className="absolute inset-0 rounded-full bg-black/45 flex items-center justify-center text-white opacity-0 group-hover/avatar:opacity-100 transition-opacity">
+            <div className="absolute inset-0 rounded-full bg-black/45 flex items-center justify-center text-white opacity-0 group-hover/avatar:opacity-100 transition-opacity" aria-hidden="true">
               <Maximize2 className="w-4 h-4" />
             </div>
           </div>
 
           {/* Thread Title & Meta Info */}
-          <div className="min-w-0 flex-1 cursor-pointer" onClick={() => onEditChat(chat)}>
+          <div
+            role="button"
+            tabIndex={0}
+            className="min-w-0 flex-1 cursor-pointer rounded-lg px-1 py-0.5 -mx-1 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#00a884]"
+            onClick={() => onEditChat(chat)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onEditChat(chat);
+              }
+            }}
+            aria-label={`Edit thread details for ${chat.title}`}
+          >
             <div className="flex items-center gap-1.5 min-w-0">
               <h2 className="text-sm md:text-base font-semibold text-slate-900 dark:text-slate-100 truncate">
                 {chat.title}
               </h2>
               {chat.isPinned && (
-                <Pin className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 rotate-45 shrink-0" />
+                <Pin className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 rotate-45 shrink-0" aria-label="Pinned thread" />
               )}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
@@ -179,7 +203,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                 <>
                   <span className="mx-1.5 opacity-60">·</span>
                   <span className="inline-flex items-center gap-1 font-semibold text-amber-600 dark:text-amber-400">
-                    <WifiOff className="w-3 h-3" />
+                    <WifiOff className="w-3 h-3" aria-hidden="true" />
                     <span>Offline (Saved)</span>
                   </span>
                 </>
@@ -205,11 +229,12 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
             }`}
             title={chat.isPinned ? 'Unpin chat' : 'Pin chat to top'}
+            aria-label={chat.isPinned ? `Unpin chat ${chat.title}` : `Pin chat ${chat.title} to top`}
           >
             {chat.isPinned ? (
-              <PinOff className="w-4 h-4" />
+              <PinOff className="w-4 h-4" aria-hidden="true" />
             ) : (
-              <Pin className="w-4 h-4 rotate-45" />
+              <Pin className="w-4 h-4 rotate-45" aria-hidden="true" />
             )}
           </button>
 
@@ -223,8 +248,9 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
             }`}
             title="Search in thread"
             aria-label="Search within thread"
+            aria-expanded={showSearch}
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-4 h-4" aria-hidden="true" />
           </button>
 
           {/* Starred Filter Toggle (Desktop / Larger screens) */}
@@ -236,9 +262,10 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
             }`}
             title={starredOnlyFilter ? 'Show all outputs' : 'Show starred outputs only'}
-            aria-label="Filter starred outputs"
+            aria-label={starredOnlyFilter ? 'Show all outputs' : 'Show starred outputs only'}
+            aria-pressed={starredOnlyFilter}
           >
-            <Star className={`w-4 h-4 ${starredOnlyFilter ? 'fill-amber-500' : ''}`} />
+            <Star className={`w-4 h-4 ${starredOnlyFilter ? 'fill-amber-500' : ''}`} aria-hidden="true" />
           </button>
 
           {/* Multi-Select Toggle (Desktop / Larger screens) */}
@@ -251,9 +278,10 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                   : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
               }`}
               title={isSelectMode ? 'Exit select mode' : 'Select outputs to export'}
-              aria-label="Toggle multi-select mode"
+              aria-label={isSelectMode ? 'Exit select mode' : 'Select outputs to export'}
+              aria-pressed={isSelectMode}
             >
-              <CheckSquare className="w-4 h-4" />
+              <CheckSquare className="w-4 h-4" aria-hidden="true" />
             </button>
           )}
 
@@ -262,8 +290,9 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
             onClick={() => onExportMarkdown(chat)}
             className="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors hidden sm:flex cursor-pointer"
             title="Export thread as Markdown file"
+            aria-label="Export thread as Markdown file"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4" aria-hidden="true" />
           </button>
 
           {/* 3-Dots More Menu */}
@@ -273,11 +302,13 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               className="relative p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
               title="More thread options"
               aria-label="More thread options"
+              aria-haspopup="menu"
+              aria-expanded={showMenu}
             >
-              <MoreVertical className="w-5 h-5" />
+              <MoreVertical className="w-5 h-5" aria-hidden="true" />
               {/* Active filter / selection indicator dot on small screens */}
               {(starredOnlyFilter || inThreadSearchQuery || isSelectMode) && (
-                <span className="sm:hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#00a884] ring-2 ring-[#f0f2f5] dark:ring-[#202c33]" />
+                <span className="sm:hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#00a884] ring-2 ring-[#f0f2f5] dark:ring-[#202c33]" aria-hidden="true" />
               )}
             </button>
 
@@ -288,9 +319,14 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                   className="fixed inset-0 z-30"
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 top-full mt-1.5 w-60 max-w-[calc(100vw-24px)] bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-2 z-40 animate-in fade-in zoom-in-95 duration-100 max-h-[85vh] overflow-y-auto">
+                <div
+                  role="menu"
+                  aria-label="Thread options"
+                  className="absolute right-0 top-full mt-1.5 w-60 max-w-[calc(100vw-24px)] bg-white dark:bg-[#202c33] rounded-xl shadow-xl border border-slate-200 dark:border-[#2a3942] py-2 z-40 animate-in fade-in zoom-in-95 duration-100 max-h-[85vh] overflow-y-auto"
+                >
                   {/* Small Screen: Search in Thread */}
                   <button
+                    role="menuitem"
                     onClick={() => {
                       setShowMenu(false);
                       setShowSearch(true);
@@ -310,6 +346,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 
                   {/* Small Screen: Starred Filter Toggle */}
                   <button
+                    role="menuitem"
                     onClick={() => {
                       setShowMenu(false);
                       setStarredOnlyFilter(!starredOnlyFilter);
@@ -321,6 +358,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                         className={`w-4 h-4 ${
                           starredOnlyFilter ? 'fill-amber-500 text-amber-500' : 'text-slate-400'
                         }`}
+                        aria-hidden="true"
                       />
                       <span>{starredOnlyFilter ? 'Show All Outputs' : 'Starred Outputs Only'}</span>
                     </div>
@@ -334,6 +372,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                   {/* Small Screen: Multi-Select Outputs Mode */}
                   {onToggleSelectMode && (
                     <button
+                      role="menuitem"
                       onClick={() => {
                         setShowMenu(false);
                         onToggleSelectMode();
@@ -343,6 +382,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                       <div className="flex items-center gap-2.5">
                         <CheckSquare
                           className={`w-4 h-4 ${isSelectMode ? 'text-[#00a884]' : 'text-slate-400'}`}
+                          aria-hidden="true"
                         />
                         <span>{isSelectMode ? 'Exit Selection Mode' : 'Select Outputs'}</span>
                       </div>
@@ -359,6 +399,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 
                   {/* Pin / Unpin Action */}
                   <button
+                    role="menuitem"
                     onClick={() => {
                       onPinToggle(chat.id);
                       setShowMenu(false);
@@ -367,12 +408,12 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                   >
                     {chat.isPinned ? (
                       <>
-                        <PinOff className="w-4 h-4 text-slate-400" />
+                        <PinOff className="w-4 h-4 text-slate-400" aria-hidden="true" />
                         <span>Unpin Thread</span>
                       </>
                     ) : (
                       <>
-                        <Pin className="w-4 h-4 text-slate-400" />
+                        <Pin className="w-4 h-4 text-slate-400" aria-hidden="true" />
                         <span>Pin Thread</span>
                       </>
                     )}
@@ -381,81 +422,87 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                   {/* Select Outputs (Desktop menu option) */}
                   {onToggleSelectMode && (
                     <button
+                      role="menuitem"
                       onClick={() => {
                         setShowMenu(false);
                         onToggleSelectMode();
                       }}
                       className="w-full hidden sm:flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                     >
-                      <CheckSquare className="w-4 h-4 text-slate-400" />
+                      <CheckSquare className="w-4 h-4 text-slate-400" aria-hidden="true" />
                       <span>{isSelectMode ? 'Exit Selection Mode' : 'Select Outputs to Export'}</span>
                     </button>
                   )}
 
                   {/* View Full Logo */}
                   <button
+                    role="menuitem"
                     onClick={() => {
                       setShowMenu(false);
                       onViewLogo?.(chat);
                     }}
                     className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
-                    <Maximize2 className="w-4 h-4 text-slate-400" />
+                    <Maximize2 className="w-4 h-4 text-slate-400" aria-hidden="true" />
                     <span>View Full Logo</span>
                   </button>
 
                   {/* Change Chat Photo */}
                   <button
+                    role="menuitem"
                     onClick={() => {
                       setShowMenu(false);
                       avatarInputRef.current?.click();
                     }}
                     className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
-                    <Camera className="w-4 h-4 text-slate-400" />
+                    <Camera className="w-4 h-4 text-slate-400" aria-hidden="true" />
                     <span>Change Chat Photo</span>
                   </button>
 
                   {/* Reset Chat Photo if custom */}
                   {chat.customAvatarUrl && (
                     <button
+                      role="menuitem"
                       onClick={() => {
                         onUpdateChatAvatar?.(chat.id, undefined);
                         setShowMenu(false);
                       }}
                       className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                     >
-                      <RotateCcw className="w-4 h-4 text-slate-400" />
+                      <RotateCcw className="w-4 h-4 text-slate-400" aria-hidden="true" />
                       <span>Reset to Default Icon</span>
                     </button>
                   )}
 
                   <button
+                    role="menuitem"
                     onClick={() => {
                       onEditChat(chat);
                       setShowMenu(false);
                     }}
                     className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
                   >
-                    <Edit2 className="w-4 h-4 text-slate-400" />
+                    <Edit2 className="w-4 h-4 text-slate-400" aria-hidden="true" />
                     <span>Edit Thread Details</span>
                   </button>
 
                   <button
+                    role="menuitem"
                     onClick={() => {
                       onExportMarkdown(chat);
                       setShowMenu(false);
                     }}
                     className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer sm:hidden"
                   >
-                    <Download className="w-4 h-4 text-slate-400" />
+                    <Download className="w-4 h-4 text-slate-400" aria-hidden="true" />
                     <span>Export as Markdown</span>
                   </button>
 
                   <div className="my-1 border-t border-slate-100 dark:border-[#2a3942]" />
 
                   {showConfirmDelete ? (
-                    <div className="px-4 py-2 text-xs">
+                    <div className="px-4 py-2 text-xs" role="region" aria-label="Confirm deletion">
                       <p className="text-rose-600 dark:text-rose-400 font-medium mb-1.5">
                         Delete this thread & all its outputs?
                       </p>
@@ -480,10 +527,11 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                     </div>
                   ) : (
                     <button
+                      role="menuitem"
                       onClick={() => setShowConfirmDelete(true)}
                       className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors text-left cursor-pointer"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4" aria-hidden="true" />
                       <span>Delete Thread</span>
                     </button>
                   )}
@@ -497,13 +545,14 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
       {/* In-Thread Search Bar Dropdown */}
       {showSearch && (
         <div className="px-3 md:px-4 py-2 bg-slate-100/90 dark:bg-[#182229] border-t border-slate-200 dark:border-[#222d34] flex items-center gap-2 animate-in slide-in-from-top-1 duration-150">
-          <Search className="w-4 h-4 text-slate-400 shrink-0" />
+          <Search className="w-4 h-4 text-slate-400 shrink-0" aria-hidden="true" />
           <input
             type="text"
             autoFocus
             value={inThreadSearchQuery}
             onChange={(e) => setInThreadSearchQuery(e.target.value)}
             placeholder="Search within this thread..."
+            aria-label="Search within this thread"
             className="flex-1 bg-transparent text-xs md:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-hidden"
           />
           {inThreadSearchQuery && (
@@ -511,8 +560,9 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               onClick={() => setInThreadSearchQuery('')}
               className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-full hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
               title="Clear search query"
+              aria-label="Clear in-thread search text"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           )}
           <button
@@ -524,7 +574,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
             title="Close search"
             aria-label="Close search"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
       )}

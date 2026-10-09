@@ -21,6 +21,12 @@ export const KeepChatLogo: React.FC<KeepChatLogoProps> = ({
   const displayHeight = isFull ? Math.round(size * 1.05) : size;
 
   return (
-   <img src="/favicon.svg"  width="50px" height="50px"/>
+    <img
+      src="/favicon.svg"
+      alt="KeepChat logo"
+      width={displayWidth}
+      height={displayHeight}
+      className={`shrink-0 ${className}`}
+    />
   );
 };
