@@ -50,17 +50,18 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, codeString }) =>
         <button
           onClick={handleCopy}
           type="button"
+          aria-label={copied ? 'Code copied to clipboard' : 'Copy code to clipboard'}
           className="flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
           title="Copy code"
         >
           {copied ? (
             <>
-              <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-teal-400" />
+              <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-teal-400" aria-hidden="true" />
               <span className="text-emerald-600 dark:text-teal-400 font-medium">Copied!</span>
             </>
           ) : (
             <>
-              <Copy className="w-3.5 h-3.5" />
+              <Copy className="w-3.5 h-3.5" aria-hidden="true" />
               <span>Copy</span>
             </>
           )}
@@ -183,6 +184,16 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
               >
                 {children}
               </a>
+            );
+          },
+          img({ src, alt }) {
+            return (
+              <img
+                src={src}
+                alt={alt || 'Illustration or figure in output'}
+                loading="lazy"
+                className="max-w-full h-auto rounded-lg my-3 border border-slate-200 dark:border-[#2a3942]"
+              />
             );
           },
         }}

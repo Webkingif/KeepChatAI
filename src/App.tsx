@@ -740,6 +740,14 @@ export default function App() {
 
   return (
     <div className={`flex h-screen w-screen overflow-hidden ${effectiveTheme === 'dark' ? 'dark' : ''}`}>
+      {/* Skip to Main Content Link for Keyboard Accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#00a884] focus:text-white focus:font-semibold focus:rounded-lg focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a884]"
+      >
+        Skip to main content
+      </a>
+
       {/* 
         RESPONSIVE BEHAVIOR:
         On Mobile (< 768px):
@@ -752,7 +760,8 @@ export default function App() {
       */}
       <div className="flex w-full h-full relative overflow-hidden bg-[#efeae2] dark:bg-[#0b141a]">
         {/* Left Pane (Sidebar or Settings) */}
-        <div
+        <nav
+          aria-label="Navigation and chat threads"
           className={`h-full z-10 transition-all duration-200 ${
             activeMainView === 'settings'
               ? 'flex w-full md:w-auto'
@@ -797,11 +806,14 @@ export default function App() {
               onViewLogo={(chat) => setViewingLogoChatId(chat.id)}
             />
           )}
-        </div>
+        </nav>
 
         {/* Right Pane (Tasks View, Chat View, or Empty Desktop Selection) */}
-        <div
-          className={`flex-1 h-full flex-col min-w-0 transition-all duration-200 ${
+        <main
+          id="main-content"
+          tabIndex={-1}
+          aria-label="Conversation and workspace"
+          className={`flex-1 h-full flex-col min-w-0 transition-all duration-200 focus:outline-none ${
             activeMainView === 'settings'
               ? 'hidden md:flex'
               : activeMainView === 'tasks'
@@ -966,7 +978,7 @@ export default function App() {
           ) : (
             <NoChatSelectedDesktop onNewChat={handleOpenNewChat} />
           )}
-        </div>
+        </main>
       </div>
 
       {/* New / Edit Chat Modal */}

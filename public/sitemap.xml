@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://keepchatai.netlify.app/</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://keepchatai.netlify.app/og-image-kc.jpg</image:loc>
+      <image:title>KeepChat — AI Output Vault &amp; Organizer</image:title>
+      <image:caption>A centralized WhatsApp-inspired vault to save, organize, search, and view Markdown-formatted AI outputs with task tracking and multi-format exports</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://keepchatai.netlify.app/pwa-512x512.png</image:loc>
+      <image:title>KeepChat App Icon</image:title>
+      <image:caption>KeepChat official app emblem and brand icon</image:caption>
+    </image:image>
+  </url>
+</urlset>

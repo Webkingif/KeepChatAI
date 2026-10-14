@@ -108,6 +108,17 @@ export const ExportSnapshotModal: React.FC<ExportSnapshotModalProps> = ({
     }
   }, [isOpen, outputs]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || outputs.length === 0) return null;
 
   // Sort outputs chronologically (oldest at top, newest at bottom)
@@ -172,7 +183,7 @@ export const ExportSnapshotModal: React.FC<ExportSnapshotModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Export Output as Image"
+      aria-labelledby="export-snapshot-title"
       className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150"
     >
       <div
@@ -182,15 +193,15 @@ export const ExportSnapshotModal: React.FC<ExportSnapshotModalProps> = ({
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-[#26353d] bg-slate-50/80 dark:bg-[#182329]/80 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#008069] to-[#25d366] text-white flex items-center justify-center shadow-xs">
-              <Download className="w-4 h-4" />
+              <Download className="w-4 h-4" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
+              <h2 id="export-snapshot-title" className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                 {outputs.length === 1
                   ? 'Export Output as Image'
                   : `Export ${outputs.length} Outputs as Combined Image`}
               </h2>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-slate-600 dark:text-slate-400">
                 WhatsApp-styled high-resolution snapshot (PNG)
               </p>
             </div>
@@ -198,40 +209,47 @@ export const ExportSnapshotModal: React.FC<ExportSnapshotModalProps> = ({
 
           <div className="flex items-center gap-2">
             {/* Theme Toggle for Snapshot */}
-            <div className="flex items-center bg-slate-200/70 dark:bg-[#202c33] p-0.5 rounded-lg text-xs">
+            <div className="flex items-center bg-slate-200/70 dark:bg-[#202c33] p-0.5 rounded-lg text-xs" role="radiogroup" aria-label="Snapshot wallpaper theme">
               <button
                 type="button"
                 onClick={() => setSnapshotTheme('light')}
-                className={`p-1.5 rounded-md transition-colors cursor-pointer ${
+                className={`p-1.5 rounded-md transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none ${
                   snapshotTheme === 'light'
                     ? 'bg-white text-slate-900 shadow-2xs font-medium'
-                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
+                    : 'text-slate-600 hover:text-slate-800 dark:text-slate-400'
                 }`}
                 title="Light Wallpaper"
+                aria-label="Light wallpaper background"
+                role="radio"
+                aria-checked={snapshotTheme === 'light'}
               >
-                <Sun className="w-3.5 h-3.5" />
+                <Sun className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={() => setSnapshotTheme('dark')}
-                className={`p-1.5 rounded-md transition-colors cursor-pointer ${
+                className={`p-1.5 rounded-md transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none ${
                   snapshotTheme === 'dark'
                     ? 'bg-[#111b21] text-teal-400 shadow-2xs font-medium'
-                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
+                    : 'text-slate-600 hover:text-slate-800 dark:text-slate-400'
                 }`}
                 title="Dark Wallpaper"
+                aria-label="Dark wallpaper background"
+                role="radio"
+                aria-checked={snapshotTheme === 'dark'}
               >
-                <Moon className="w-3.5 h-3.5" />
+                <Moon className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
             </div>
 
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
               title="Close modal"
+              aria-label="Close export modal"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -239,21 +257,26 @@ export const ExportSnapshotModal: React.FC<ExportSnapshotModalProps> = ({
         {/* Width Adjustment & Presets Toolbar */}
         <div className="px-4 sm:px-5 py-2.5 bg-slate-100/90 dark:bg-[#162228] border-b border-slate-200 dark:border-[#26353d] flex flex-wrap items-center justify-between gap-3 shrink-0 text-xs">
           <div className="flex items-center gap-2.5 min-w-[220px] sm:min-w-[260px] flex-1">
-            <div className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200 shrink-0">
-              <Sliders className="w-3.5 h-3.5 text-[#00a884]" />
+            <label htmlFor="snapshot-width-slider" className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200 shrink-0 cursor-pointer">
+              <Sliders className="w-3.5 h-3.5 text-[#00a884]" aria-hidden="true" />
               <span>Width:</span>
               <span className="font-mono text-[#00a884] dark:text-teal-400 font-bold tabular-nums">
                 {exportWidth}px
               </span>
-            </div>
+            </label>
             <input
+              id="snapshot-width-slider"
               type="range"
               min={480}
               max={1800}
               step={20}
               value={exportWidth}
               onChange={(e) => setExportWidth(Number(e.target.value))}
-              className="w-full accent-[#00a884] cursor-pointer"
+              aria-label="Export image width in pixels"
+              aria-valuemin={480}
+              aria-valuemax={1800}
+              aria-valuenow={exportWidth}
+              className="w-full accent-[#00a884] cursor-pointer focus-visible:outline-none"
               title="Drag to adjust export width"
             />
           </div>
@@ -321,7 +344,7 @@ export const ExportSnapshotModal: React.FC<ExportSnapshotModalProps> = ({
                 <div className="w-9 h-9 rounded-full overflow-hidden bg-white/20 p-0.5 shrink-0 flex items-center justify-center">
                   <img
                     src="/pwa-192x192.png"
-                    alt="KeepChat"
+                    alt="KeepChat logo"
                     className="w-full h-full object-cover rounded-full"
                   />
                 </div>
@@ -399,7 +422,7 @@ export const ExportSnapshotModal: React.FC<ExportSnapshotModalProps> = ({
                       <div className="px-3.5 pt-3">
                         <img
                           src={item.mediaUrl}
-                          alt={item.mediaName || 'Attached Media'}
+                          alt={item.mediaName || (item.title ? `Image for ${item.title}` : 'Attached media')}
                           className="max-h-80 w-auto rounded-lg object-contain border border-slate-200 dark:border-[#2a3942]"
                         />
                       </div>

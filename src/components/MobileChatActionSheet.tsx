@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Pin,
   PinOff,
@@ -50,6 +50,17 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
 }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !chat) return null;
 
   const IconCmp = (chat.iconName && ICON_MAP[chat.iconName]) || Sparkles;
@@ -80,7 +91,12 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="mobile-sheet-title"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+    >
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
@@ -105,23 +121,23 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
               {chat.customAvatarUrl ? (
                 <img
                   src={chat.customAvatarUrl}
-                  alt={chat.title}
+                  alt={`Avatar photo for ${chat.title}`}
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <IconCmp className="w-5 h-5 stroke-[2.2]" />
+                <IconCmp className="w-5 h-5 stroke-[2.2]" aria-hidden="true" />
               )}
             </div>
             <div className="min-w-0">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+              <h2 id="mobile-sheet-title" className="text-sm font-semibold text-slate-900 dark:text-white truncate">
                 {chat.title}
-              </h3>
-              <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+              </h2>
+              <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
                 <span>{chat.category}</span>
                 <span>•</span>
                 {chat.isPinned ? (
                   <span className="inline-flex items-center gap-1 text-teal-600 dark:text-teal-400 font-medium">
-                    <Pin className="w-3 h-3 rotate-45" />
+                    <Pin className="w-3 h-3 rotate-45" aria-hidden="true" />
                     Pinned to top
                   </span>
                 ) : (
@@ -131,11 +147,12 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
-            title="Close"
+            className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
+            aria-label="Close action sheet"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -144,7 +161,7 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
           {/* Pin / Unpin Action (Primary feature) */}
           <button
             onClick={handlePin}
-            className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left transition-colors cursor-pointer ${
+            className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none ${
               chat.isPinned
                 ? 'bg-teal-50 dark:bg-teal-950/30 text-teal-800 dark:text-teal-200 hover:bg-teal-100 dark:hover:bg-teal-950/50'
                 : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#2a3942]'
@@ -159,9 +176,9 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
                 }`}
               >
                 {chat.isPinned ? (
-                  <PinOff className="w-4 h-4" />
+                  <PinOff className="w-4 h-4" aria-hidden="true" />
                 ) : (
-                  <Pin className="w-4 h-4 rotate-45" />
+                  <Pin className="w-4 h-4 rotate-45" aria-hidden="true" />
                 )}
               </div>
               <div>
@@ -185,10 +202,10 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
           {/* Open Chat */}
           <button
             onClick={handleSelect}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#2a3942] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
           >
             <div className="p-2 rounded-lg bg-slate-100 dark:bg-[#182229] text-slate-600 dark:text-slate-300">
-              <MessageSquare className="w-4 h-4" />
+              <MessageSquare className="w-4 h-4" aria-hidden="true" />
             </div>
             <div>
               <p className="text-sm font-medium">Open Chat</p>
@@ -202,10 +219,10 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
           {onEditChat && (
             <button
               onClick={handleEdit}
-              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#2a3942] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
             >
               <div className="p-2 rounded-lg bg-slate-100 dark:bg-[#182229] text-slate-600 dark:text-slate-300">
-                <Edit2 className="w-4 h-4" />
+                <Edit2 className="w-4 h-4" aria-hidden="true" />
               </div>
               <div>
                 <p className="text-sm font-medium">Edit Thread Details</p>
@@ -220,10 +237,10 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
           {onExportMarkdown && (
             <button
               onClick={handleExport}
-              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#2a3942] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
             >
               <div className="p-2 rounded-lg bg-slate-100 dark:bg-[#182229] text-slate-600 dark:text-slate-300">
-                <Download className="w-4 h-4" />
+                <Download className="w-4 h-4" aria-hidden="true" />
               </div>
               <div>
                 <p className="text-sm font-medium">Export as Markdown (.md)</p>
@@ -245,13 +262,13 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleDelete}
-                      className="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700 transition-colors cursor-pointer"
+                      className="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none"
                     >
                       Yes, Delete Chat
                     </button>
                     <button
                       onClick={() => setShowConfirmDelete(false)}
-                      className="flex-1 py-1.5 px-3 rounded-lg text-xs font-medium bg-slate-200 dark:bg-[#2a3942] text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-[#34444e] transition-colors cursor-pointer"
+                      className="flex-1 py-1.5 px-3 rounded-lg text-xs font-medium bg-slate-200 dark:bg-[#2a3942] text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-[#34444e] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none"
                     >
                       Cancel
                     </button>
@@ -260,10 +277,10 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
               ) : (
                 <button
                   onClick={() => setShowConfirmDelete(true)}
-                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none"
                 >
                   <div className="p-2 rounded-lg bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400">
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <div>
                     <p className="text-sm font-medium">Delete Thread</p>
@@ -281,7 +298,7 @@ export const MobileChatActionSheet: React.FC<MobileChatActionSheetProps> = ({
         <div className="p-3 bg-slate-50 dark:bg-[#182229] border-t border-slate-100 dark:border-[#2a3942]">
           <button
             onClick={onClose}
-            className="w-full py-2.5 rounded-xl text-sm font-medium bg-white dark:bg-[#202c33] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#2a3942] hover:bg-slate-100 dark:hover:bg-[#2a3942] transition-colors cursor-pointer text-center"
+            className="w-full py-2.5 rounded-xl text-sm font-medium bg-white dark:bg-[#202c33] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#2a3942] hover:bg-slate-100 dark:hover:bg-[#2a3942] transition-colors cursor-pointer text-center focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none"
           >
             Cancel
           </button>

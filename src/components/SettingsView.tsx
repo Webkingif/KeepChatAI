@@ -49,10 +49,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <div className="flex items-center gap-3 px-3 py-3 bg-[#008069] dark:bg-[#202c33] text-white min-h-[58px] shadow-xs">
         <button
           onClick={onBack}
-          className="p-2 -ml-1 rounded-full hover:bg-black/15 transition-colors cursor-pointer"
+          className="p-2 -ml-1 rounded-full hover:bg-black/15 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
           title="Back to chats"
+          aria-label="Back to chats"
         >
-          <ArrowLeft className="w-5 h-5 text-white" />
+          <ArrowLeft className="w-5 h-5 text-white" aria-hidden="true" />
         </button>
         <h1 className="font-semibold text-base tracking-tight text-white">
           Settings
@@ -80,17 +81,17 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         {/* Section Header */}
         <div>
           <div className="flex items-center gap-2 mb-2 px-1">
-            <Palette className="w-4 h-4 text-[#00a884] dark:text-teal-400" />
-            <h3 className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+            <Palette className="w-4 h-4 text-[#00a884] dark:text-teal-400" aria-hidden="true" />
+            <h2 className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
               Appearance & Theme
-            </h3>
+            </h2>
           </div>
           <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-3 px-1 leading-relaxed">
             Choose how KeepChat looks to you on this device.
           </p>
 
           {/* Theme Option Cards */}
-          <div className="space-y-2">
+          <div className="space-y-2" role="radiogroup" aria-label="Appearance theme options">
             {themeOptions.map((option) => {
               const Icon = option.icon;
               const isSelected = themeMode === option.mode;
@@ -98,8 +99,17 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               return (
                 <div
                   key={option.mode}
+                  role="radio"
+                  aria-checked={isSelected}
+                  tabIndex={0}
                   onClick={() => onSelectThemeMode(option.mode)}
-                  className={`flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer ${
+                  onKeyDown={(e) => {
+                    if (e.key === ' ' || e.key === 'Enter') {
+                      e.preventDefault();
+                      onSelectThemeMode(option.mode);
+                    }
+                  }}
+                  className={`flex items-start gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none ${
                     isSelected
                       ? 'bg-white dark:bg-[#202c33] border-[#00a884] shadow-xs'
                       : 'bg-white/70 dark:bg-[#182229]/80 border-slate-200/70 dark:border-[#2a3942] hover:bg-white dark:hover:bg-[#202c33]'
@@ -113,7 +123,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         : 'bg-slate-100 dark:bg-[#111b21] text-slate-500 dark:text-slate-400'
                     }`}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-4 h-4" aria-hidden="true" />
                   </div>
 
                   {/* Option Details */}
@@ -137,7 +147,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                             : 'border-slate-300 dark:border-[#2a3942]'
                         }`}
                       >
-                        {isSelected && <Check className="w-2.5 h-2.5 text-white stroke-[3]" />}
+                        {isSelected && <Check className="w-2.5 h-2.5 text-white stroke-[3]" aria-hidden="true" />}
                       </div>
                     </div>
 

@@ -39,6 +39,17 @@ export const ChatLogoModal: React.FC<ChatLogoModalProps> = ({
 }) => {
   const [scale, setScale] = useState(1);
 
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !chat) return null;
 
   const IconCmp = (chat.iconName && ICON_MAP[chat.iconName]) || Sparkles;
@@ -94,6 +105,9 @@ export const ChatLogoModal: React.FC<ChatLogoModalProps> = ({
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="chat-logo-title"
       className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/92 backdrop-blur-md p-4 animate-in fade-in duration-200 select-none"
       onClick={onClose}
     >
@@ -103,10 +117,10 @@ export const ChatLogoModal: React.FC<ChatLogoModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="min-w-0 pr-3">
-          <h2 className="text-sm md:text-base font-semibold text-white truncate">
+          <h2 id="chat-logo-title" className="text-sm md:text-base font-semibold text-white truncate">
             {chat.title}
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-300">
             {chat.category} • {chat.defaultAiModel}
           </p>
         </div>
@@ -118,41 +132,46 @@ export const ChatLogoModal: React.FC<ChatLogoModalProps> = ({
               <button
                 type="button"
                 onClick={handleZoomIn}
-                className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
                 title="Zoom In"
+                aria-label="Zoom in on avatar photo"
               >
-                <ZoomIn className="w-5 h-5" />
+                <ZoomIn className="w-5 h-5" aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={handleZoomOut}
-                className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
                 title="Zoom Out"
+                aria-label="Zoom out of avatar photo"
               >
-                <ZoomOut className="w-5 h-5" />
+                <ZoomOut className="w-5 h-5" aria-hidden="true" />
               </button>
               <a
                 href={chat.customAvatarUrl}
                 download={`${chat.title.toLowerCase().replace(/\s+/g, '-')}-logo.png`}
-                className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
                 title="Download Photo"
+                aria-label="Download avatar photo"
               >
-                <Download className="w-5 h-5" />
+                <Download className="w-5 h-5" aria-hidden="true" />
               </a>
             </>
           )}
 
           {/* Change Photo Toolbar Action (Native Label Activation) */}
           <label
-            className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer relative"
+            className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer relative focus-within:ring-2 focus-within:ring-[#00a884]"
             title="Change Chat Photo"
+            aria-label="Change chat photo"
           >
-            <Camera className="w-5 h-5" />
+            <Camera className="w-5 h-5" aria-hidden="true" />
             <input
               type="file"
               accept="image/*"
               className="sr-only"
               onChange={handleFileChange}
+              aria-label="Upload custom chat photo file"
             />
           </label>
 
@@ -161,10 +180,11 @@ export const ChatLogoModal: React.FC<ChatLogoModalProps> = ({
             <button
               type="button"
               onClick={handleResetToDefault}
-              className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-rose-400 transition-colors cursor-pointer"
+              className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-rose-400 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
               title="Reset to default icon"
+              aria-label="Reset to default chat icon"
             >
-              <RotateCcw className="w-5 h-5" />
+              <RotateCcw className="w-5 h-5" aria-hidden="true" />
             </button>
           )}
 
@@ -172,10 +192,11 @@ export const ChatLogoModal: React.FC<ChatLogoModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer ml-1"
+            className="p-2 rounded-full hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer ml-1 focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
             title="Close (Esc)"
+            aria-label="Close photo preview"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -190,7 +211,7 @@ export const ChatLogoModal: React.FC<ChatLogoModalProps> = ({
           <div className="relative max-h-[80vh] max-w-full flex items-center justify-center">
             <img
               src={chat.customAvatarUrl}
-              alt={chat.title}
+              alt={`Avatar photo for ${chat.title}`}
               className="max-h-[75vh] max-w-full object-contain rounded-2xl shadow-2xl transition-transform duration-200"
               style={{ transform: `scale(${scale})` }}
             />
@@ -203,25 +224,26 @@ export const ChatLogoModal: React.FC<ChatLogoModalProps> = ({
                 chat.avatarColor || 'from-emerald-500 to-teal-700'
               } flex items-center justify-center text-white shadow-xl`}
             >
-              <IconCmp className="w-20 h-20 sm:w-24 sm:h-24 stroke-[2.2]" />
+              <IconCmp className="w-20 h-20 sm:w-24 sm:h-24 stroke-[2.2]" aria-hidden="true" />
             </div>
 
             <div className="space-y-1.5">
               <h3 className="text-xl font-bold text-white">{chat.title}</h3>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-slate-300">
                 {chat.description || `${chat.category} thread default icon`}
               </p>
             </div>
 
             {/* Direct Native Green Upload Button */}
-            <label className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#00a884] hover:bg-[#008069] text-white text-sm font-semibold shadow-md transition-all active:scale-95 cursor-pointer">
-              <Camera className="w-4 h-4" />
+            <label className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#00a884] hover:bg-[#008069] text-white text-sm font-semibold shadow-md transition-all active:scale-95 cursor-pointer focus-within:ring-2 focus-within:ring-white">
+              <Camera className="w-4 h-4" aria-hidden="true" />
               <span>Upload Custom Logo Image</span>
               <input
                 type="file"
                 accept="image/*"
                 className="sr-only"
                 onChange={handleFileChange}
+                aria-label="Upload custom logo image file"
               />
             </label>
           </div>

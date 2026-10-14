@@ -102,20 +102,21 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, duration, fileNam
         <button
           type="button"
           onClick={togglePlay}
-          className="w-11 h-11 rounded-full bg-[#00a884] hover:bg-[#008069] active:scale-95 text-white flex items-center justify-center shrink-0 shadow-md shadow-teal-900/10 transition-all cursor-pointer"
+          className="w-11 h-11 rounded-full bg-[#00a884] hover:bg-[#008069] active:scale-95 text-white flex items-center justify-center shrink-0 shadow-md shadow-teal-900/10 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
           title={isPlaying ? 'Pause' : 'Play voice note'}
+          aria-label={isPlaying ? 'Pause voice note' : 'Play voice note'}
         >
           {isPlaying ? (
-            <Pause className="w-5 h-5 fill-white stroke-none" />
+            <Pause className="w-5 h-5 fill-white stroke-none" aria-hidden="true" />
           ) : (
-            <Play className="w-5 h-5 fill-white stroke-none translate-x-0.5" />
+            <Play className="w-5 h-5 fill-white stroke-none translate-x-0.5" aria-hidden="true" />
           )}
         </button>
 
         {/* Middle Voice Waveform & Scrubber */}
         <div className="flex-1 min-w-0">
           {/* Waveform Visualization */}
-          <div className="relative h-6 flex items-center gap-0.5 md:gap-1 px-1 overflow-hidden">
+          <div className="relative h-6 flex items-center gap-0.5 md:gap-1 px-1 overflow-hidden" aria-hidden="true">
             {waveformHeights.map((h, i) => {
               const barPercent = (i / waveformHeights.length) * 100;
               const isPlayed = barPercent <= progressPercent;
@@ -140,17 +141,22 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, duration, fileNam
               step={0.1}
               value={currentTime}
               onChange={handleSeek}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              aria-label="Audio playback scrub progress"
+              aria-valuemin={0}
+              aria-valuemax={totalDuration || 1}
+              aria-valuenow={currentTime}
+              aria-valuetext={`${formatSeconds(currentTime)} of ${formatSeconds(totalDuration)}`}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer focus-visible:opacity-100 focus-visible:accent-[#00a884]"
               title="Seek audio"
             />
           </div>
 
           {/* Time & Duration Info */}
-          <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-medium tabular-nums mt-1 px-1">
+          <div className="flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400 font-medium tabular-nums mt-1 px-1">
             <span>{formatSeconds(currentTime)}</span>
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1 text-[10px] text-teal-600 dark:text-teal-400">
-                <Mic className="w-3 h-3" />
+              <span className="flex items-center gap-1 text-[10px] text-teal-700 dark:text-teal-400 font-medium">
+                <Mic className="w-3 h-3" aria-hidden="true" />
                 Voice Note
               </span>
               <span>{formatSeconds(totalDuration)}</span>
@@ -163,18 +169,20 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, duration, fileNam
           <button
             type="button"
             onClick={cycleSpeed}
-            className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200/80 dark:bg-[#202c33] text-slate-700 dark:text-slate-300 hover:bg-[#00a884] hover:text-white transition-colors cursor-pointer"
+            className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200/80 dark:bg-[#202c33] text-slate-700 dark:text-slate-300 hover:bg-[#00a884] hover:text-white transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
             title="Playback speed"
+            aria-label={`Playback speed: ${playbackRate}x`}
           >
             {playbackRate}x
           </button>
           <a
             href={src}
             download={fileName || 'voice-note.webm'}
-            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none rounded"
             title="Download audio"
+            aria-label="Download voice note audio file"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-3.5 h-3.5" aria-hidden="true" />
           </a>
         </div>
       </div>

@@ -370,6 +370,7 @@ export const InputBar: React.FC<InputBarProps> = ({
         type="file"
         accept="image/*"
         className="hidden"
+        aria-label="Upload image attachment"
         onChange={handleFileChange}
       />
       <input
@@ -377,6 +378,7 @@ export const InputBar: React.FC<InputBarProps> = ({
         type="file"
         accept="image/*"
         className="hidden"
+        aria-label="Upload image attachment (mobile)"
         onChange={handleFileChange}
       />
 
@@ -390,7 +392,7 @@ export const InputBar: React.FC<InputBarProps> = ({
             <div className="flex items-center gap-2 min-w-0">
               <img
                 src={attachedImage.dataUrl}
-                alt="Upload preview"
+                alt={`Upload preview: ${attachedImage.name}`}
                 className="w-7 h-7 rounded object-cover border border-slate-200 dark:border-[#2a3942] shrink-0"
               />
               <span className="text-[11px] font-medium text-slate-700 dark:text-slate-300 truncate">
@@ -400,10 +402,11 @@ export const InputBar: React.FC<InputBarProps> = ({
             <button
               type="button"
               onClick={() => setAttachedImage(null)}
-              className="p-1 rounded-full text-slate-400 hover:text-rose-500"
+              className="p-1 rounded-full text-slate-400 hover:text-rose-500 cursor-pointer"
               title="Remove image"
+              aria-label="Remove image attachment"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           </div>
         )}
@@ -427,15 +430,17 @@ export const InputBar: React.FC<InputBarProps> = ({
                 onClick={cancelRecording}
                 className="p-1.5 rounded-full text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
                 title="Discard recording"
+                aria-label="Discard voice recording"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-4 h-4" aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={stopAndSaveRecording}
                 className="px-3 py-1 rounded-full bg-[#00a884] text-white flex items-center gap-1 text-xs font-semibold transition-all active:scale-95 cursor-pointer shadow-2xs"
+                aria-label="Send recorded voice note"
               >
-                <Send className="w-3 h-3 -rotate-12 translate-x-0.5" />
+                <Send className="w-3 h-3 -rotate-12 translate-x-0.5" aria-hidden="true" />
                 <span>Send</span>
               </button>
             </div>
@@ -598,6 +603,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Output Title (optional)"
+                  aria-label="Output Title (optional)"
                   className="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
                 />
                 <input
@@ -605,6 +611,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                   value={userPrompt}
                   onChange={(e) => setUserPrompt(e.target.value)}
                   placeholder="Prompt used (optional)"
+                  aria-label="Prompt used (optional)"
                   className="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
                 />
                 <input
@@ -612,6 +619,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                   value={tagsInput}
                   onChange={(e) => setTagsInput(e.target.value)}
                   placeholder="Tags (e.g. #react, #api)"
+                  aria-label="Tags (optional)"
                   className="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
                 />
                 <div className="pt-1.5 border-t border-slate-100 dark:border-[#2a3942] flex flex-col gap-1.5">
@@ -620,10 +628,11 @@ export const InputBar: React.FC<InputBarProps> = ({
                       type="checkbox"
                       checked={isTask}
                       onChange={(e) => setIsTask(e.target.checked)}
+                      aria-label="Save as Task with Deadline"
                       className="rounded text-[#00a884] focus:ring-[#00a884]"
                     />
                     <span className="flex items-center gap-1">
-                      <ListTodo className="w-3.5 h-3.5 text-[#00a884]" />
+                      <ListTodo className="w-3.5 h-3.5 text-[#00a884]" aria-hidden="true" />
                       Save as Task with Deadline
                     </span>
                   </label>
@@ -635,6 +644,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                         setTaskDeadlineInput(e.target.value);
                         setTaskDeadline(fromDateTimeLocalInputValue(e.target.value));
                       }}
+                      aria-label="Task deadline date and time"
                       className="w-full px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white"
                     />
                   )}
@@ -653,6 +663,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                   onChange={(e) => setContent(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={attachedImage ? 'Add caption to image...' : 'Paste or type AI output here...'}
+                  aria-label="AI output content or image caption"
                   className="w-full resize-none bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 text-xs sm:text-sm focus:outline-hidden max-h-28 leading-snug py-0.5"
                 />
               </div>
@@ -704,7 +715,7 @@ export const InputBar: React.FC<InputBarProps> = ({
             <div className="flex items-center gap-3 min-w-0">
               <img
                 src={attachedImage.dataUrl}
-                alt="Upload preview"
+                alt={`Attached image: ${attachedImage.name}`}
                 className="w-12 h-12 rounded-lg object-cover border border-slate-200 dark:border-[#2a3942] shrink-0"
               />
               <div className="min-w-0">
@@ -721,8 +732,9 @@ export const InputBar: React.FC<InputBarProps> = ({
               onClick={() => setAttachedImage(null)}
               className="p-1.5 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
               title="Remove image attachment"
+              aria-label="Remove image attachment"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
         )}
@@ -737,9 +749,10 @@ export const InputBar: React.FC<InputBarProps> = ({
               <button
                 type="button"
                 onClick={() => setShowMetadata(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 cursor-pointer"
+                aria-label="Close output details"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
 
@@ -749,6 +762,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Title / Summary (e.g. Next.js Auth Flow)"
+                aria-label="Title / Summary (optional)"
                 className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
               />
               <input
@@ -756,6 +770,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
                 placeholder="Tags (e.g. #auth, api, #python)"
+                aria-label="Tags (optional)"
                 className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
               />
             </div>
@@ -765,6 +780,7 @@ export const InputBar: React.FC<InputBarProps> = ({
               value={userPrompt}
               onChange={(e) => setUserPrompt(e.target.value)}
               placeholder="Original user prompt that generated this output (optional)"
+              aria-label="Original user prompt (optional)"
               className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
             />
 
@@ -775,10 +791,11 @@ export const InputBar: React.FC<InputBarProps> = ({
                   type="checkbox"
                   checked={isTask}
                   onChange={(e) => setIsTask(e.target.checked)}
+                  aria-label="Save as actionable task with deadline"
                   className="rounded text-[#00a884] focus:ring-[#00a884]"
                 />
                 <span className="flex items-center gap-1.5">
-                  <ListTodo className="w-4 h-4 text-[#00a884]" />
+                  <ListTodo className="w-4 h-4 text-[#00a884]" aria-hidden="true" />
                   Save as actionable task with deadline
                 </span>
               </label>
@@ -793,6 +810,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                       setTaskDeadlineInput(e.target.value);
                       setTaskDeadline(fromDateTimeLocalInputValue(e.target.value));
                     }}
+                    aria-label="Task deadline date and time"
                     className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#2a3942] bg-slate-50 dark:bg-[#182329] text-xs text-slate-900 dark:text-white focus:outline-hidden focus:ring-1 focus:ring-[#00a884]"
                   />
                 </div>
@@ -804,7 +822,11 @@ export const InputBar: React.FC<InputBarProps> = ({
         {/* Top Controls: Model Selector & Metadata Toggle */}
         <div className="flex items-center justify-between text-xs">
           {/* AI Model Selector */}
-          <div className="flex items-center gap-1 overflow-x-auto py-0.5 no-scrollbar">
+          <div
+            role="tablist"
+            aria-label="AI Model selector"
+            className="flex items-center gap-1 overflow-x-auto py-0.5 no-scrollbar"
+          >
             <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mr-1 hidden sm:inline">
               Model:
             </span>
@@ -815,6 +837,9 @@ export const InputBar: React.FC<InputBarProps> = ({
                 <button
                   key={item.type}
                   type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  aria-label={`${item.label} AI model`}
                   onClick={() => setAiModel(item.type)}
                   className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer shrink-0 ${
                     isSelected
@@ -822,7 +847,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942]'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>{item.label}</span>
                 </button>
               );
@@ -833,16 +858,18 @@ export const InputBar: React.FC<InputBarProps> = ({
           <button
             type="button"
             onClick={() => setShowMetadata(!showMetadata)}
+            aria-expanded={showMetadata}
+            aria-label={showMetadata ? 'Hide output details' : 'Add tags and output details'}
             className="flex items-center gap-1 text-[11px] font-medium text-slate-600 dark:text-slate-400 hover:text-[#00a884] dark:hover:text-teal-400 transition-colors ml-2 shrink-0 cursor-pointer"
           >
             {showMetadata ? (
               <>
-                <ChevronDown className="w-3.5 h-3.5" />
+                <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
                 <span className="hidden sm:inline">Hide Details</span>
               </>
             ) : (
               <>
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>{title || userPrompt || tagsInput ? 'Edit Tags & Details' : 'Add Tags / Details'}</span>
               </>
             )}
@@ -867,7 +894,7 @@ export const InputBar: React.FC<InputBarProps> = ({
             </div>
 
             {/* Waveform Animation */}
-            <div className="flex items-center gap-1 h-5 flex-1 max-w-xs justify-center mx-2">
+            <div className="flex items-center gap-1 h-5 flex-1 max-w-xs justify-center mx-2" aria-hidden="true">
               {[40, 75, 100, 60, 90, 45, 80, 55, 95, 30].map((h, i) => (
                 <div
                   key={i}
@@ -887,16 +914,18 @@ export const InputBar: React.FC<InputBarProps> = ({
                 onClick={cancelRecording}
                 className="p-2 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                 title="Discard voice recording"
+                aria-label="Discard voice recording"
               >
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="w-5 h-5" aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={stopAndSaveRecording}
                 className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#008069] via-[#00a884] to-[#25d366] hover:brightness-105 active:scale-95 text-white flex items-center gap-1.5 text-xs font-semibold shadow-md shadow-[#00a884]/25 transition-all cursor-pointer border border-white/20 group"
                 title="Send voice note"
+                aria-label="Send recorded voice note"
               >
-                <Send className="w-3.5 h-3.5 -rotate-12 translate-x-0.5 group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+                <Send className="w-3.5 h-3.5 -rotate-12 translate-x-0.5 group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true" />
                 <span className="hidden sm:inline">Send Voice</span>
               </button>
             </div>
@@ -910,8 +939,9 @@ export const InputBar: React.FC<InputBarProps> = ({
               onClick={() => fileInputRef.current?.click()}
               className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-200/70 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
               title="Upload an Image"
+              aria-label="Upload an image"
             >
-              <ImageIcon className="w-5 h-5" />
+              <ImageIcon className="w-5 h-5" aria-hidden="true" />
             </button>
 
             {/* Main Textarea */}
@@ -927,6 +957,7 @@ export const InputBar: React.FC<InputBarProps> = ({
                     ? 'Add a caption for this image... (optional)'
                     : 'Paste your AI output here... (Markdown, tables & code preserved)'
                 }
+                aria-label="AI output content"
                 className="w-full px-3.5 py-2.5 max-h-48 resize-none bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 text-sm focus:outline-hidden leading-relaxed"
               />
             </div>

@@ -15,6 +15,10 @@ export const NoChatSelectedDesktop: React.FC<NoChatSelectedProps> = ({ onNewChat
           <KeepChatLogo size={128} variant="full" />
         </div>
 
+        <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">
+          KeepChat Vault
+        </h2>
+
         {/* User requested copy */}
         <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6 max-w-xs">
           Select a chat to view your saved AI outputs, or create a new one.
@@ -23,15 +27,15 @@ export const NoChatSelectedDesktop: React.FC<NoChatSelectedProps> = ({ onNewChat
         {/* CTA */}
         <button
           onClick={onNewChat}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#00a884] hover:bg-[#008069] text-white font-medium text-sm shadow-md transition-all active:scale-95 cursor-pointer"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#00a884] hover:bg-[#008069] text-white font-medium text-sm shadow-md transition-all active:scale-95 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#00a884] focus-visible:outline-none"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4" aria-hidden="true" />
           <span>New Chat Thread</span>
         </button>
 
         {/* WhatsApp End-to-end Encrypted aesthetic footer */}
         <div className="mt-12 flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
-          <Lock className="w-3.5 h-3.5" />
+          <Lock className="w-3.5 h-3.5" aria-hidden="true" />
           <span>Saved locally on your browser with 100% Markdown fidelity</span>
         </div>
       </div>
