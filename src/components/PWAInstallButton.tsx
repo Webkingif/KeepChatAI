@@ -150,7 +150,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
                     Look for the <strong className="text-slate-900 dark:text-white">Install</strong> icon in your browser address bar (top right).
                   </li>
                   <li>
-                    Or open the browser menu (<strong>⋮</strong> or <strong>⋯</strong>) and select <strong className="text-slate-900 dark:text-white">"Install KeepChat"</strong>.
+                    Open settings and then click the install app button.
                   </li>
                 </ul>
               </div>

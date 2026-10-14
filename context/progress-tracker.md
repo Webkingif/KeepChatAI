@@ -239,6 +239,8 @@
     - **WebApplication**: Application categorization, compatibility, and features
   - Validated JSON-LD syntax against Schema.org and Google Search Rich Results standards
 - [x] Verified with `lint_applet` and `compile_applet` (0 errors)
+- [x] Updated PWA Install Modal Guide:
+  - Changed second instruction step in browser install guide (`PWAInstallButton.tsx`) to "Open settings and then click the install app button."
 
 
 
