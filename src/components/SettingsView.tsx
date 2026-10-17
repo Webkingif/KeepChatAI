@@ -1,11 +1,12 @@
 import React from 'react';
-import { ArrowLeft, Sun, Moon, Monitor, Check, Shield, Palette } from 'lucide-react';
+import { ArrowLeft, Sun, Moon, Monitor, Check, Shield, Palette, HelpCircle, ArrowRight } from 'lucide-react';
 import { ThemeMode } from '../types/keepchat';
 import { KeepChatLogo } from './KeepChatLogo';
 import { PWAInstallButton } from './PWAInstallButton';
 
 interface SettingsViewProps {
   onBack: () => void;
+  onOpenFaq?: () => void;
   themeMode: ThemeMode;
   onSelectThemeMode: (mode: ThemeMode) => void;
   effectiveTheme: 'light' | 'dark';
@@ -13,6 +14,7 @@ interface SettingsViewProps {
 
 export const SettingsView: React.FC<SettingsViewProps> = ({
   onBack,
+  onOpenFaq,
   themeMode,
   onSelectThemeMode,
   effectiveTheme,
@@ -175,6 +177,29 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               : `Permanently locked to ${themeMode} mode on this device.`}
           </p>
         </div>
+
+        {/* FAQ & Knowledge Base Card */}
+        {onOpenFaq && (
+          <div
+            onClick={onOpenFaq}
+            className="flex items-center justify-between p-3.5 bg-white dark:bg-[#202c33] rounded-xl border border-slate-200/80 dark:border-[#2a3942] hover:border-[#00a884] dark:hover:border-[#00a884] transition-all cursor-pointer group shadow-2xs"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center shrink-0">
+                <HelpCircle className="w-4 h-4 text-[#00a884]" aria-hidden="true" />
+              </div>
+              <div>
+                <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-100 group-hover:text-[#00a884] transition-colors">
+                  Frequently Asked Questions (FAQ)
+                </h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Read answers on local storage, PWA, tasks, and exports
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#00a884] transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          </div>
+        )}
 
         {/* Privacy & Storage Footer Note */}
         <div className="flex items-center gap-2 px-1 pt-4 border-t border-slate-200/60 dark:border-[#222d34] text-[11px] text-slate-400 dark:text-slate-500">

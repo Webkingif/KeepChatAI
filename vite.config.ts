@@ -21,6 +21,7 @@ export default defineConfig(() => {
           'og-image-kc.jpg',
           'sitemap.xml',
           'robots.txt',
+          '_redirects',
         ],
         manifest: {
           id: '/',
@@ -102,6 +103,16 @@ export default defineConfig(() => {
     resolve: {
       alias: {
         '@': path.resolve(import.meta.dirname, '.'),
+      },
+    },
+    build: {
+      rollupOptions: {
+        input: {
+          main: path.resolve(import.meta.dirname, 'index.html'),
+          tasks: path.resolve(import.meta.dirname, 'tasks/index.html'),
+          settings: path.resolve(import.meta.dirname, 'settings/index.html'),
+          faq: path.resolve(import.meta.dirname, 'faq/index.html'),
+        },
       },
     },
     server: {

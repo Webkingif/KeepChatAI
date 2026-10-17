@@ -42,6 +42,16 @@ import { MultiSelectBar } from './components/MultiSelectBar';
 import { ConfirmBulkDeleteModal } from './components/ConfirmBulkDeleteModal';
 import { TasksView } from './components/TasksView';
 import { TaskDeadlineModal } from './components/TaskDeadlineModal';
+import { FAQView } from './components/FAQView';
+
+const getInitialView = (): 'chats' | 'tasks' | 'settings' | 'faq' => {
+  if (typeof window === 'undefined') return 'chats';
+  const path = window.location.pathname.toLowerCase().replace(/\/$/, '');
+  if (path === '/tasks') return 'tasks';
+  if (path === '/settings') return 'settings';
+  if (path === '/faq') return 'faq';
+  return 'chats';
+};
 
 export default function App() {
   const [isDBReady, setIsDBReady] = useState(false);
@@ -61,8 +71,8 @@ export default function App() {
   const [inThreadSearchQuery, setInThreadSearchQuery] = useState('');
   const [starredOnlyFilter, setStarredOnlyFilter] = useState(false);
 
-  // Navigation & View State: 'chats' | 'tasks' | 'settings'
-  const [activeMainView, setActiveMainView] = useState<'chats' | 'tasks' | 'settings'>('chats');
+  // Navigation & View State: 'chats' | 'tasks' | 'settings' | 'faq'
+  const [activeMainView, setActiveMainView] = useState<'chats' | 'tasks' | 'settings' | 'faq'>(() => getInitialView());
   const [taskModalOutput, setTaskModalOutput] = useState<SavedOutput | null>(null);
   const [highlightedOutputId, setHighlightedOutputId] = useState<string | null>(null);
 
@@ -117,6 +127,47 @@ export default function App() {
     saveStoredThemeMode(themeMode);
   }, [effectiveTheme, themeMode]);
 
+  const navigateToView = (view: 'chats' | 'tasks' | 'settings' | 'faq', pushHistory = true) => {
+    setActiveMainView(view);
+    if (typeof window !== 'undefined') {
+      const pathMap: Record<string, string> = {
+        chats: '/',
+        tasks: '/tasks',
+        settings: '/settings',
+        faq: '/faq',
+      };
+      const titleMap: Record<string, string> = {
+        chats: 'KeepChat - AI Output Vault & Organizer',
+        tasks: 'Tasks Command Console & Deadlines | KeepChat',
+        settings: 'Settings, Storage & PWA Management | KeepChat',
+        faq: 'Frequently Asked Questions (FAQ) | KeepChat',
+      };
+      const targetPath = pathMap[view] || '/';
+      document.title = titleMap[view] || 'KeepChat - AI Output Vault & Organizer';
+      if (pushHistory && window.location.pathname !== targetPath) {
+        window.history.pushState({ view }, '', targetPath);
+      }
+    }
+  };
+
+  // Sync browser back/forward buttons with active view and document title
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handlePopState = () => {
+      const view = getInitialView();
+      setActiveMainView(view);
+      const titleMap: Record<string, string> = {
+        chats: 'KeepChat - AI Output Vault & Organizer',
+        tasks: 'Tasks Command Console & Deadlines | KeepChat',
+        settings: 'Settings, Storage & PWA Management | KeepChat',
+        faq: 'Frequently Asked Questions (FAQ) | KeepChat',
+      };
+      document.title = titleMap[view] || 'KeepChat - AI Output Vault & Organizer';
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const handleSelectThemeMode = (mode: ThemeMode) => {
     setThemeMode(mode);
     const label =
@@ -158,6 +209,26 @@ export default function App() {
       });
     return () => {
       isMounted = false;
+    };
+  }, []);
+
+  // Listen for PWA installation events to show toast notification
+  useEffect(() => {
+    const handlePWAInstalled = () => {
+      addToast('KeepChat PWA installed successfully! Ready for 100% offline access.', 'success');
+    };
+    const handlePWAUninstalled = () => {
+      addToast('KeepChat PWA demo install state reset.', 'info');
+    };
+
+    window.addEventListener('keepchat-pwa-installed', handlePWAInstalled);
+    window.addEventListener('appinstalled', handlePWAInstalled);
+    window.addEventListener('keepchat-pwa-uninstalled', handlePWAUninstalled);
+
+    return () => {
+      window.removeEventListener('keepchat-pwa-installed', handlePWAInstalled);
+      window.removeEventListener('appinstalled', handlePWAInstalled);
+      window.removeEventListener('keepchat-pwa-uninstalled', handlePWAUninstalled);
     };
   }, []);
 
@@ -484,7 +555,7 @@ export default function App() {
   };
 
   const handleJumpToOutputFromTask = (chatId: string, outputId?: string) => {
-    setActiveMainView('chats');
+    navigateToView('chats');
     setActiveChatId(chatId);
     if (outputId) {
       setHighlightedOutputId(outputId);
@@ -765,7 +836,7 @@ export default function App() {
           className={`h-full z-10 transition-all duration-200 ${
             activeMainView === 'settings'
               ? 'flex w-full md:w-auto'
-              : activeMainView === 'tasks'
+              : activeMainView === 'tasks' || activeMainView === 'faq'
               ? 'hidden md:flex'
               : activeChatId
               ? 'hidden md:flex'
@@ -774,7 +845,8 @@ export default function App() {
         >
           {activeMainView === 'settings' ? (
             <SettingsView
-              onBack={() => setActiveMainView('chats')}
+              onBack={() => navigateToView('chats')}
+              onOpenFaq={() => navigateToView('faq')}
               themeMode={themeMode}
               onSelectThemeMode={handleSelectThemeMode}
               effectiveTheme={effectiveTheme}
@@ -786,16 +858,18 @@ export default function App() {
               activeChatId={activeChatId}
               onSelectChat={(id) => {
                 setActiveChatId(id);
-                setActiveMainView('chats');
+                navigateToView('chats');
               }}
               onNewChat={handleOpenNewChat}
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              onOpenSettings={() => setActiveMainView('settings')}
-              onOpenTasks={() => setActiveMainView('tasks')}
+              onOpenSettings={() => navigateToView('settings')}
+              onOpenTasks={() => navigateToView('tasks')}
               isTasksActive={activeMainView === 'tasks'}
+              onOpenFaq={() => navigateToView('faq')}
+              isFaqActive={activeMainView === 'faq'}
               onPinToggle={handleTogglePin}
               onEditChat={handleEditChat}
               onDeleteChat={handleDeleteChat}
@@ -808,7 +882,7 @@ export default function App() {
           )}
         </nav>
 
-        {/* Right Pane (Tasks View, Chat View, or Empty Desktop Selection) */}
+        {/* Right Pane (Tasks View, FAQ View, Chat View, or Empty Desktop Selection) */}
         <main
           id="main-content"
           tabIndex={-1}
@@ -816,7 +890,7 @@ export default function App() {
           className={`flex-1 h-full flex-col min-w-0 transition-all duration-200 focus:outline-none ${
             activeMainView === 'settings'
               ? 'hidden md:flex'
-              : activeMainView === 'tasks'
+              : activeMainView === 'tasks' || activeMainView === 'faq'
               ? 'flex w-full'
               : activeChatId
               ? 'flex'
@@ -827,11 +901,17 @@ export default function App() {
             <TasksView
               chats={chats}
               messages={messages}
-              onBackToChats={() => setActiveMainView('chats')}
+              onBackToChats={() => navigateToView('chats')}
               onOpenChat={handleJumpToOutputFromTask}
               onChangeDeadline={handleChangeDeadline}
               onToggleTaskComplete={handleToggleTaskComplete}
               onRemoveTask={handleRemoveTask}
+            />
+          ) : activeMainView === 'faq' ? (
+            <FAQView
+              onBack={() => navigateToView('chats')}
+              onOpenTasks={() => navigateToView('tasks')}
+              onOpenVault={() => navigateToView('chats')}
             />
           ) : activeChat ? (
             <div className="flex-1 h-full flex flex-col min-w-0 bg-[#efeae2] dark:bg-[#0b141a] relative">
@@ -948,7 +1028,7 @@ export default function App() {
                                 onChangeDeadline={(out) => setTaskModalOutput(out)}
                                 onToggleTaskComplete={handleToggleTaskComplete}
                                 onRemoveTask={handleRemoveTask}
-                                onOpenTasksPage={() => setActiveMainView('tasks')}
+                                onOpenTasksPage={() => navigateToView('tasks')}
                               />
                             </div>
                           </React.Fragment>

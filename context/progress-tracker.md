@@ -241,6 +241,39 @@
 - [x] Verified with `lint_applet` and `compile_applet` (0 errors)
 - [x] Updated PWA Install Modal Guide:
   - Changed second instruction step in browser install guide (`PWAInstallButton.tsx`) to "Open settings and then click the install app button."
-
-
-
+- [x] In-App PWA Installation on Button Click (`PWAInstallButton.tsx`, `usePWAInstall.ts`, `App.tsx`):
+  - Wired the "Install App" button in Settings to directly execute installation (`install()`).
+  - Triggers native browser `beforeinstallprompt.prompt()` when available.
+  - Updates and persists PWA installed status (`keepchat_pwa_installed`) in `localStorage` and application state.
+  - Switches UI to the installed state with green badge, active offline readiness status, and option to reset for testing.
+  - Displays instant success toast confirmation upon installation across all components.
+  - Added early prompt capture in `index.html` to ensure `beforeinstallprompt` is never dropped before hydration.
+- [x] Fixed small-screen display issues for the selected OutputCard element (`OutputCard.tsx`):
+  - Improved Task Deadline Banner container margins and padding (`mx-2.5 sm:mx-4 p-2.5 sm:p-3`) to prevent horizontal compression on mobile viewports.
+  - Adjusted deadline metadata text wrapping (`gap-x-2 gap-y-0.5`) with responsive separators so dates and overdue tags don't break awkwardly across lines.
+  - Replaced `self-end` with full-width responsive action toolbar (`w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t border-slate-200/50 sm:border-t-0`) so action buttons align cleanly instead of being pushed to the corner.
+  - Standardized button heights (`h-7`), touch targets, and border styling across "Change Deadline", "Tasks Page", and "Remove" controls.
+  - Aligned card header action buttons with `flex-wrap` and uniform `h-7` button sizing, preventing clipping or overflow on narrow screens.
+- [x] Changed selected button text to "Uninstall KeepChat" on the Installed PWA status card in Settings (`PWAInstallButton.tsx`).
+- [x] Fixed Google Search Console Merchant listings structured data issues in `index.html`:
+  - Resolved `Missing field 'shippingDetails' (in 'offers')` by embedding `OfferShippingDetails` with standard `MonetaryAmount`, `DefinedRegion` (US), and `ShippingDeliveryTime` (handling and transit times).
+  - Resolved `Missing field 'hasMerchantReturnPolicy' (in 'offers')` by embedding `MerchantReturnPolicy` with `applicableCountry`, `returnPolicyCategory`, `merchantReturnDays`, `returnMethod`, and `returnFees`.
+  - Added these properties to `offers` for both `Product` and `WebApplication` schemas.
+  - Verified valid JSON syntax and Schema.org compliance with automated extraction tests.
+- [x] Verified with `lint_applet` and `compile_applet` (0 errors).
+- [x] Implemented Multi-Page Architecture for Full Google Search Console Indexing:
+  - Created standalone prerendered HTML entrypoints for all 4 primary routes:
+    - Main Output Vault: `/` (`index.html`)
+    - Tasks Command Console: `/tasks` (`tasks/index.html`)
+    - Settings & Storage Management: `/settings` (`settings/index.html`)
+    - Frequently Asked Questions: `/faq` (`faq/index.html`)
+  - Preserved the user's existing Google Search Console site verification meta tag (`zmDZUEWAv863VwxGtYYneAjPms687PJCaEnUuIIauJ4`) across all HTML files.
+  - Added tailored titles, descriptions, canonical URLs, OpenGraph/Twitter cards, and page-specific Schema.org JSON-LD structured data (`SoftwareApplication`, `FAQPage`, `BreadcrumbList`) to every page.
+  - Implemented crawler-friendly prerendered semantic HTML content (`<h1>`, `<section>`, `<article>`, `<p>`, `<nav>`) so search crawlers can parse and index page content before JavaScript execution.
+  - Created Netlify rewrite rules in `public/_redirects` to route clean URLs (`/tasks`, `/settings`, `/faq`) directly to their prerendered HTML with 200 OK status, and handle SPA fallbacks.
+  - Expanded `public/sitemap.xml` with all 4 URLs, priority weightings, change frequencies, and Google Image sitemap tags.
+  - Configured Vite multi-page inputs in `vite.config.ts` (`rollupOptions.input`) and added `_redirects` to `includeAssets`.
+  - Created `FAQView.tsx` with categorized questions, real-time search filtering, accessible accordion interactions, and deep links.
+  - Updated `App.tsx`, `Sidebar.tsx`, and `SettingsView.tsx` with synchronized client-side URL routing (`history.pushState` and `popstate` navigation) and cross-view transitions.
+- [x] Removed `<link rel="icon" type="image/svg+xml" href="/favicon.svg" />` from `index.html` (and static entry points), standardizing favicon discovery on `/favicon.ico`.
+- [x] Verified build output and confirmed 0 errors with `lint_applet` and `compile_applet`.

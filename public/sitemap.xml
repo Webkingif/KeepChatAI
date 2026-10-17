@@ -3,8 +3,8 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://keepchatai.netlify.app/</loc>
-    <lastmod>2026-10-08</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://keepchatai.netlify.app/og-image-kc.jpg</image:loc>
@@ -15,6 +15,39 @@
       <image:loc>https://keepchatai.netlify.app/pwa-512x512.png</image:loc>
       <image:title>KeepChat App Icon</image:title>
       <image:caption>KeepChat official app emblem and brand icon</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://keepchatai.netlify.app/tasks</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://keepchatai.netlify.app/og-image-kc.jpg</image:loc>
+      <image:title>KeepChat Tasks Command Console &amp; Deadlines</image:title>
+      <image:caption>Track AI output deadlines, task urgencies, completion velocity, and multi-threaded action items</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://keepchatai.netlify.app/faq</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://keepchatai.netlify.app/og-image-kc.jpg</image:loc>
+      <image:title>KeepChat Frequently Asked Questions (FAQ)</image:title>
+      <image:caption>Answers to common questions about organizing AI outputs, local-first IndexedDB privacy, task management, and exports</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://keepchatai.netlify.app/settings</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://keepchatai.netlify.app/pwa-512x512.png</image:loc>
+      <image:title>KeepChat Settings, Storage &amp; PWA Management</image:title>
+      <image:caption>Configure local IndexedDB storage, export chronological backups, and manage offline PWA installations</image:caption>
     </image:image>
   </url>
 </urlset>
