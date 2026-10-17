@@ -275,5 +275,9 @@
   - Configured Vite multi-page inputs in `vite.config.ts` (`rollupOptions.input`) and added `_redirects` to `includeAssets`.
   - Created `FAQView.tsx` with categorized questions, real-time search filtering, accessible accordion interactions, and deep links.
   - Updated `App.tsx`, `Sidebar.tsx`, and `SettingsView.tsx` with synchronized client-side URL routing (`history.pushState` and `popstate` navigation) and cross-view transitions.
-- [x] Removed `<link rel="icon" type="image/svg+xml" href="/favicon.svg" />` from `index.html` (and static entry points), standardizing favicon discovery on `/favicon.ico`.
-- [x] Verified build output and confirmed 0 errors with `lint_applet` and `compile_applet`.
+- [x] Implemented automatic PWA installation recommendation dialog (`PWAInstallDialog.tsx`):
+  - Automatically pops up whenever a user opens the page if they haven't yet installed KeepChat as a PWA.
+  - Highlights core PWA benefits: 100% offline vault access, standalone app window with no browser clutter, and private IndexedDB local storage.
+  - Integrated 1-click "Install App Now" button triggering native `beforeinstallprompt` and registering app installation.
+  - Provided graceful fallback and visual guide for iOS Safari users, with subtle "Maybe Later" dismissal.
+  - Integrated with `usePWAInstall` and real-time toast feedback upon installation.

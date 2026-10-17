@@ -43,6 +43,7 @@ import { ConfirmBulkDeleteModal } from './components/ConfirmBulkDeleteModal';
 import { TasksView } from './components/TasksView';
 import { TaskDeadlineModal } from './components/TaskDeadlineModal';
 import { FAQView } from './components/FAQView';
+import { PWAInstallDialog } from './components/PWAInstallDialog';
 
 const getInitialView = (): 'chats' | 'tasks' | 'settings' | 'faq' => {
   if (typeof window === 'undefined') return 'chats';
@@ -1127,6 +1128,9 @@ export default function App() {
 
       {/* Offline Status Connectivity Banner */}
       <OfflineIndicator />
+
+      {/* PWA Installation Recommendation Dialog */}
+      <PWAInstallDialog onToast={addToast} />
 
       {/* Non-blocking Toast Alerts */}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
