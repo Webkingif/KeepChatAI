@@ -555,6 +555,47 @@ export default function App() {
     addToast('Removed from tasks (output kept in chat)', 'info');
   };
 
+  const handleAddTaskFromTasksView = (taskTitle: string, deadline?: number) => {
+    let targetChatId = activeChatId;
+    if (!targetChatId && chats.length > 0) {
+      targetChatId = chats[0].id;
+    }
+    if (!targetChatId) {
+      const newChat: ChatThread = {
+        id: `chat-${Date.now()}`,
+        title: 'Action Items & Tasks',
+        category: 'Work',
+        defaultAiModel: 'ChatGPT',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        isPinned: false,
+        avatarColor: 'from-emerald-500 to-teal-700',
+      };
+      setChats((prev) => [newChat, ...prev]);
+      targetChatId = newChat.id;
+    }
+
+    const newTask: SavedOutput = {
+      id: `task-${Date.now()}`,
+      chatId: targetChatId,
+      content: `### Task: ${taskTitle}\n\nCreated directly from My Tasks.`,
+      title: taskTitle,
+      userPrompt: taskTitle,
+      aiModel: 'Other',
+      tags: ['task'],
+      isStarred: false,
+      createdAt: Date.now(),
+      mediaType: 'text',
+      isTask: true,
+      taskTitle: taskTitle,
+      taskDeadline: deadline || Date.now() + 1000 * 60 * 60 * 4,
+      taskCompleted: false,
+    };
+
+    setMessages((prev) => [...prev, newTask]);
+    addToast('Task created successfully', 'success');
+  };
+
   const handleJumpToOutputFromTask = (chatId: string, outputId?: string) => {
     navigateToView('chats');
     setActiveChatId(chatId);
@@ -907,6 +948,8 @@ export default function App() {
               onChangeDeadline={handleChangeDeadline}
               onToggleTaskComplete={handleToggleTaskComplete}
               onRemoveTask={handleRemoveTask}
+              onToggleStar={handleToggleStar}
+              onAddTask={handleAddTaskFromTasksView}
             />
           ) : activeMainView === 'faq' ? (
             <FAQView

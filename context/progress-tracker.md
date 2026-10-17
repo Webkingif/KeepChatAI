@@ -275,9 +275,16 @@
   - Configured Vite multi-page inputs in `vite.config.ts` (`rollupOptions.input`) and added `_redirects` to `includeAssets`.
   - Created `FAQView.tsx` with categorized questions, real-time search filtering, accessible accordion interactions, and deep links.
   - Updated `App.tsx`, `Sidebar.tsx`, and `SettingsView.tsx` with synchronized client-side URL routing (`history.pushState` and `popstate` navigation) and cross-view transitions.
-- [x] Implemented automatic PWA installation recommendation dialog (`PWAInstallDialog.tsx`):
-  - Automatically pops up whenever a user opens the page if they haven't yet installed KeepChat as a PWA.
-  - Highlights core PWA benefits: 100% offline vault access, standalone app window with no browser clutter, and private IndexedDB local storage.
-  - Integrated 1-click "Install App Now" button triggering native `beforeinstallprompt` and registering app installation.
-  - Provided graceful fallback and visual guide for iOS Safari users, with subtle "Maybe Later" dismissal.
-  - Integrated with `usePWAInstall` and real-time toast feedback upon installation.
+- [x] Redesigned Tasks Page (`TasksView.tsx`) to match user mockup image:
+  - Clean top app bar with hamburger menu navigation back to chats and options menu with search and quick actions.
+  - Bold "My Tasks" heading with dynamic formatted date subtitle (e.g., "Oct 17, 2026").
+  - Seamless segmented filter pills: **All**, **To Do**, **In Progress**, and **Done** with active capsule highlighting.
+  - Minimalist rounded task cards with circular checkbox (unfilled border when pending, filled green checkmark when complete).
+  - Clean task title typography with strikethrough upon completion, accompanied by clock icon and formatted time (e.g. 9:00 AM).
+  - Priority flag toggle (green filled when flagged/completed, outline when neutral).
+  - Expandable drawer for vault details (AI model badge, chat source jump link, markdown preview, and edit deadline).
+  - Bottom `+ Add a new task...` input bar enabling rapid inline task creation.
+- [x] Converted top navigation icon to a back arrow (`ArrowLeft`) in `TasksView.tsx`:
+  - Replaced `Menu` icon with `ArrowLeft` for clear return navigation to the chat vault.
+  - Applied targeted styles: ergonomic 44px hit-box, hover color transitions (`hover:text-[#00a884] dark:hover:text-teal-400`), active scale click feedback (`active:scale-95`), and accessible title "Back to Chats".
+
