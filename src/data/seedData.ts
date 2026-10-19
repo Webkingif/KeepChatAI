@@ -143,4 +143,100 @@ Stay fast and organized as your collection grows:
     isStarred: false,
     createdAt: Date.now() - 1000 * 60 * 60 * 2,
   },
+  {
+    id: 'msg-task-1',
+    chatId: 'chat-welcome',
+    title: 'Reply to emails',
+    taskTitle: 'Reply to emails',
+    userPrompt: 'Draft quick replies to inbox emails',
+    aiModel: 'ChatGPT',
+    content: 'Draft responses for client follow-ups and review urgent emails.',
+    tags: ['work', 'email'],
+    isStarred: false,
+    createdAt: Date.now() - 1000 * 60 * 30,
+    isTask: true,
+    taskDeadline: (() => {
+      const d = new Date();
+      d.setHours(9, 0, 0, 0);
+      return d.getTime();
+    })(),
+    taskCompleted: false,
+  },
+  {
+    id: 'msg-task-2',
+    chatId: 'chat-welcome',
+    title: 'Prepare presentation',
+    taskTitle: 'Prepare presentation',
+    userPrompt: 'Outline key talking points for presentation',
+    aiModel: 'Claude',
+    content: 'Slide outline and visual assets for quarterly strategy.',
+    tags: ['presentation', 'strategy'],
+    isStarred: false,
+    createdAt: Date.now() - 1000 * 60 * 25,
+    isTask: true,
+    taskDeadline: (() => {
+      const d = new Date();
+      d.setHours(11, 30, 0, 0);
+      return d.getTime();
+    })(),
+    taskCompleted: false,
+  },
+  {
+    id: 'msg-task-3',
+    chatId: 'chat-welcome',
+    title: 'Team stand-up',
+    taskTitle: 'Team stand-up',
+    userPrompt: 'Daily sprint priorities and blockers',
+    aiModel: 'Gemini',
+    content: 'Sprint review, blocker check, and daily sync.',
+    tags: ['meeting', 'team'],
+    isStarred: false,
+    createdAt: Date.now() - 1000 * 60 * 20,
+    isTask: true,
+    taskDeadline: (() => {
+      const d = new Date();
+      d.setHours(13, 0, 0, 0);
+      return d.getTime();
+    })(),
+    taskCompleted: false,
+  },
+  {
+    id: 'msg-task-4',
+    chatId: 'chat-welcome',
+    title: 'Review report',
+    taskTitle: 'Review report',
+    userPrompt: 'Analyze performance report metrics',
+    aiModel: 'DeepSeek',
+    content: 'Cross-check conversion rates and monthly growth metrics.',
+    tags: ['analytics', 'report'],
+    isStarred: false,
+    createdAt: Date.now() - 1000 * 60 * 15,
+    isTask: true,
+    taskDeadline: (() => {
+      const d = new Date();
+      d.setHours(15, 30, 0, 0);
+      return d.getTime();
+    })(),
+    taskCompleted: false,
+  },
+  {
+    id: 'msg-task-5',
+    chatId: 'chat-welcome',
+    title: 'Workout',
+    taskTitle: 'Workout',
+    userPrompt: 'Daily fitness routine',
+    aiModel: 'Other',
+    content: 'Morning cardio & strength training session.',
+    tags: ['fitness', 'health'],
+    isStarred: true,
+    createdAt: Date.now() - 1000 * 60 * 10,
+    isTask: true,
+    taskDeadline: (() => {
+      const d = new Date();
+      d.setHours(7, 0, 0, 0);
+      return d.getTime();
+    })(),
+    taskCompleted: true,
+    taskCompletedAt: Date.now() - 1000 * 60 * 60 * 4,
+  },
 ];

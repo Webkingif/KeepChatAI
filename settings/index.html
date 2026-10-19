@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="theme-color" content="#008069" />
+    <meta name="google-site-verification" content="zmDZUEWAv863VwxGtYYneAjPms687PJCaEnUuIIauJ4" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="KeepChat" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="canonical" href="https://keepchatai.netlify.app/settings" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+    <script>
+      (function() {
+        window.__deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', function(e) {
+          e.preventDefault();
+          window.__deferredPrompt = e;
+          window.dispatchEvent(new CustomEvent('pwa-prompt-available'));
+        });
+      })();
+    </script>
+    <title>Settings, Storage & PWA Management | KeepChat</title>
+    <meta name="description" content="Configure local-first IndexedDB storage, export chronological backups, manage offline PWA installations, and customize KeepChat themes." />
+    <meta property="og:site_name" content="KeepChat" />
+    <meta property="og:url" content="https://keepchatai.netlify.app/settings" />
+    <meta property="og:title" content="Settings, Storage & PWA Management | KeepChat" />
+    <meta property="og:description" content="Configure local-first IndexedDB storage, export chronological backups, manage offline PWA installations, and customize KeepChat themes." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://keepchatai.netlify.app/og-image-kc.jpg" />
+    <meta property="og:image:secure_url" content="https://keepchatai.netlify.app/og-image-kc.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="KeepChat Settings & Storage Management" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://keepchatai.netlify.app/settings" />
+    <meta name="twitter:title" content="Settings, Storage & PWA Management | KeepChat" />
+    <meta name="twitter:description" content="Configure local-first IndexedDB storage, export chronological backups, manage offline PWA installations, and customize KeepChat themes." />
+    <meta name="twitter:image" content="https://keepchatai.netlify.app/og-image-kc.jpg" />
+    <meta name="twitter:image:alt" content="KeepChat Settings & Storage Management" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://keepchatai.netlify.app/settings#app",
+          "name": "KeepChat Settings & Storage Management",
+          "operatingSystem": "All modern browsers (Chrome, Edge, Safari, Firefox)",
+          "applicationCategory": "UtilitiesApplication",
+          "url": "https://keepchatai.netlify.app/settings",
+          "description": "Control local browser storage, PWA installation status, visual themes (light, dark, system), and download JSON backups of all conversational AI outputs.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "shippingDetails": {
+              "@type": "OfferShippingDetails",
+              "shippingRate": {
+                "@type": "MonetaryAmount",
+                "value": "0.00",
+                "currency": "USD"
+              },
+              "shippingDestination": {
+                "@type": "DefinedRegion",
+                "addressCountry": "US"
+              },
+              "deliveryTime": {
+                "@type": "ShippingDeliveryTime",
+                "handlingTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 0,
+                  "maxValue": 0,
+                  "unitCode": "DAY"
+                },
+                "transitTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 0,
+                  "maxValue": 0,
+                  "unitCode": "DAY"
+                }
+              }
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "applicableCountry": "US",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+              "merchantReturnDays": 30,
+              "returnMethod": "https://schema.org/ReturnByMail",
+              "returnFees": "https://schema.org/FreeReturn"
+            }
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://keepchatai.netlify.app/settings#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://keepchatai.netlify.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Settings",
+              "item": "https://keepchatai.netlify.app/settings"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#F0F2F5] dark:bg-[#0c1317] text-slate-800 dark:text-slate-100 antialiased overflow-hidden select-text">
+    <div id="root">
+      <main style="max-width:960px;margin:0 auto;padding:32px 16px;font-family:Inter,system-ui,sans-serif;color:#1e293b;">
+        <header style="margin-bottom:24px;border-bottom:1px solid #e2e8f0;padding-bottom:16px;">
+          <nav style="font-size:12px;color:#64748b;margin-bottom:8px;">
+            <a href="/" style="color:#008069;text-decoration:none;">Home</a> &gt; <span>Settings &amp; Storage</span>
+          </nav>
+          <h1 style="font-size:24px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">KeepChat Settings & Storage Management</h1>
+          <p style="font-size:14px;color:#475569;margin:0;">
+            Manage browser persistence, theme appearance, full vault backup downloads, and Progressive Web App installation.
+          </p>
+        </header>
+
+        <section style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;margin-bottom:24px;">
+          <article style="background:#ffffff;padding:20px;border-radius:12px;border:1px solid #e2e8f0;">
+            <h2 style="font-size:16px;font-weight:600;margin:0 0 8px 0;color:#008069;">Local-First IndexedDB Privacy</h2>
+            <p style="font-size:13px;color:#475569;line-height:1.5;margin:0;">
+              Zero cloud transmission. Every chat thread and task deadline is stored in your private browser database.
+            </p>
+          </article>
+          <article style="background:#ffffff;padding:20px;border-radius:12px;border:1px solid #e2e8f0;">
+            <h2 style="font-size:16px;font-weight:600;margin:0 0 8px 0;color:#0891b2;">Appearance & Theme</h2>
+            <p style="font-size:13px;color:#475569;line-height:1.5;margin:0;">
+              Toggle between Daylight Light Mode, Obsidian Dark Mode, or match your operating system theme automatically.
+            </p>
+          </article>
+          <article style="background:#ffffff;padding:20px;border-radius:12px;border:1px solid #e2e8f0;">
+            <h2 style="font-size:16px;font-weight:600;margin:0 0 8px 0;color:#2563eb;">Progressive Web App (PWA)</h2>
+            <p style="font-size:13px;color:#475569;line-height:1.5;margin:0;">
+              Install KeepChat as a desktop or mobile application with offline precaching and zero-latency boot.
+            </p>
+          </article>
+        </section>
+
+        <footer style="display:flex;gap:12px;font-size:13px;">
+          <a href="/" style="color:#008069;text-decoration:none;font-weight:500;">&larr; Open AI Output Vault</a>
+          <span style="color:#cbd5e1;">|</span>
+          <a href="/tasks" style="color:#008069;text-decoration:none;font-weight:500;">Tasks Console</a>
+          <span style="color:#cbd5e1;">|</span>
+          <a href="/faq" style="color:#008069;text-decoration:none;font-weight:500;">Frequently Asked Questions</a>
+        </footer>
+      </main>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

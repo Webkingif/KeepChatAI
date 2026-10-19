@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="theme-color" content="#008069" />
+    <meta name="google-site-verification" content="zmDZUEWAv863VwxGtYYneAjPms687PJCaEnUuIIauJ4" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="KeepChat" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="canonical" href="https://keepchatai.netlify.app/tasks" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+    <script>
+      (function() {
+        window.__deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', function(e) {
+          e.preventDefault();
+          window.__deferredPrompt = e;
+          window.dispatchEvent(new CustomEvent('pwa-prompt-available'));
+        });
+      })();
+    </script>
+    <title>Tasks Command Console & Deadlines | KeepChat</title>
+    <meta name="description" content="Track AI output deadlines, task urgencies, completion velocity, and multi-threaded action items with KeepChat's Tasks Command Console." />
+    <meta property="og:site_name" content="KeepChat" />
+    <meta property="og:url" content="https://keepchatai.netlify.app/tasks" />
+    <meta property="og:title" content="Tasks Command Console & Deadlines | KeepChat" />
+    <meta property="og:description" content="Track AI output deadlines, task urgencies, completion velocity, and multi-threaded action items with KeepChat's Tasks Command Console." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://keepchatai.netlify.app/og-image-kc.jpg" />
+    <meta property="og:image:secure_url" content="https://keepchatai.netlify.app/og-image-kc.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="KeepChat Tasks Command Console" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://keepchatai.netlify.app/tasks" />
+    <meta name="twitter:title" content="Tasks Command Console & Deadlines | KeepChat" />
+    <meta name="twitter:description" content="Track AI output deadlines, task urgencies, completion velocity, and multi-threaded action items with KeepChat's Tasks Command Console." />
+    <meta name="twitter:image" content="https://keepchatai.netlify.app/og-image-kc.jpg" />
+    <meta name="twitter:image:alt" content="KeepChat Tasks Command Console" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://keepchatai.netlify.app/tasks#app",
+          "name": "KeepChat Tasks Command Console",
+          "operatingSystem": "All modern browsers (Chrome, Edge, Safari, Firefox)",
+          "applicationCategory": "ProductivityApplication",
+          "url": "https://keepchatai.netlify.app/tasks",
+          "description": "Executive task and deadline command console to turn AI outputs from ChatGPT, Gemini, and Claude into prioritized action items with live countdown badges and velocity metrics.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "shippingDetails": {
+              "@type": "OfferShippingDetails",
+              "shippingRate": {
+                "@type": "MonetaryAmount",
+                "value": "0.00",
+                "currency": "USD"
+              },
+              "shippingDestination": {
+                "@type": "DefinedRegion",
+                "addressCountry": "US"
+              },
+              "deliveryTime": {
+                "@type": "ShippingDeliveryTime",
+                "handlingTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 0,
+                  "maxValue": 0,
+                  "unitCode": "DAY"
+                },
+                "transitTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 0,
+                  "maxValue": 0,
+                  "unitCode": "DAY"
+                }
+              }
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "applicableCountry": "US",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+              "merchantReturnDays": 30,
+              "returnMethod": "https://schema.org/ReturnByMail",
+              "returnFees": "https://schema.org/FreeReturn"
+            }
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://keepchatai.netlify.app/tasks#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://keepchatai.netlify.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Tasks Command Console",
+              "item": "https://keepchatai.netlify.app/tasks"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#F0F2F5] dark:bg-[#0c1317] text-slate-800 dark:text-slate-100 antialiased overflow-hidden select-text">
+    <div id="root">
+      <main style="max-width:960px;margin:0 auto;padding:32px 16px;font-family:Inter,system-ui,sans-serif;color:#1e293b;">
+        <header style="margin-bottom:24px;border-bottom:1px solid #e2e8f0;padding-bottom:16px;">
+          <nav style="font-size:12px;color:#64748b;margin-bottom:8px;">
+            <a href="/" style="color:#008069;text-decoration:none;">Home</a> &gt; <span>Tasks Command Console</span>
+          </nav>
+          <h1 style="font-size:24px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">KeepChat Tasks Command Console & Deadlines</h1>
+          <p style="font-size:14px;color:#475569;margin:0;">
+            Track time-sensitive AI insights, monitor upcoming and overdue deadlines, and organize action items with telemetry progress metrics.
+          </p>
+        </header>
+
+        <section style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;margin-bottom:24px;">
+          <article style="background:#ffffff;padding:20px;border-radius:12px;border:1px solid #e2e8f0;">
+            <h2 style="font-size:16px;font-weight:600;margin:0 0 8px 0;color:#008069;">Live Urgency Badges</h2>
+            <p style="font-size:13px;color:#475569;line-height:1.5;margin:0;">
+              Automatic countdown badges identify tasks that are overdue, due today, or upcoming over the next 7 days.
+            </p>
+          </article>
+          <article style="background:#ffffff;padding:20px;border-radius:12px;border:1px solid #e2e8f0;">
+            <h2 style="font-size:16px;font-weight:600;margin:0 0 8px 0;color:#0891b2;">Telemetry HUD & Tag Matrix</h2>
+            <p style="font-size:13px;color:#475569;line-height:1.5;margin:0;">
+              Filter tasks by custom tags (#research, #code, #finance) and track your overall completion velocity in real time.
+            </p>
+          </article>
+          <article style="background:#ffffff;padding:20px;border-radius:12px;border:1px solid #e2e8f0;">
+            <h2 style="font-size:16px;font-weight:600;margin:0 0 8px 0;color:#2563eb;">1-Click Quick Extensions</h2>
+            <p style="font-size:13px;color:#475569;line-height:1.5;margin:0;">
+              Easily recalibrate deadlines with instant +1d, +3d, and +1w quick action controls without leaving the card.
+            </p>
+          </article>
+        </section>
+
+        <footer style="display:flex;gap:12px;font-size:13px;">
+          <a href="/" style="color:#008069;text-decoration:none;font-weight:500;">&larr; Open AI Output Vault</a>
+          <span style="color:#cbd5e1;">|</span>
+          <a href="/faq" style="color:#008069;text-decoration:none;font-weight:500;">Frequently Asked Questions</a>
+          <span style="color:#cbd5e1;">|</span>
+          <a href="/settings" style="color:#008069;text-decoration:none;font-weight:500;">Storage &amp; Settings</a>
+        </footer>
+      </main>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

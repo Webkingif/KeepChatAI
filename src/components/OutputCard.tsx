@@ -345,7 +345,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
           </div>
 
           {/* Action Controls */}
-          <div className="flex items-center gap-1 shrink-0 ml-auto">
+          <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 shrink-0 ml-auto max-w-full justify-end">
             {!isEditing ? (
               <>
                 {/* Turn into Task Button (if not already a task) */}
@@ -355,7 +355,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                       e.stopPropagation();
                       onTurnIntoTask(output);
                     }}
-                    className="flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-[#00a884] dark:hover:text-[#25d366] hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+                    className="h-7 inline-flex items-center gap-1 px-2 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-[#00a884] dark:hover:text-[#25d366] hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
                     title="Turn this output into a task with a deadline"
                     aria-label="Add task with deadline"
                   >
@@ -371,7 +371,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                       e.stopPropagation();
                       handleStartEdit();
                     }}
-                    className="flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+                    className="h-7 inline-flex items-center gap-1 px-2 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
                     title="Edit output indefinitely"
                     aria-label="Edit output"
                   >
@@ -387,7 +387,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                       e.stopPropagation();
                       onExportImage(output);
                     }}
-                    className="p-1.5 rounded text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors cursor-pointer"
+                    className="h-7 w-7 inline-flex items-center justify-center rounded text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors cursor-pointer"
                     title="Export output as image (PNG)"
                     aria-label="Export output as image"
                   >
@@ -402,7 +402,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                       e.stopPropagation();
                       onExportPdf(output);
                     }}
-                    className="p-1.5 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                    className="h-7 w-7 inline-flex items-center justify-center rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                     title="Export output as PDF document"
                     aria-label="Export output as PDF document"
                   >
@@ -417,7 +417,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                       e.stopPropagation();
                       onExportMarkdown(output);
                     }}
-                    className="p-1.5 rounded text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors cursor-pointer"
+                    className="h-7 w-7 inline-flex items-center justify-center rounded text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors cursor-pointer"
                     title="Export output as Markdown file (.md)"
                     aria-label="Export output as Markdown file"
                   >
@@ -431,14 +431,14 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     e.stopPropagation();
                     handleCopyFull();
                   }}
-                  className="flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
+                  className="h-7 inline-flex items-center gap-1 px-2 rounded text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2a3942] transition-colors cursor-pointer"
                   title="Copy output text"
                   aria-label={copied ? 'Output copied to clipboard' : 'Copy output content'}
                 >
                   {copied ? (
                     <>
                       <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-teal-400" aria-hidden="true" />
-                      <span className="text-emerald-600 dark:text-teal-400 font-medium">Copied!</span>
+                      <span className="text-emerald-600 dark:text-teal-400 font-medium hidden sm:inline">Copied!</span>
                     </>
                   ) : (
                     <>
@@ -454,7 +454,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     e.stopPropagation();
                     onToggleStar(output.id);
                   }}
-                  className={`p-1.5 rounded transition-colors cursor-pointer ${
+                  className={`h-7 w-7 inline-flex items-center justify-center rounded transition-colors cursor-pointer ${
                     output.isStarred
                       ? 'text-amber-500 hover:text-amber-600 bg-amber-50 dark:bg-amber-950/30'
                       : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-[#2a3942]'
@@ -474,7 +474,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                         e.stopPropagation();
                         onDelete(output.id);
                       }}
-                      className="px-2 py-0.5 text-xs font-medium text-white bg-rose-600 hover:bg-rose-700 rounded transition-colors cursor-pointer"
+                      className="px-2 py-1 text-xs font-medium text-white bg-rose-600 hover:bg-rose-700 rounded transition-colors cursor-pointer"
                     >
                       Confirm
                     </button>
@@ -483,7 +483,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                         e.stopPropagation();
                         setShowConfirmDelete(false);
                       }}
-                      className="px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-[#2a3942] rounded transition-colors cursor-pointer"
+                      className="px-2 py-1 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-[#2a3942] rounded transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -494,7 +494,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                       e.stopPropagation();
                       setShowConfirmDelete(true);
                     }}
-                    className="p-1.5 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                    className="h-7 w-7 inline-flex items-center justify-center rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                     title="Delete output"
                     aria-label="Delete output"
                   >
@@ -530,7 +530,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
         {/* Task Deadline Banner (Visually Distinct: Overdue vs Upcoming vs Completed) */}
         {output.isTask && (
           <div
-            className={`mx-4 mt-3 p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-all ${
+            className={`mx-2.5 sm:mx-4 mt-3 p-2.5 sm:p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-all ${
               output.taskCompleted
                 ? 'border-l-4 border-l-slate-400 bg-slate-50 dark:bg-[#182329] border-slate-200 dark:border-[#26353d] opacity-80'
                 : isOverdue
@@ -538,7 +538,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                 : 'border-l-4 border-l-[#00a884] bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900/50 text-emerald-900 dark:text-emerald-100'
             }`}
           >
-            <div className="flex items-start sm:items-center gap-2.5 min-w-0">
+            <div className="flex items-start sm:items-center gap-2 sm:gap-2.5 min-w-0">
               {/* Complete / Incomplete Checkbox */}
               <button
                 type="button"
@@ -549,7 +549,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                   e.stopPropagation();
                   onToggleTaskComplete?.(output.id);
                 }}
-                className={`mt-0.5 sm:mt-0 w-4.5 h-4.5 rounded border flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
+                className={`mt-0.5 sm:mt-0 w-5 h-5 rounded-md border flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
                   output.taskCompleted
                     ? 'bg-slate-500 border-slate-500 text-white'
                     : isOverdue
@@ -558,28 +558,28 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                 }`}
                 title={output.taskCompleted ? 'Mark as incomplete' : 'Mark as complete'}
               >
-                {output.taskCompleted && <Check className="w-3 h-3 stroke-[3]" aria-hidden="true" />}
+                {output.taskCompleted && <Check className="w-3.5 h-3.5 stroke-[3]" aria-hidden="true" />}
               </button>
 
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
                   {output.taskCompleted ? (
                     <span className="font-semibold text-slate-600 dark:text-slate-400">
                       Task Completed
                     </span>
                   ) : isOverdue ? (
                     <span className="font-bold text-rose-700 dark:text-rose-400 flex items-center gap-1">
-                      <AlertTriangle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 animate-pulse" />
+                      <AlertTriangle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 animate-pulse shrink-0" />
                       OVERDUE TASK
                     </span>
                   ) : (
                     <span className="font-semibold text-emerald-700 dark:text-teal-400 flex items-center gap-1">
-                      <CalendarCheck className="w-3.5 h-3.5 text-[#00a884]" />
+                      <CalendarCheck className="w-3.5 h-3.5 text-[#00a884] shrink-0" />
                       ACTIVE TASK
                     </span>
                   )}
 
-                  <span className="text-slate-300 dark:text-slate-600" aria-hidden="true">
+                  <span className="hidden xs:inline text-slate-300 dark:text-slate-600" aria-hidden="true">
                     ·
                   </span>
 
@@ -593,13 +593,13 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     {formatDeadlineRelative(output.taskDeadline)}
                   </span>
 
-                  <span className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">
                     ({formatDeadlineDateTime(output.taskDeadline)})
                   </span>
                 </div>
 
                 {output.taskTitle && (
-                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5 truncate">
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1 break-words sm:truncate">
                     {output.taskTitle}
                   </p>
                 )}
@@ -607,17 +607,17 @@ export const OutputCard: React.FC<OutputCardProps> = ({
             </div>
 
             {/* Actions: Change Deadline, Tasks Page, Remove */}
-            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto text-xs">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto justify-end text-xs pt-2 sm:pt-0 border-t border-slate-200/50 dark:border-[#26353d]/50 sm:border-t-0">
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onChangeDeadline?.(output);
                 }}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-[#111b21] hover:bg-slate-100 dark:hover:bg-[#202c33] border border-slate-200 dark:border-[#2a3942] text-slate-700 dark:text-slate-200 font-medium transition-colors cursor-pointer shadow-2xs"
+                className="h-7 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white dark:bg-[#111b21] hover:bg-slate-100 dark:hover:bg-[#202c33] border border-slate-200 dark:border-[#2a3942] text-slate-700 dark:text-slate-200 font-medium transition-colors cursor-pointer shadow-2xs"
                 title="Change deadline"
               >
-                <Calendar className="w-3.5 h-3.5 text-[#00a884]" />
+                <Calendar className="w-3.5 h-3.5 text-[#00a884] shrink-0" />
                 <span>Change Deadline</span>
               </button>
 
@@ -628,10 +628,10 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                     e.stopPropagation();
                     onOpenTasksPage();
                   }}
-                  className="inline-flex items-center gap-1 px-2 py-1 text-slate-600 dark:text-slate-300 hover:text-[#00a884] dark:hover:text-[#25d366] transition-colors cursor-pointer font-medium"
+                  className="h-7 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/70 dark:bg-[#111b21]/70 hover:bg-white dark:hover:bg-[#111b21] border border-slate-200/80 dark:border-[#2a3942] text-slate-700 dark:text-slate-200 transition-colors cursor-pointer font-medium shadow-2xs"
                   title="View all tasks on the Tasks Page"
                 >
-                  <ListTodo className="w-3.5 h-3.5" />
+                  <ListTodo className="w-3.5 h-3.5 text-[#00a884] shrink-0" />
                   <span className="hidden sm:inline">Tasks Page</span>
                 </button>
               )}
@@ -642,10 +642,11 @@ export const OutputCard: React.FC<OutputCardProps> = ({
                   e.stopPropagation();
                   onRemoveTask?.(output.id);
                 }}
-                className="p-1 rounded text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
+                className="h-7 w-7 inline-flex items-center justify-center rounded-lg bg-white/70 dark:bg-[#111b21]/70 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-slate-200/80 dark:border-[#2a3942] text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer shadow-2xs"
                 title="Remove task status (keeps output)"
+                aria-label="Remove task"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-3.5 h-3.5 shrink-0" />
               </button>
             </div>
           </div>

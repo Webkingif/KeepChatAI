@@ -24,6 +24,7 @@ import {
   PinOff,
   ListTodo,
   AlertTriangle,
+  HelpCircle,
 } from 'lucide-react';
 import { ChatThread, SavedOutput, MAX_PINNED_CHATS } from '../types/keepchat';
 import { formatWhatsAppTime, isDeadlineOverdue } from '../utils/date';
@@ -44,6 +45,8 @@ interface SidebarProps {
   onOpenSettings: () => void;
   onOpenTasks?: () => void;
   isTasksActive?: boolean;
+  onOpenFaq?: () => void;
+  isFaqActive?: boolean;
   onPinToggle: (chatId: string) => void;
   onEditChat?: (chat: ChatThread) => void;
   onDeleteChat?: (chatId: string) => void;
@@ -78,6 +81,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenSettings,
   onOpenTasks,
   isTasksActive,
+  onOpenFaq,
+  isFaqActive,
   onPinToggle,
   onEditChat,
   onDeleteChat,
@@ -266,6 +271,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <Settings className="w-5 h-5" aria-hidden="true" />
           </button>
 
+          {/* Help & FAQ Button (Desktop) */}
+          {onOpenFaq && (
+            <button
+              onClick={onOpenFaq}
+              className={`hidden sm:flex p-2 rounded-full transition-colors cursor-pointer ${
+                isFaqActive
+                  ? 'text-[#00a884] bg-slate-200/90 dark:bg-[#2a3942]'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-[#2a3942]'
+              }`}
+              title="Frequently Asked Questions (FAQ)"
+              aria-label="Open Frequently Asked Questions"
+            >
+              <HelpCircle className="w-5 h-5" aria-hidden="true" />
+            </button>
+          )}
+
           {/* Backup & Options Menu */}
           <div className="relative">
             <button
@@ -327,6 +348,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" aria-hidden="true" />
                     <span>Settings (Appearance)</span>
                   </button>
+
+                  {onOpenFaq && (
+                    <button
+                      role="menuitem"
+                      onClick={() => {
+                        onOpenFaq();
+                        setShowOptions(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#182229] transition-colors text-left cursor-pointer"
+                    >
+                      <HelpCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                      <span>Help &amp; FAQ</span>
+                    </button>
+                  )}
 
                   <div className="my-1 border-t border-slate-100 dark:border-[#2a3942]" />
 

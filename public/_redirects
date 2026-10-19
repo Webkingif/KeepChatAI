@@ -1,0 +1,8 @@
+# Netlify Redirect Rules for KeepChat
+# Ensure crawlers and browsers requesting clean URLs receive the dedicated prerendered HTML pages
+/tasks      /tasks/index.html     200
+/settings   /settings/index.html  200
+/faq        /faq/index.html       200
+
+# Fallback for client-side routing
+/*          /index.html           200
