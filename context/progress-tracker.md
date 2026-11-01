@@ -289,4 +289,7 @@
   - Added `useVisualViewport` hook and synchronous head scripts dynamically binding `--app-height` and `--app-width` to `window.visualViewport.height` to accurately accommodate Chrome bottom tab group bars, address bars, and on-screen keyboards.
   - Replaced legacy `h-screen` with `h-[100dvh] max-h-[100dvh]` and CSS fallback `var(--app-height, 100dvh)` in `index.css` and `App.tsx`.
   - Added safe area padding (`env(safe-area-inset-bottom)`) to `InputBar.tsx`, `Sidebar.tsx` FAB, and `TasksView.tsx`.
+- [x] Updated `README.md`:
+  - Documented recent architectural additions: standalone multi-page HTML entrypoints (`/`, `/tasks`, `/settings`, `/faq`), dynamic visual viewport handling for Chrome tab groups, immediate auto-update system, and redesigned "My Tasks" interface.
+  - Updated system architecture diagram, live links, and feature matrices.
 
