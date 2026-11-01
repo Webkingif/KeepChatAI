@@ -4,7 +4,7 @@ import {
   X,
   Check,
   Copy,
-  Sparkles,
+  Gem,
   Bot,
   Brain,
   Cpu,
@@ -33,7 +33,7 @@ interface ExportSnapshotModalProps {
 
 const MODEL_ICONS: Record<AIModelType, React.ElementType> = {
   ChatGPT: MessageSquare,
-  Gemini: Sparkles,
+  Gemini: Gem,
   Claude: Brain,
   DeepSeek: Cpu,
   Other: Bot,

@@ -6,7 +6,8 @@ import {
   ZoomOut,
   Camera,
   RotateCcw,
-  Sparkles,
+  Zap,
+  MessageSquare,
   Code,
   Database,
   Brain,
@@ -24,7 +25,8 @@ interface ChatLogoModalProps {
 
 const ICON_MAP: Record<string, React.ElementType> = {
   code: Code,
-  sparkles: Sparkles,
+  zap: Zap,
+  sparkles: Zap,
   database: Database,
   brain: Brain,
   terminal: Terminal,
@@ -52,7 +54,7 @@ export const ChatLogoModal: React.FC<ChatLogoModalProps> = ({
 
   if (!isOpen || !chat) return null;
 
-  const IconCmp = (chat.iconName && ICON_MAP[chat.iconName]) || Sparkles;
+  const IconCmp = (chat.iconName && ICON_MAP[chat.iconName]) || MessageSquare;
 
   const handleZoomIn = (e: React.MouseEvent) => {
     e.stopPropagation();

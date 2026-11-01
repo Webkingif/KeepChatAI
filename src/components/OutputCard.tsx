@@ -5,7 +5,7 @@ import {
   Star,
   Trash2,
   CheckCheck,
-  Sparkles,
+  Gem,
   Bot,
   Brain,
   Cpu,
@@ -216,7 +216,7 @@ export const OutputCard: React.FC<OutputCardProps> = ({
     switch (model) {
       case 'Gemini':
         return {
-          icon: Sparkles,
+          icon: Gem,
           color:
             'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/50',
           label: 'Gemini',

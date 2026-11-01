@@ -7,7 +7,6 @@ import {
   X,
   ListTodo,
   Trash2,
-  Sparkles,
 } from 'lucide-react';
 import { SavedOutput } from '../types/keepchat';
 import {

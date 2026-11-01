@@ -11,7 +11,7 @@ export const INITIAL_CHATS: ChatThread[] = [
     updatedAt: Date.now() - 1000 * 60 * 5,
     isPinned: true,
     avatarColor: 'from-emerald-500 to-teal-700',
-    iconName: 'sparkles',
+    iconName: 'zap',
   },
 ];
 

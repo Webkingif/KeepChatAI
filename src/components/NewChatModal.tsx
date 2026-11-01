@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   X,
-  Sparkles,
+  Zap,
   Code,
   Database,
   Brain,
@@ -41,7 +41,7 @@ const COLOR_OPTIONS = [
 
 const ICONS = [
   { name: 'code', label: 'Code', icon: Code },
-  { name: 'sparkles', label: 'Sparkles', icon: Sparkles },
+  { name: 'zap', label: 'Zap', icon: Zap },
   { name: 'database', label: 'Database', icon: Database },
   { name: 'brain', label: 'Brain', icon: Brain },
   { name: 'terminal', label: 'Terminal', icon: Terminal },

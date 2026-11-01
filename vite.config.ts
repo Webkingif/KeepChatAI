@@ -22,6 +22,7 @@ export default defineConfig(() => {
           'sitemap.xml',
           'robots.txt',
           '_redirects',
+          '_headers',
         ],
         manifest: {
           id: '/',

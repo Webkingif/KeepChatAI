@@ -284,7 +284,9 @@
   - Priority flag toggle (green filled when flagged/completed, outline when neutral).
   - Expandable drawer for vault details (AI model badge, chat source jump link, markdown preview, and edit deadline).
   - Bottom `+ Add a new task...` input bar enabling rapid inline task creation.
-- [x] Converted top navigation icon to a back arrow (`ArrowLeft`) in `TasksView.tsx`:
-  - Replaced `Menu` icon with `ArrowLeft` for clear return navigation to the chat vault.
-  - Applied targeted styles: ergonomic 44px hit-box, hover color transitions (`hover:text-[#00a884] dark:hover:text-teal-400`), active scale click feedback (`active:scale-95`), and accessible title "Back to Chats".
+- [x] Implemented dynamic visual viewport sizing for Chrome tab groups and mobile browsers:
+  - Added `interactive-widget=resizes-content` and `viewport-fit=cover` to meta viewport across all HTML entry points (`index.html`, `tasks/index.html`, `settings/index.html`, `faq/index.html`).
+  - Added `useVisualViewport` hook and synchronous head scripts dynamically binding `--app-height` and `--app-width` to `window.visualViewport.height` to accurately accommodate Chrome bottom tab group bars, address bars, and on-screen keyboards.
+  - Replaced legacy `h-screen` with `h-[100dvh] max-h-[100dvh]` and CSS fallback `var(--app-height, 100dvh)` in `index.css` and `App.tsx`.
+  - Added safe area padding (`env(safe-area-inset-bottom)`) to `InputBar.tsx`, `Sidebar.tsx` FAB, and `TasksView.tsx`.
 

@@ -8,7 +8,6 @@ import {
   Laptop,
   Share2,
   PlusSquare,
-  Sparkles,
   CheckCircle2,
 } from 'lucide-react';
 import { usePWAInstall } from '../hooks/usePWAInstall';
@@ -105,7 +104,7 @@ export const PWAInstallDialog: React.FC<PWAInstallDialogProps> = ({ onToast }) =
 
           {/* Recommended Badge */}
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold text-emerald-100 uppercase tracking-wider mb-3 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-amber-300" />
             <span>Recommended Installation</span>
           </div>
 
