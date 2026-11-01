@@ -13,7 +13,7 @@ import {
   CheckSquare,
   FileDown,
   Smartphone,
-  Sparkles,
+  Check,
   ExternalLink,
   MessageSquare,
 } from 'lucide-react';
@@ -304,9 +304,9 @@ export const FAQView: React.FC<FAQViewProps> = ({ onBack, onOpenTasks, onOpenVau
                           {faq.highlights.map((highlight, idx) => (
                             <span
                               key={idx}
-                              className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded"
+                              className="inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded"
                             >
-                              <Sparkles className="w-3 h-3 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                              <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" aria-hidden="true" />
                               {highlight}
                             </span>
                           ))}

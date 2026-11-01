@@ -3,7 +3,7 @@ import {
   FileText,
   Download,
   X,
-  Sparkles,
+  Gem,
   Bot,
   Brain,
   Cpu,
@@ -30,7 +30,7 @@ interface ExportPdfModalProps {
 
 const MODEL_ICONS: Record<AIModelType, React.ElementType> = {
   ChatGPT: MessageSquare,
-  Gemini: Sparkles,
+  Gemini: Gem,
   Claude: Brain,
   DeepSeek: Cpu,
   Other: Bot,

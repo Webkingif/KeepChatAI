@@ -22,6 +22,24 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   }
 
+  html, body, #root {
+    height: 100%;
+    height: 100dvh;
+    height: var(--app-height, 100dvh);
+    min-height: 100%;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    max-height: var(--app-height, 100dvh);
+    width: 100%;
+    width: 100dvw;
+    width: var(--app-width, 100dvw);
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overscroll-behavior-y: none;
+  }
+
   code, pre, kbd {
     font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }

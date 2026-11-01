@@ -44,6 +44,8 @@ import { TasksView } from './components/TasksView';
 import { TaskDeadlineModal } from './components/TaskDeadlineModal';
 import { FAQView } from './components/FAQView';
 import { PWAInstallDialog } from './components/PWAInstallDialog';
+import { useAutoUpdate } from './hooks/useAutoUpdate';
+import { useVisualViewport } from './hooks/useVisualViewport';
 
 const getInitialView = (): 'chats' | 'tasks' | 'settings' | 'faq' => {
   if (typeof window === 'undefined') return 'chats';
@@ -55,6 +57,8 @@ const getInitialView = (): 'chats' | 'tasks' | 'settings' | 'faq' => {
 };
 
 export default function App() {
+  useAutoUpdate();
+  useVisualViewport();
   const [isDBReady, setIsDBReady] = useState(false);
   const [chats, setChats] = useState<ChatThread[]>(() => loadStoredChats());
   const [messages, setMessages] = useState<SavedOutput[]>(() => loadStoredMessages());
@@ -829,7 +833,8 @@ export default function App() {
   if (!isDBReady) {
     return (
       <div
-        className={`h-screen w-screen flex flex-col items-center justify-center select-none ${
+        style={{ height: 'var(--app-height, 100dvh)', maxHeight: 'var(--app-height, 100dvh)' }}
+        className={`h-[100dvh] max-h-[100dvh] w-full flex flex-col items-center justify-center select-none ${
           effectiveTheme === 'dark' ? 'bg-[#111b21] text-white' : 'bg-[#f0f2f5] text-slate-800'
         }`}
       >
@@ -852,7 +857,10 @@ export default function App() {
   }
 
   return (
-    <div className={`flex h-screen w-screen overflow-hidden ${effectiveTheme === 'dark' ? 'dark' : ''}`}>
+    <div
+      style={{ height: 'var(--app-height, 100dvh)', maxHeight: 'var(--app-height, 100dvh)' }}
+      className={`flex h-[100dvh] max-h-[100dvh] w-full overflow-hidden ${effectiveTheme === 'dark' ? 'dark' : ''}`}
+    >
       {/* Skip to Main Content Link for Keyboard Accessibility */}
       <a
         href="#main-content"

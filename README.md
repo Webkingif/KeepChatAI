@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>A centralized, WhatsApp-inspired vault to save, organize, search, and view Markdown-formatted AI outputs from ChatGPT, Gemini, Claude, and DeepSeek — featuring a futuristic tasks command hub, live progress telemetry HUD, and multi-format exports.</strong>
+  <strong>A centralized, WhatsApp-inspired vault to save, organize, search, and view Markdown-formatted AI outputs from ChatGPT, Gemini, Claude, and DeepSeek — featuring a streamlined Tasks Hub, multi-page routing, multi-format exports, and instant auto-updating offline PWA capabilities.</strong>
 </p>
 
 <p align="center">
@@ -36,40 +36,60 @@
 
 > 🚀 **Try the Live App Now**: You can use KeepChat immediately in your browser or install it as a native offline PWA at **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)**. Zero login or installation required!
 
-As we interact daily with AI models like **ChatGPT**, **Claude**, **Google Gemini**, and **DeepSeek**, valuable insights, code architectures, formulas, and actionable instructions quickly get scattered across browser tabs and disjointed chat histories.
+As we interact daily with AI models like **ChatGPT**, **Claude**, **Google Gemini**, and **DeepSeek**, valuable code snippets, architecture plans, prompt formulas, and actionable instructions quickly get scattered across browser tabs and disjointed chat histories.
 
 **KeepChat** transforms this experience into a familiar, ultra-responsive **WhatsApp-style conversational interface**. It provides an offline-first personal repository to paste, archive, tag, and search AI outputs with native support for full Markdown rendering, syntax-highlighted code blocks, mathematical LaTeX equations, voice notes, and image attachments.
 
-Beyond simple archiving, KeepChat turns insights into execution with a **futuristic Tasks Command Hub** featuring a live progress telemetry HUD, **multi-card image snapshots**, **paginated PDF documents (with selectable vector text)**, and **chronological Markdown exports**.
+Beyond simple archiving, KeepChat turns insights into execution with a **minimalist Tasks Hub**, **multi-card image snapshots**, **paginated PDF documents (with selectable vector text)**, **chronological Markdown exports**, **searchable FAQ knowledge base**, and **instant automatic web updates**.
 
 ---
 
 ## ✨ Key Features
 
 ### 💬 Authentic WhatsApp-Inspired Experience
-- **Adaptive Layout**: Persistent dual-pane view on desktop (`>768px`) with fluid WhatsApp Web proportioning; native single-pane flow on mobile (`<768px`) with smooth transitions and back navigation.
-- **Visual Fidelity**: Authentic light (`#F0F2F5`) and dark (`#111B21` / `#202C33`) WhatsApp themes with authentic wallpaper pattern backgrounds.
+- **Adaptive Responsive Layout**: Persistent dual-pane view on desktop (`>768px`) with fluid WhatsApp Web proportioning; native single-pane flow on mobile (`<768px`) with smooth sliding transitions and ergonomic back navigation.
+- **Visual Fidelity**: Authentic light (`#F0F2F5`) and dark (`#111B21` / `#202C33`) WhatsApp themes with subtle wallpaper pattern backgrounds.
 - **Date Dividers**: Natural inline date badges grouping saved outputs (**TODAY**, **YESTERDAY**, or formatted calendar dates) that scroll smoothly with the stream.
 - **Floating Scroll-to-Bottom Button**: WhatsApp-style circular action button that smoothly slides in when scrolling past 150px and scrolls directly to the newest message.
 - **Ergonomic Send Button**: 48px circular emerald action button with flight micro-animations, tactile feedback, and keyboard shortcuts (`Ctrl+Enter` / `Cmd+Enter`).
-- **Chat Pinning**: Pin up to 5 high-priority threads with hover quick-actions, header toggles, and mobile 450ms long-press gesture sheets.
+- **Chat Pinning**: Pin up to 5 high-priority threads with hover quick-actions, header toggles, and mobile long-press gesture sheets.
 
-### ⚡ Futuristic Tasks Command Hub & Telemetry HUD
-- **Deep Obsidian & Neon Aesthetic**: Minimalist modern command interface styled in deep obsidian (`#0A0F14` / `#0D1520`) with sharp cyan (`#22D3EE`) and emerald accents, glowing hairline borders, and refined micro-interactions.
-- **Live Progress Telemetry HUD**:
-  - **Completion Gauge**: Circular SVG progress gauge showing real-time completion percentage and active task ratios.
-  - **Impending Task Radar**: Active countdown tracker prioritizing the most urgent deadline or overdue task.
-  - **Status Telemetry Breakdown**: Instant counters for All Tasks, Pending, Overdue, and Completed.
-  - **Tag Matrix**: Frequency-ranked filter chips to cross-filter tasks across multiple chat threads.
-- **Single-Card-Per-Row Widescreen Layout**: One expansive card per row across all viewport widths, ensuring ample horizontal breathing room for complex code blocks, math formulas, and prompt contexts.
-- **Minimalist Hairline Perimeter**: Clean perimeter borders without distracting side bars or color blocks, ensuring a high-density, futuristic look.
-- **Instant Operational Controls**:
-  - 1-click completion toggle with smooth state transitions.
-  - Quick-extend buttons (`+1d`, `+3d`, `+1w`) for rapid deadline recalibration.
-  - Deadline Recalibration Modal with preset intervals and custom datetime picker.
-  - Expandable/collapsible prompt summaries and rendered Markdown output previews.
-  - **"Open in Chat"** navigation to jump straight to the source message inside the original chat thread.
-  - Clean task removal with confirmation.
+### 📋 Streamlined "My Tasks" Hub & Deadline Management
+- **Minimalist Clean UI**: Centered modern task list with quick back navigation to chats, options menu, and real-time formatted date subtitle.
+- **Segmented Filter Pills**:
+  - **All**: View all tasks across the entire workspace.
+  - **Overdue**: Filter pending tasks with past deadlines, highlighted with a dynamic numeric badge count.
+  - **Upcoming**: Filter incomplete, on-track tasks with a dynamic numeric badge count.
+  - **Done**: Filter completed tasks.
+- **Card Controls & Interactivity**:
+  - Circular checkbox toggles (outline when pending, filled green checkmark on completion) with strikethrough typography.
+  - Priority flag toggle on each task.
+  - Formatted time indicators (e.g. `9:00 AM`, `Tomorrow, 11:30 AM`).
+  - Expandable drawer revealing AI model badge, original chat source jump link, markdown notes, and deadline change picker.
+- **Inline Rapid Task Creation Bar**: Soft rounded `+ Add a new task...` bar at the bottom for instant inline task additions.
+
+### 🔄 Instant Automatic Web Updates & Dynamic Viewport Height
+- **Always-Updated Guarantee**: Whenever a new version of the website is deployed, the app automatically checks, downloads the update in the background, and refreshes seamlessly via `controllerchange` listener.
+- **Proactive Update Detection**: Triggers update checks on app launch, window focus, visibility change, and periodically every 5 minutes (`useAutoUpdate.ts`).
+- **Cache-Control Revalidation Headers**: Configured `public/_headers` and HTML meta tags (`no-cache, no-store, must-revalidate`) ensuring browser shells never serve stale entry points while keeping immutable hashed assets fast.
+- **Chrome Tab Group & Mobile Viewport Support**:
+  - Built-in `useVisualViewport` hook dynamically maps `--app-height` and `--app-width` to the active `window.visualViewport`.
+  - Added `interactive-widget=resizes-content` and `viewport-fit=cover` so Chrome tab strips, browser navigation bars, and virtual keyboards never cut off bottom action bars or the full height of the website.
+  - Safe-area bottom padding (`env(safe-area-inset-bottom)`) integrated across all bottom inputs and floating buttons.
+
+### 🌐 Multi-Page Pre-Rendered Routes & SEO Architecture
+KeepChat supports direct clean URLs with dedicated pre-rendered semantic HTML entry points and schema markup:
+- `/` — **Main Output Vault** (`index.html`)
+- `/tasks` — **Tasks Command Console** (`tasks/index.html`)
+- `/settings` — **Settings & Storage Management** (`settings/index.html`)
+- `/faq` — **Frequently Asked Questions** (`faq/index.html`)
+
+Includes Google Search Console site verification, canonical URLs, OpenGraph/Twitter social cards, and Schema.org JSON-LD structured data (`SoftwareApplication`, `FAQPage`, `BreadcrumbList`).
+
+### ❓ Interactive FAQ & Knowledge Base
+- Accessible, categorized accordion knowledge base with real-time keyword search.
+- Quick deep links to the Output Vault, Tasks Console, and PWA configuration.
+- Detailed architectural explanations for local storage privacy, export modes, and offline functionality.
 
 ### 🤖 Multi-Model Organization & Thread Avatars
 - **AI Model Classification**: Dedicated threads and output tags for **ChatGPT**, **Google Gemini**, **Claude**, **DeepSeek**, or custom models.
@@ -120,6 +140,8 @@ Beyond simple archiving, KeepChat turns insights into execution with a **futuris
 ### 🛡️ 100% Offline-First Architecture & Privacy
 - **IndexedDB Engine**: All chats, outputs, voice recordings, and attachments persist in browser IndexedDB (`keepchat_db` v1) with transparent localStorage fallback.
 - **Workbox PWA Pre-Caching**: Navigation fallback (`/index.html`) ensures instant startup even in airplane mode.
+- **Discreet Offline Banner**: Non-intrusive indicator that confirms offline availability for 1 second upon disconnection.
+- **PWA Install Dialog**: Automatic, accessible installation prompt highlighting privacy and offline capability.
 - **Zero Telemetry**: No third-party analytics, tracking pixels, or external API calls. Your AI outputs remain 100% private to your browser.
 - **Full Vault Backup & Restore**: One-click complete JSON backup export and import.
 
@@ -135,11 +157,11 @@ Beyond simple archiving, KeepChat turns insights into execution with a **futuris
 │   ┌───────────────────────────┐    ┌───────────────────────────────────────────────┐   │
 │   │   Sidebar & Navigation    │    │              Main Content Area                │   │
 │   │  • Pinned threads (max 5) │    ├───────────────────────┬───────────────────────┤   │
-│   │  • Category & tag filters │    │   Active Chat Thread  │  Futuristic Tasks Hub │   │
-│   │  • Chats / Tasks switcher │    │ • DateDivider stream  │ • Telemetry HUD & Bar │   │
-│   │  • Global real-time search│    │ • OutputCard & Tags   │ • 1 Card / Row Stream │   │
-│   │  • PWA install trigger    │    │ • Voice / Image cards │ • Status & Tag Matrix │   │
-│   │  • Settings & JSON backup │    │ • InputBar (≤ 8% vh)  │ • Extend, Done & Chat │   │
+│   │  • Category & tag filters │    │   Active Chat Thread  │     "My Tasks" Hub    │   │
+│   │  • Chats / Tasks switcher │    │ • DateDivider stream  │ • Segmented Filters   │   │
+│   │  • Global real-time search│    │ • OutputCard & Tags   │ • Overdue / Upcoming  │   │
+│   │  • PWA install trigger    │    │ • Voice / Image cards │ • Inline Quick Add    │   │
+│   │  • Settings & JSON backup │    │ • InputBar (Dynamic)  │ • Expandable Drawer   │   │
 │   └─────────────┬─────────────┘    └───────────┬───────────┴───────────┬───────────┘   │
 │                 │                              │                       │               │
 │                 └──────────────────────────────┼───────────────────────┘               │
@@ -171,9 +193,11 @@ Beyond simple archiving, KeepChat turns insights into execution with a **futuris
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │                           Progressive Web App (PWA) Layer                              │
 │  • Workbox Navigation Fallback (`/index.html`)                                         │
+│  • Immediate Auto-Update Engine (`useAutoUpdate.ts` & `controllerchange`)              │
 │  • Asset precaching (Scripts, KaTeX Webfonts, CSS, Icons)                              │
+│  • Visual Viewport synchronization (`useVisualViewport.ts` & `--app-height`)           │
 │  • Offline connectivity detection (`OfflineIndicator` & `useOnlineStatus`)             │
-│  └────────────────────────────────────────────────────────────────────────────────────────┘
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -190,8 +214,9 @@ KeepChat is deployed and installable directly from **[https://keepchatai.netlify
 | **iOS / Safari** | Open **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)** in Safari, tap the **Share** button (square with upward arrow) at the bottom, scroll down, and select **Add to Home Screen**. |
 | **macOS / Windows / Linux** | Visit **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)**, click the **Install** icon in your browser address bar or click the download icon in KeepChat's sidebar header. |
 
-### Offline Guarantee
+### Offline & Update Guarantee
 - **App Shell**: The service worker activates immediately on load, caching all scripts, stylesheets, and KaTeX mathematical font assets.
+- **Immediate Updates**: When new code is deployed, the service worker takes control immediately without requiring manual cache clearing.
 - **Data Persistence**: All created chats, prompts, outputs, tasks, voice recordings, and attachments live inside browser IndexedDB.
 - **Zero Loss**: You can create, edit, search, export, and organize chats completely in airplane mode.
 
@@ -288,7 +313,7 @@ Open **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)** in a
    ```bash
    npm run build
    ```
-   Compiles production-optimized assets and service worker into `dist/`.
+   Compiles production-optimized assets, multi-page HTML entrypoints, and service worker into `dist/`.
 
 5. **Typecheck & Lint**:
    ```bash
@@ -302,9 +327,9 @@ Open **[https://keepchatai.netlify.app/](https://keepchatai.netlify.app/)** in a
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
 | **Framework** | [React 19](https://react.dev/) | Modern concurrent UI architecture & hooks |
-| **Build Tool** | [Vite 8](https://vite.dev/) | Ultra-fast bundling, HMR, and development tooling |
+| **Build Tool** | [Vite 8](https://vite.dev/) | Ultra-fast bundling, multi-page HTML outputs, and dev server |
 | **Language** | [TypeScript 5](https://www.typescriptlang.org/) | Strict static typing and schemas |
-| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first responsive design, futuristic obsidian styling & WhatsApp themes |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first responsive design, dynamic viewport height & WhatsApp themes |
 | **Storage Engine** | [IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) | Client-side, local-first database (`chats`, `messages`, `meta`) |
 | **Offline & PWA** | [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) | Service worker, Workbox precaching, and app manifest |
 | **Markdown Parser** | [react-markdown](https://github.com/remarkjs/react-markdown) | GFM tables, checklists, blockquotes, and custom elements |

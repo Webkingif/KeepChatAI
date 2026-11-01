@@ -12,7 +12,7 @@ import {
   Star,
   Check,
   Code,
-  Sparkles,
+  Zap,
   Database,
   Brain,
   Terminal,
@@ -61,7 +61,8 @@ const CATEGORIES = ['All', 'Coding', 'Prompts', 'Research', 'Architecture', 'Wri
 
 const ICON_MAP: Record<string, React.ElementType> = {
   code: Code,
-  sparkles: Sparkles,
+  zap: Zap,
+  sparkles: Zap,
   database: Database,
   brain: Brain,
   terminal: Terminal,
@@ -566,7 +567,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             const chatMsgs = messagesByChat.get(chat.id) || [];
             const lastMsg = chatMsgs[0];
             const outputCount = chatMsgs.length;
-            const IconCmp = (chat.iconName && ICON_MAP[chat.iconName]) || Sparkles;
+            const IconCmp = (chat.iconName && ICON_MAP[chat.iconName]) || MessageSquare;
 
             const snippet = lastMsg
               ? lastMsg.mediaType === 'image'
@@ -704,10 +705,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
 
-      {/* Floating Action Button (FAB) for Mobile View (< 768px) */}
       <button
         onClick={onNewChat}
-        className="md:hidden fixed bottom-5 right-5 z-30 w-14 h-14 rounded-2xl bg-[#00a884] hover:bg-[#008069] text-white shadow-xl shadow-emerald-950/20 flex items-center justify-center transition-transform active:scale-90 cursor-pointer"
+        className="md:hidden fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] right-5 z-30 w-14 h-14 rounded-2xl bg-[#00a884] hover:bg-[#008069] text-white shadow-xl shadow-emerald-950/20 flex items-center justify-center transition-transform active:scale-90 cursor-pointer"
         title="Create new chat thread"
         aria-label="Create new chat thread"
       >

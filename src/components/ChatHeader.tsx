@@ -11,7 +11,8 @@ import {
   Trash2,
   X,
   Code,
-  Sparkles,
+  Zap,
+  MessageSquare,
   Database,
   Brain,
   Terminal,
@@ -46,7 +47,8 @@ interface ChatHeaderProps {
 
 const ICON_MAP: Record<string, React.ElementType> = {
   code: Code,
-  sparkles: Sparkles,
+  zap: Zap,
+  sparkles: Zap,
   database: Database,
   brain: Brain,
   terminal: Terminal,
@@ -76,7 +78,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const isOnline = useOnlineStatus();
 
-  const IconCmp = (chat.iconName && ICON_MAP[chat.iconName]) || Sparkles;
+  const IconCmp = (chat.iconName && ICON_MAP[chat.iconName]) || MessageSquare;
 
   const handleAvatarFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputElement = e.target;

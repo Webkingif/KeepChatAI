@@ -14,7 +14,7 @@ import {
   ChevronUp,
   Calendar,
   X,
-  Sparkles,
+  Gem,
   Bot,
   Brain,
   Cpu,
@@ -46,7 +46,7 @@ type FilterTab = 'all' | 'overdue' | 'upcoming' | 'done';
 
 const MODEL_ICONS: Record<AIModelType, React.ElementType> = {
   ChatGPT: Bot,
-  Gemini: Sparkles,
+  Gemini: Gem,
   Claude: Brain,
   DeepSeek: Cpu,
   Other: MessageSquare,
@@ -206,7 +206,7 @@ export const TasksView: React.FC<TasksViewProps> = ({
   return (
     <div className="flex-1 h-full flex flex-col min-w-0 bg-[#f8fafc] dark:bg-[#0b141a] text-slate-800 dark:text-slate-100 overflow-y-auto transition-colors duration-200">
       {/* Centered Minimalist Container Matching Mockup */}
-      <div className="w-full max-w-lg mx-auto px-4 sm:px-6 py-5 flex flex-col flex-1 min-h-full">
+      <div className="w-full max-w-lg mx-auto px-4 sm:px-6 pt-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] flex flex-col flex-1 min-h-full">
         {/* Top App Bar with Menu & More Dots */}
         <div className="flex items-center justify-between relative mb-4">
           <button

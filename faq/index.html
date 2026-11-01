@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta name="theme-color" content="#008069" />
     <meta name="google-site-verification" content="zmDZUEWAv863VwxGtYYneAjPms687PJCaEnUuIIauJ4" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -15,6 +18,24 @@
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
     <script>
       (function() {
+        function syncAppHeight() {
+          var h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+          var w = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+          document.documentElement.style.setProperty('--app-height', h + 'px');
+          document.documentElement.style.setProperty('--app-width', w + 'px');
+          if (document.body) {
+            document.body.style.setProperty('--app-height', h + 'px');
+            document.body.style.setProperty('--app-width', w + 'px');
+          }
+        }
+        syncAppHeight();
+        window.addEventListener('resize', syncAppHeight, { passive: true });
+        window.addEventListener('orientationchange', syncAppHeight, { passive: true });
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', syncAppHeight, { passive: true });
+          window.visualViewport.addEventListener('scroll', syncAppHeight, { passive: true });
+        }
+
         window.__deferredPrompt = null;
         window.addEventListener('beforeinstallprompt', function(e) {
           e.preventDefault();
